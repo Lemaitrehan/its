@@ -1,0 +1,20 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/contract/contract.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+{if MBISGrant('XYRD_01')}
+      {/if}
+{if MBISGrant('DHGL_01')}
+<div class="wst-toolbar">
+   <!--<button class="btn btn-green f-right" onclick="javascript:location.href='<?=url("admin/Contract/add")?>'">新增</button>-->
+   <div style="clear:both"></div>
+</div>
+{/if}
+<div id="maingrid"></div>
+<script>
+  $(function(){initGrid()});
+</script>
+
+{/block}

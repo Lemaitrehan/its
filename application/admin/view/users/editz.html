@@ -1,0 +1,163 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/users/usersz.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    editInit();
+    changeTab('tabTitle','tabContent');
+    {if condition="$data['userId'] !=0 "}
+     MBIS.setValues({$data|json_encode});
+    {/if} 
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<p class="tab-title" id="tabTitle">
+<a href="javascript:;" class="hover">基本信息</a><!-- | -->
+<!--<a href="javascript:;">扩展信息</a>-->
+</p>
+<div class="tab-content" id="tabContent">
+<!-- 基本信息 -->
+<table class='wst-form wst-box-top'>
+       <tr>
+         <th>选择部门<font color='red'></font>：</th>
+         <td>
+           <select id="department_id" name="basic[department_id]" onchange="checkType()" {if condition="$data['userId'] neq 0"} disabled {/if}>
+             <option value="">请选择</option>
+             {volist name="departmentlist" id="vo"}
+             <option value="{$vo.department_id}">{$vo.department}</option>
+             {/volist}
+           </select>
+         </td>
+       </tr>
+       <!--
+       <tr id="son_tr">
+         <th>二级部门<font color='red'></font>：</th>
+         <td id="son_td">
+           <select id="department_son_id" onchange="checkType()">
+           <option value="">请选择</option>
+           </select>
+         </td>
+       </tr>
+       -->
+       <tr>
+         <th>选择岗位<font color='red'></font>：</th>
+         <td>
+           <select id="employee_type_id" name="basic[employee_type_id]" onchange="checkemp()" {if condition="$data['userId'] neq 0"} disabled {/if}>
+             <option value="">请选择</option>
+             {volist name="employeetypelist" id="vo"}
+             <option value="{$vo.employee_type_id}">{$vo.department} &nbsp;&nbsp; {$vo.name}</option>
+             {/volist}
+           </select>
+         </td>
+       </tr>
+       <tr>
+         <th>选择员工<font color='red'></font>：</th>
+         <td>
+           <select id="employee_id" name="basic[employee_id]" class="ipt" onchange="checkname()" {if condition="$data['userId'] neq 0"} disabled {/if}>
+             <option value="">请选择</option>
+             {volist name="employeelist" id="vo"}
+             <option value="{$vo.employee_id}">{$vo.name}</option>
+             {/volist}
+           </select>
+         </td>
+       </tr>
+       <tr>
+          <th>真实姓名<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="trueName" name="basic[trueName]" value="{$data['trueName']}" readonly />
+          </td>
+       </tr>
+       <tr>
+          <th width='150'>用户名<font color='red'>*</font>：</th>
+          <td width='370'>
+            {if ($data['userId']>0)}
+              {$data['loginName']}
+            {else /}
+              <input type="text" class="ipt" id="loginName" name="basic[loginName]"  />
+            {/if}
+              
+          </td>
+          <td rowspan="5">
+            <div id="preview" >
+                <img src="__ROOT__/{if $data['userPhoto']==''}{:MBISConf('CONF.userLogo')}{else}{$data['userPhoto']}{/if}"  height="150" />
+            </div>
+            <div id='adFilePicker' style="margin-left:40px;">上传头像</div>
+            <input type="hidden" id="userPhoto" name="basic[userPhoto]" class="ipt" />
+            <span id='uploadMsg'></span>
+
+          </td>
+       </tr>
+       {if ((int)$data['userId']==0)}
+         <tr>
+            <th>密码<font color='red'>*</font>：</th>
+            <td><input type="password" id='loginPwd' name="basic[loginPwd]" class='ipt' maxLength='20' value='' data-rule="登录密码: required;length[6~20]" data-target="#msg_loginPwd"/>
+               <span id='msg_loginPwd'></span>
+             </td>
+         </tr>
+       {/if}
+       <tr>
+          <th>昵称<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="nickName" name="basic[nickName]" value="{$data['nickName']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>性别<font color='red'>*</font>：</th>
+          <td>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==1)?'checked':'';?> value="1" />男</label>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==2)?'checked':'';?> value="2" />女</label>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==0)?'checked':'';?> value="0" />保密</label>
+          </td>
+       </tr>
+       <tr>
+          <th>手机号码<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userPhone" name="basic[userPhone]" value="{$data['userPhone']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>电子邮箱<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userEmail" name="basic[userEmail]" value="{$data['userEmail']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>QQ<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userQQ" name="basic[userQQ]" value="{$data['userQQ']}" />
+          </td>
+       </tr>
+       
+       {if ((int)$data['userId']==0)}
+         <tr>
+            <th>会员状态<font color='red'>*</font>：</th>
+            <td>
+                <label><input type="radio" class="ipt" id="userStatus" name="basic[userStatus]" <?=($data['userStatus']!==0)?'checked':'';?> value="1" />启用</label>
+                <label><input type="radio" class="ipt" id="userStatus" name="basic[userStatus]" <?=($data['userStatus']===0)?'checked':'';?> value="0" />停用</label>
+            </td>
+         </tr>
+       {/if}
+  
+</table>
+
+</div>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="basic[userId]" id="userId" class="ipt" value="<?=(int)$data['userId']?>" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+
+</form>
+{/block}
+

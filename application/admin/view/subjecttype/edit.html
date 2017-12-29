@@ -1,0 +1,43 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/subjecttype/subjecttype.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo();
+	{if condition="$object['type_id'] !=0 "}
+	   MBIS.setValues({$object});
+	{/if}
+	$('#infoForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入类型名称",
+	    		rule: '类型名称:required;'
+	    	},
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id);
+	    }
+	});
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='pkey' name="type_id" value='{$object["type_id"]}'/>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <th width='150'>类型名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+ 
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+ </form>
+{/block}

@@ -1,0 +1,157 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/major/major.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	
+	$("#majorForm").submit( function () {
+		var name      = $('#name').val();
+		var school_id = $('#school_id').val();
+		if(!name){
+			alert('专业名称不能为空！！！');
+		}
+		if(!school_id){
+			alert('学校选项不能为空！！！');
+		}
+		var id = $('#major_id').val()?$('#major_id').val():0;
+		toEdits(id)
+		return false;
+	});
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='majorForm' autocomplete="off">
+<input type='hidden' id='major_id' name="major_id" value='{$object["major_id"]}'/>
+<table class='wst-form wst-box-top'>
+  
+  <tr>
+     <th width='150'>专业名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' value="{$object['name']}" style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>专业编号<font color='red'></font>：</th>
+     <td><input type="text" id='major_number' name='major_number' value="{$object['major_number']}"  style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>专业类型<font color='red'>*</font>：</th>
+     <td>
+     
+     {volist name="lists_subject_type" id="vo"}
+        {if condition="$vo.type_id neq 1"}
+        <input type="radio" name='type_id' value="{$vo.type_id}"  {if($object['type_id'] == $vo.type_id) }checked{else}{if $key eq 0}checked{/if}{/if}  id='type_id' class='ipt'/>
+        {$vo.name}
+        {/if}
+     {/volist}
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>是否前台显示<font color='red'>*</font>：</th>
+     <td>
+        <span>是：</span> <input type="radio"  name='is_show' value="1" {if($object['is_show'] == 1 || !isset($object['is_show']) )}checked{/if} id='is_show'  class='ipt'/>
+        <span>否：</span> <input type="radio"  name='is_show' value="0" {if(isset($object['is_show']) && $object['is_show']==0)}checked{/if}  id='is_show'  class='ipt'/>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>是否上架<font color='red'>*</font>：</th>
+     <td>
+        <span>是：</span><input type="radio"   name='is_sell' value="1"  {if($object['is_sell'] == 1 || !isset($object['is_sell']) )}checked{/if}  id='is_sell' class='ipt'/>
+        <span>否：</span> <input type="radio"  name='is_sell' value="2"  {if($object['is_sell'] == 2)}checked{/if} id='is_sell'  class='ipt'/>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>是否热门<font color='red'>*</font>：</th>
+     <td>
+        <span>是：</span><input type="radio"   name='is_hot' value="1"  {if($object['is_hot'] == 1 || !isset($object['is_hot']) )}checked{/if}  id='is_hot' class='ipt'/>
+        <span>否：</span> <input type="radio"  name='is_hot' value="0"  {if(isset($object['is_hot']) && $object['is_hot']==0)}checked{/if} id='is_hot'  class='ipt'/>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>封面图<font color='red'>*</font>：</th>
+     <td>
+            <div id="preview" >
+                <img src="{if $object['cover_img']==''}{$defaultimg}{else}__ROOT__/{$object['cover_img']}{/if}"  height="150" />
+            </div>
+            <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+            <input type="hidden" id="cover_img" name="cover_img" class="ipt" />
+            <span id='uploadMsg'></span>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>所属学校<font color='red'>*</font>：</th>
+     <td>
+     <select id="school_id" name="school_id" class="ipt">
+        <option name=" ">请选择学校.....</option>
+        {volist name="lists_school" id="vo"}
+        <option {if condition="$object.school_id eq $vo.school_id"} selected{/if} value="{$vo.school_id}">{$vo.name}</option>
+        {/volist}
+     </select>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>专业简介：</th>
+     <td><textarea id='des' name='des' class="form-control ipt" style='width:80%;height:80px'>{$object.des}</textarea></td>
+  </tr>
+  <tr>
+     <th width='150'>专业详情：</th>
+     <td><textarea id='details' name='details' class="form-control ipt" style='width:80%;height:400px'>{$object.details}</textarea></td>
+  </tr>
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+ </form>
+   <script>
+$(function(){
+  
+  //文件上传
+	MBIS.upload({
+  	  pick:'#filePicker',
+  	  formData: {dir:'coverimg'},
+  	  accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+  	  callback:function(f){
+  		  var json = MBIS.toAdminJson(f);
+  		  if(json.status==1){
+        	$('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+        	$('#cover_img').val(json.savePath+json.thumb);
+  		  }
+	  }
+    });
+    
+  //编辑器
+    KindEditor.ready(function(K) {
+		editor1 = K.create('textarea[name="details"]', {
+			height:'350px',
+			allowFileManager : false,
+			allowImageUpload : true,
+			items:[
+			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+			        'anchor', 'link', 'unlink', '|', 'about'
+			],
+			afterBlur: function(){ this.sync(); }
+		});
+	});
+});
+</script>
+{/block}

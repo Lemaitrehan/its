@@ -1,0 +1,264 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<!-- <script src="__ADMIN__/sjexams/menu.js?v={$v}" type="text/javascript"></script>
+ --><script>
+$(function () {
+    select2('selectx');
+    function formatRepo(repo) {
+        return repo.name;
+    }
+    var userID = '';
+    function formatRepoProvince(repo) {
+        if (repo.name) {
+        	var url = "{:url('Examinationmanagement/manuallyAdd')}";
+        	 userID = repo.id;
+          	$.post(url,{action:'userInfo',userId:repo.id},function(data){
+     			  if(data){
+     				  var html = '';
+     				  var student_no = '';
+     				  var idcard     = '';
+     				  $(data).each(function(i,e){
+     					 student_no = e.student_no;
+     					 idcard     = e.idcard; 
+     					 html += '<div class="userDiv" style="width:auto;height:60px;border:1px solid gray;float:left">'
+		     					     +'<div data-value="'+e.school_id+'">'+e.school_name+'</div>'
+		     					     +'<div data-value="'+e.major_id+'">'+e.major_name+'</div>'
+		     					     +'<div data-value="'+e.level_id+'">'+e.level_name+'</div>'
+		     					     +'<div data-value="'+e.edu_id+'" class="edu_id"></div>'
+		     					+'</div>';
+     				  })
+     				  $('#student_no').val(student_no);
+     				  $('#idcard').val(idcard);
+     				  $('.info').html(html);
+     			  }else{
+     			     MBIS.msg('找不到学员考试信息',{icon:2});
+     			  }
+     		}); 
+            return repo.name;
+        } else {
+            return repo.text;
+        }
+    }
+    
+    
+    
+    //选择专业 层次 下面的 科目
+    $(document).on('click','.userDiv',function(){
+    	 $('.is_click').removeClass('is_click');
+    	 $(this).addClass('is_click');
+    	 var school_id = $(this).find('div:eq(0)').attr('data-value');
+    	 var major_id  = $(this).find('div:eq(1)').attr('data-value');
+    	 var level_id  = $(this).find('div:eq(2)').attr('data-value');
+    	 if( userID && school_id && major_id && level_id ){
+    	     var url  = "{:url('Examinationmanagement/manuallyAdd')}";
+    		 var parm = {action:'subject',userId:userID,school_id:school_id,major_id:major_id,level_id:level_id};
+          	$.post(url,parm,function(data){
+          		  var html ='';
+          		  $('.subject_tr').remove();
+     			  if(data){
+     				 var arrExmsPassStatus = {$arrExmsPassStatus};
+     				 if(data[0]){
+     					 var arr = data[1];
+	     			     $(data[0]).each(function(i,e){
+	     			    	 
+	      			    		var textStatus = '<select data-value="'+e.subject_id+'" class="status" name="status">';
+	      			    		//textStatus += '<option value=" ">报考状态</option>'
+	      			    		var subject_id = e.subject_id;
+	      			    		$.each(arrExmsPassStatus,function(i,e){
+	      			    			var is_check = ' ';
+// 	      			    			console.log(e.subject_id)
+	      			    			if( arr[subject_id]== i){
+	      			    				var is_check = ' selected ';
+	      			    			}
+	     			    			textStatus += '<option value="'+i+'"'+is_check+'>'+e+'</option>' 
+	     			    		})
+	     			    		textStatus += '</select>';
+	     			    		
+	     					 html += ' <tr class="subject_tr xxxx">'
+			     				         +'<th width="150">'+e.name+'<font color="red">*</font>：</th>'
+			     				         +'<td>'+textStatus+'</td>'
+			     				      '</tr>';
+	     				  })
+     				 }
+     				 $('.tablexx tbody').append(html);
+     			  }else{
+     			     MBIS.msg('找不到学员考试信息',{icon:2});
+     			  }
+     		}); 
+    	 }else{
+    		 alert('数据错误');
+    	 }
+    })
+    
+    function select2(name) {
+          $('#'+name).select2({
+              placeholder: '请输入学员名称，编号，身份证号',
+              allowClear: true,
+              minimumInputLength: 1,
+              width: 160,
+              ajax: {
+                  url: "/index.php/admin/Examinationmanagement/manuallyAdd.html",
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                      return {
+                          search_name: params.term, // search term
+                      };
+                  },
+                  processResults: function (data, params) {
+                      return {
+                          results: data
+                      };
+                  },
+              },
+              templateResult: formatRepo, // omitted for brevity, see the source of this page
+              templateSelection: formatRepoProvince // omitted for brevity, see the source of this page
+          });
+     }
+    
+    //年级搜索
+    function formatRepo1(repo) {
+        return repo.name;
+    }
+    function formatRepoProvince1(repo) {
+        if (repo.name) {
+            return repo.name;
+        } else {
+            return repo.text;
+        }
+    }
+    $('#grade_id').select2({
+        placeholder: '请输入学年级信息....',
+        allowClear: true,
+        minimumInputLength: 1,
+        width: 160,
+        ajax: {
+            url: "/index.php/admin/Examinationmanagement/manuallyAdd.html",
+            dataType: 'json',
+            delay: 250,
+            data: function (params) {
+                return {
+                	action:'grade_id',
+                    search_name: params.term, // search term
+                };
+            },
+            processResults: function (data, params) {
+                return {
+                    results: data
+                };
+            },
+        },
+        templateResult: formatRepo1, // omitted for brevity, see the source of this page
+        templateSelection: formatRepoProvince1 // omitted for brevity, see the source of this page
+    });
+    
+    //提交考试成绩
+    $('.tijiao').click(function(){
+    	 var obj = $('.is_click');
+    	 if(obj.length >0){
+	    	 var school_id = obj.find('div:eq(0)').attr('data-value');
+	    	 var major_id  = obj.find('div:eq(1)').attr('data-value');
+	    	 var level_id  = obj.find('div:eq(2)').attr('data-value');
+	    	 var edu_id    = obj.find('.edu_id').attr('data-value');
+	    	 var subject   = [];
+	    	
+	    	 $('.tablexx').find('.xxxx').each(function(i,e){
+	    	      var   subject_score = $(this).find('select[name="status"]').val();
+	    		        subject_score = subject_score?subject_score:' ';
+	    		  var   subject_id    = $(this).find('select[name="status"]').attr('data-value');
+	    		  subject.push(subject_id+'-'+subject_score) 
+	    	 })
+	    	 if(subject.length<=0){
+	    		 alert('科目信息错误！！！');
+	    	 }
+	    	 var url  = "{:url('Examinationmanagement/manuallyAdd')}";
+    	     var subjectString  = subject.join('--');
+    	     var exam_no        = $('#exam_no').val();
+    	     var exam_password  = $('#exam_password').val();
+    	     var baokao_time    = $('#baokao_time').val();
+    	     
+    	     var grade_id        = $('#grade_id').val();
+    	     var parm = {action:'addSubject',edu_id:edu_id,exam_no:exam_no,exam_password:exam_password,grade_id:grade_id,baokao_time:baokao_time,
+    	    		     userID:userID,school_id:school_id,major_id:major_id,level_id:level_id,subjectString:subjectString};
+    	 	 $.post(url,parm,function(data){
+     			  if(data.status >0){
+     				 window.location.href = "{:url('Examinationmanagement/indexEducation')}";
+     			  }else{
+     			     MBIS.msg(data.msg,{icon:2});
+     			  }
+     		 });
+    	 }
+    })
+    
+    $("#baokao_time").ligerDateEditor({format:'yyyy-MM'});
+    
+});
+</script>
+{/block}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <div autocomplete="off">
+    <table class='wst-form wst-box-top tablexx'>
+    
+      <tr>
+         <th width='150'>学员信息<font color='red'>*</font>：</th>
+         <td>
+             <select class="search_class select2 sel_menu" id="selectx">
+			        <option value="">请输入学员名称，编号，身份证号</option>
+			  </select>
+         </td>
+      </tr>
+      
+      <tr>
+         <th width='150'>学员编号<font color='red'></font>：</th>
+         <td>
+           <input type="text" id='student_no' name='student_no' style='width:300px;' readonly class='ipt'  />
+         </td>
+      </tr>
+      
+      <tr>
+         <th width='150'>报考时间<font color='red'></font>：</th>
+         <td><input type="text" id='baokao_time' name='baokao_time' style='' readonly class='ipt' /></td>
+      </tr>
+      
+      <tr>
+         <th width='150'>身份证号<font color='red'></font>：</th>
+         <td><input type="text" id='idcard' name='idcard' style='width:300px;' readonly class='ipt' /></td>
+      </tr>
+      
+      <tr>
+         <th width='150'>准考证号:<font color='red'>*</font>：</th>
+         <td><input type="text" id='exam_no' name='exam_no' style='width:300px;'  class='ipt'  /></td>
+      </tr>
+      
+      <tr>
+         <th width='150'>准考密码:<font color='red'>*</font>：</th>
+         <td><input type="text" id='exam_password' name='exam_password' style='width:300px;'  class='ipt'  /></td>
+      </tr>
+      
+       <tr>
+         <th width='150'>年级选择:<font color='red'>*</font>：</th>
+         <td>
+           <select name="grade_id" id="grade_id">
+                   <option value="">搜索年级....</option>
+           </select>
+         </td>
+      </tr>
+      
+      <tr>
+        <th width='150'>报考信息<font color='red'>*</font>：</th>
+        <td class="info">
+        </td>
+      </tr>
+      
+    </table>
+    <div style="text-align:center"> 
+    <button  class="btn btn-blue tijiao" >提交学员成绩</button>
+    </div>
+  </div>
+{/block}

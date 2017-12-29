@@ -1,0 +1,59 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/generalizetotal/customuser.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){
+	  initGrid();
+	  $("#start").ligerDateEditor();
+	  $("#end").ligerDateEditor();
+  });
+</script>
+<style>
+.date-s{width:100%;float:left; }
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <!-- <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+    </div>   -->
+    
+    <div id="query" style="float:left;">
+                <div  > 
+                  <span>搜索查询:</span><select id="search_title" name="search_title" class="query">
+                  <option value="">全部</option>  
+                  <option value="1">账户名称</option>  
+                </select>
+                <input   type="text"  id="search_word" name="search_word" class="query">
+                </div>
+                <br>
+                <div style="float:left;">
+	                <span style="float:left;" >开始时间：</span>
+	                <input type="text"  name="start" id="start" class="query" />
+	                <span style="float:left;margin-left:15px;">结束时间：</span>
+	                <input type="text"   name="end" id="end" class="query" />
+                </div>
+	   		    <input style="float:left;margin-left:20px;" type="button" class="btn btn-blue" onclick="javascript:initGrid()" value="查询">
+<!--       	    <input type="button" class="btn btn-blue" onclick="javascript:sendSms()" value="发送通知">
+ -->      <!--   <input class="btn btn-blue" type="submit" value="导出"> -->
+    
+    </div>
+    </form>
+    
+     <form action="{:url('admin/Generalizetotal/addData')}" enctype="multipart/form-data" method="post">
+        <input type="submit" class="btn btn-blue f-right"  value="上传">
+        <input type="file" name="exel"class="f-right">
+    </form>
+
+    <div style="clear:both"></div>
+    <!--<iframe src="about:blank" name="hiddenIframe" class="hide" style="display:none;"></iframe>-->
+</div>
+<div id="maingrid"></div>
+{/block}

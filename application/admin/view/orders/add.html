@@ -1,0 +1,186 @@
+﻿{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/orders/orders.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  $('#orderAddForm').validator({
+      fields: {
+        /*orderRemarks: {
+          tip: "请输入订单备注",
+          rule: '订单备注:required;'
+        },*/
+      },
+      valid: function(form){
+        if($('#htarget').val()=='')
+        {
+            MBIS.msg('请选择账号',{icon:2});
+            return false;
+        }
+        {if condition="$type_id eq 2"}
+        if($('#htarget2').val()=='' && $('#htarget3').val()=='')
+        {
+            MBIS.msg('请选择课程/科目',{icon:2});
+            return false;
+        }
+        {else}
+        if($('#htarget2').val()=='')
+        {
+            MBIS.msg('请选择课程',{icon:2});
+            return false;
+        }
+        {/if}
+        if($('#orderRemarks').val()=='')
+        {
+            //MBIS.msg('请输入订单备注',{icon:2});
+            //return false;
+        }
+        toSubmit({$type_id});
+      }
+  })
+});
+</script>
+{/block}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='orderAddForm' autocomplete="off">
+    <table class='wst-form wst-box-top'>
+      <tr style="display:none">
+        <th width='150'>类型<font color='red'>*</font>：</th>
+        <td>
+        <input type="hidden" name="type_id" value="{$type_id}">
+         <!-- <select name="type_id" id='type_id'>
+            <option value="1">学历</option>
+            <option value="2">技能</option>
+           </select>-->
+        </td>
+      </tr>
+      
+      <tr id="user_query">
+          <th></th>
+          <td>
+            <input type='text' id='loginName' value=''  style="width:200px;" maxLength='20' placeholder="请输入要购买的账号"/>
+            
+          </td>
+          <td><input type="button" class="btn btn-blue" value="查询" onclick="userQuery()"></td>
+       </tr>
+       <tr id="send_to">
+          <th>选择账号<font color='red'>*</font>：</th>
+          <td width="200">
+            <select ondblclick="MBIS.multSelect({left:'ltarget',right:'rtarget',vtarget:'rtarget',val:'htarget'})" size="12" id="ltarget" multiple="" style="width:200px;height:160px;">
+             </select>
+          </td>
+         <td width="10">
+         <input type='hidden' id='htarget' name="user_ids" value='' class='ipt'/>
+         <button onclick="javascript:MBIS.multSelect({left:'ltarget',right:'rtarget',vtarget:'rtarget',val:'htarget'})" class="btn btn-blue" type="button">&gt;&gt;</button>
+         <br>
+         <br>
+         <button onclick="javascript:MBIS.multSelect({left:'rtarget',right:'ltarget',vtarget:'rtarget',val:'htarget'})" class="btn btn-blue" type="button">&lt;&lt;</button>
+         </td>
+         <td>
+         <select ondblclick="MBIS.multSelect({left:'rtarget',right:'ltarget',vtarget:'rtarget',val:'htarget'})" size="12" id="rtarget" multiple="" style="width:200px;height:160px;">
+        </select>
+          </td>
+       </tr>
+      <tr id="course_query">
+          <th></th>
+          <td>
+            <!--<select name="course_type_id" id='course_type_id'>
+            <option value="1">学历</option>
+            <option value="2">技能</option>
+           </select>-->
+           <input type="hidden" id='course_type_id' value="{$type_id}">
+            <input type='text' id='courseName' value='' style="width:200px;" maxLength='20' placeholder="请输入要购买的课程"/>
+            
+          </td>
+          <td><input type="button" class="btn btn-blue" value="查询" onclick="courseQuery()"></td>
+       </tr>
+       <tr id="send_to2">
+          <th>选择课程：</th>
+          <td width="200">
+            <select ondblclick="MBIS.multSelect({left:'ltarget2',right:'rtarget2',vtarget:'rtarget2',val:'htarget2'})" size="12" id="ltarget2" multiple="" style="width:450px;height:160px;">
+             </select>
+          </td>
+         <td width="10">
+         <input type='hidden' id='htarget2' name="course_ids" value='' class='ipt'/>
+         <button onclick="javascript:MBIS.multSelect({left:'ltarget2',right:'rtarget2',vtarget:'rtarget2',val:'htarget2'})" class="btn btn-blue" type="button">&gt;&gt;</button>
+         <br>
+         <br>
+         <button onclick="javascript:MBIS.multSelect({left:'rtarget2',right:'ltarget2',vtarget:'rtarget2',val:'htarget2'})" class="btn btn-blue" type="button">&lt;&lt;</button>
+         </td>
+         <td>
+         <select ondblclick="MBIS.multSelect({left:'rtarget2',right:'ltarget2',vtarget:'rtarget2',val:'htarget2'})" size="12" id="rtarget2" multiple="" style="width:500px;height:160px;">
+        </select>
+          </td>
+       </tr>
+       {if condition="$type_id eq 2"}
+       <tr id="subject_query">
+          <th></th>
+          <td>
+            <!--<select name="course_type_id" id='course_type_id'>
+            <option value="1">学历</option>
+            <option value="2">技能</option>
+           </select>-->
+           <input type="hidden" id='subject_type_id' value="{$type_id}">
+            <input type='text' id='subjectName' value='' style="width:200px;" maxLength='20' placeholder="请输入要购买的科目"/>
+            
+          </td>
+          <td><input type="button" class="btn btn-blue" value="查询" onclick="subjectQuery()"></td>
+       </tr>
+       <tr id="send_to3">
+          <th>选择科目：</th>
+          <td width="200">
+            <select ondblclick="MBIS.multSelect({left:'ltarget3',right:'rtarget3',vtarget:'rtarget3',val:'htarget3'})" size="12" id="ltarget3" multiple="" style="width:450px;height:160px;">
+             </select>
+          </td>
+         <td width="10">
+         <input type='hidden' id='htarget3' name="subject_ids" value='' class='ipt'/>
+         <button onclick="javascript:MBIS.multSelect({left:'ltarget3',right:'rtarget3',vtarget:'rtarget3',val:'htarget3'})" class="btn btn-blue" type="button">&gt;&gt;</button>
+         <br>
+         <br>
+         <button onclick="javascript:MBIS.multSelect({left:'rtarget3',right:'ltarget3',vtarget:'rtarget3',val:'htarget3'})" class="btn btn-blue" type="button">&lt;&lt;</button>
+         </td>
+         <td>
+         <select ondblclick="MBIS.multSelect({left:'rtarget3',right:'ltarget3',vtarget:'rtarget3',val:'htarget3'})" size="12" id="rtarget3" multiple="" style="width:500px;height:160px;">
+        </select>
+          </td>
+       </tr>
+       {/if}
+       
+       <tr>
+        <th width='150'>支付方式<font color='red'>*</font>：</th>
+        <td>
+          {volist name="payment_lists" id="vo"}
+          <div style="padding-top:10px"><input type="hidden" id="payType" name="payType" value="{$vo.key}">{$vo.name}：
+          {volist name="vo.lists" id="vov"}
+          <label><input {if condition="!empty($vov.checked)"} checked{/if} type="radio" name="payFrom" value="{$vov.payment_id}" onClick="$('#payType').val({$vo.key})">&nbsp;{$vov.name}</label>
+          {/volist}</div>
+          {/volist}
+        </td>
+      </tr>
+      
+      <!--<tr>
+        <th width='150'>付款状态<font color='red'>*</font>：</th>
+        <td>
+          <select name="payStatus" id='payStatus'>
+            <option value="0">未付款</option>
+            <option value="1">已付款</option>
+            <option value="2">已退款</option>
+           </select>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>订单备注<font color='red'>*</font>：</th>
+        <td>
+          <textarea name="orderRemarks" id="orderRemarks" style="width:200px;height:80px;"></textarea>
+        </td>
+      </tr>-->
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">提&nbsp;交</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

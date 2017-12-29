@@ -1,0 +1,54 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/production/production.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+    $(function () {
+        initGrid({});
+    });
+</script>
+<style>
+    .date-s{width:100%;float:left;}
+    .l-text-wrapper{width:168px;float:left;}
+    .tbr-h{height:30px;line-height:30px;}
+    .search-s{width:100%;height:30px;float:left;}
+    .search-i{width:100%;height:30px;float:left;}
+    #query{width:100%;}
+    #export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+        <div class='date-s'>
+            报考院校:<select id="course_id" name="course_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+                {volist name="school_list" id="vo"}
+                  <option value="{$vo}">{$vo}</option>
+                {/volist}
+            </select>
+            层次:<select id="course_id" name="course_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+                <option value=''>专升本</option>
+                <option value=''>高升专</option>  
+            </select> 
+            报考专业:<select id="major_id" name="major_id" onchange="checkMajor()" style="width:165px;" class="query">
+                <option value=''>全部</option>                            
+            </select>
+        </div>
+        <div class="major">
+             考试课程:<select id="school_id" name="school_id" onchange="checkSchool()" style="width:165px;" class="query">
+                <option value=''>全部</option>
+            </select>
+            <input type="button" class="btn btn-green f-right" onclick="javascript:toAdd()" value="新增">
+            学员姓名:<input type="text" id="key_value" name="key_value" class="query">
+            学员编号:<input type="text" id="key_value" name="key_value" class="query">
+        </div>
+        <div class="exam_no">
+            准考证号:<input type="text" id="key_value" name="key_value" class="query">
+        </div>
+        <div style="clear:both"></div>
+</div>
+<div id="maingrid"></div>
+</form>
+{/block}

@@ -1,0 +1,3 @@
+2017-04-17 18:14:34 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 91 [Code] 0 [Message] Undefined index: userType
+2017-04-17 18:15:43 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 91 [Code] 0 [Message] Undefined index: userType
+2017-04-17 18:16:31 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 91 [Code] 0 [Message] Undefined index: userType

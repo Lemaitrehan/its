@@ -1,0 +1,66 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/orders/orders.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid({$type_id});})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <form id="exportOrders" action="{:url('admin/orders/expOrders')}" method="get">
+    <div class='date-s'>
+      <div class='f-left tbr-h'>创建时间：</div>
+      <input type="text" id="start" name="start" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+      <div class='f-left tbr-m'>至</div>
+      <input type="text" id="end" name="end" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+    </div>
+    <div id="query" style="float:left;">
+       订单类型：
+       <select id='type_id' name='type_id' class="query">
+        <option value="">全部</option>
+        <option value="1">学历</option>
+        <option value="2">技能</option>
+       </select>&nbsp;&nbsp;
+       {$sel_order_status.name}：
+       <select id='order_status' name='order_status' class="query">
+          {volist name="sel_order_status.lists" id="vo"}
+          <option value="{$vo.id}">{$vo.name}</option>
+          {/volist}
+       </select>&nbsp;&nbsp;
+       购买方式：
+       <select id='buyType' name='buyType' class="query">
+        <option value="">全部</option>
+        <option value="0">直销订单</option>
+        <option value="1">代销订单</option>
+       </select>&nbsp;&nbsp;
+	     订单号：<input type='text' id='orderNo' name='orderNo' class="query"/>  
+        <input type="button" class="btn btn-blue" onclick='javascript:orderQuery({$type_id})' value="查询">
+        <!--<button class="btn btn-blue"><a id="export" onclick="javascript:expOrders()">导出</a></button>-->
+        <input type="submit" class="btn btn-blue" value="导出">
+        <input type="button" class="btn btn-blue" value="导入" onClick="toImport(1,'xj')">
+        <!--<input type="button" class="btn btn-blue" value="学籍导入" onClick="toImport(1,'xj')">
+        <input type="button" class="btn btn-blue" value="报名导入" onClick="toImport(1,'bm')">-->
+    </form>
+        {if MBISGrant('DDLB_004')}
+        <input type="button" class="btn btn-blue f-right" onclick="javascript:toAdd(2)" value="添加(技能)" style="margin-left:10px;">
+        {/if}
+        {if MBISGrant('DDLB_003')}
+        <input type="button" class="btn btn-blue f-right" onclick="javascript:toAdd(1)" value="添加(学历)" style="margin-left:10px;">
+        {/if}
+        <input type="button" class="btn btn-blue f-right" onclick="javascript:refresh()" value="刷新">
+        <!--<button class="btn btn-green f-right" onclick='javascript:toEdit({$type_id},0)'>新增</button>-->
+    </div>
+    <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

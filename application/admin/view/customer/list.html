@@ -1,0 +1,50 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/customuser/customuser.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){
+	  initGrid();
+  });
+</script>
+<style>
+.date-s{width:100%;float:left; }
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <!-- <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+    </div>   -->
+    
+    <div id="query" style="float:left;">
+        搜索查询:<select id="search_title" name="search_title" class="query">
+                  <option value="">全部</option>  
+                  <option value="1">访客名称</option>  
+                  <option value="2">访客电话</option>  
+                  <option value="3">客服名称</option>  
+                </select>
+                <input type="text" id="search_word" name="search_word" class="query">
+	   		<input type="button" class="btn btn-blue" onclick="javascript:initGrid()" value="查询">
+<!--       	    <input type="button" class="btn btn-blue" onclick="javascript:sendSms()" value="发送通知">
+ -->      <!--   <input class="btn btn-blue" type="submit" value="导出"> -->
+    
+    </div>
+    </form>
+    
+     <form action="{:url('admin/Customer/addData')}" enctype="multipart/form-data" method="post">
+        <input type="submit" class="btn btn-blue f-right"  value="上传">
+        <input type="file" name="exel"class="f-right">
+    </form>
+
+    <div style="clear:both"></div>
+    <!--<iframe src="about:blank" name="hiddenIframe" class="hide" style="display:none;"></iframe>-->
+</div>
+<div id="maingrid"></div>
+{/block}

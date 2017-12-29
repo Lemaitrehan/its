@@ -1,0 +1,493 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/salesruleorder/salesruleorder.js?v={$v}" type="text/javascript"></script>
+<script>
+  $(function(){
+    initCombo();
+    {if condition="$object['rule_id'] !=0 "}
+       MBIS.setValues({$object});
+    {/if}
+
+    $('#ruleForm').validator({
+        fields: {
+          name: {
+            tip: '请输入规则名称',
+            rule: '规则名称:required;'
+          },
+        },
+        valid: function(form){
+          var id = $('#id').val();
+          toEdits(id);
+        },
+    });
+  });
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <style type="text/css">
+    .ck-li{
+      width:190px;
+    }
+  </style>
+  <style type="text/css">
+    .clearFa:after{
+      content: " "; 
+      display: block; 
+      height: 0; 
+      clear: both; 
+      visibility: hidden;  
+      +zoom:1
+    } 
+    .fl{
+      float: left;
+      margin-right: 5px;
+    }
+    ul li{
+      list-style: none;
+    }
+    .discountCondition{
+      border:1px solid #000;
+      padding: 15px;
+    }
+    .methodlist{
+      border:1px solid #000;
+      padding: 15px;
+    }
+    .cdnCONT{
+      height:72px;
+    }
+  </style>
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='ruleForm' autocomplete="off">
+    <input type='hidden' id='id' name='rule[id]' value='{$object["rule_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th><h4>基本信息</h4></th>
+        <td></td>
+      </tr>
+      <tr>
+         <th width='150'>规则名称<font color='red'>*</font>：</th>
+         <td><input type="text" name='rule[name]' data-rule="规则名称: required;" style='width:300px;' value="{$object['name']}" class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>规则描述<font color='red'>*</font>：</th>
+         <td>
+          <textarea rows="5" cols="40" name="rule[description]" data-rule="规则描述: required;" class="ipt">{$object['description']}</textarea>  
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>适用分类<font color='red'>*</font>：</th>
+         <td>
+           <input type="checkbox" name="rule[rule_type][]" value="1" {in name="1" value="$object['rule_type']"} checked {/in} class='ipt'>学历类
+           <input type="checkbox" name="rule[rule_type][]" value="2" {in name="2" value="$object['rule_type']"} checked {/in} class='ipt'>非学历类
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>适用范围<font color='red'>*</font>：</th>
+         <td>
+           <input type="checkbox" name="rule[rule_use][]" value="1" {in name="1" value="$object['rule_use']"} checked {/in} class='ipt'>下单
+           <input type="checkbox" name="rule[rule_use][]" value="2" {in name="2" value="$object['rule_use']"} checked {/in} class='ipt'>补费
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>适用平台<font color='red'>*</font>：</th>
+         <td>
+           <input type="checkbox" name="rule[platform_use][]" value="1" {in name="1" value="$object['platform_use']"} checked {/in} class='ipt'>PC
+           <input type="checkbox" name="rule[platform_use][]" value="2" {in name="2" value="$object['platform_use']"} checked {/in} class='ipt'>iPad
+           <input type="checkbox" name="rule[platform_use][]" value="3" {in name="3" value="$object['platform_use']"} checked {/in} class='ipt'>iPhone
+           <input type="checkbox" name="rule[platform_use][]" value="4" {in name="4" value="$object['platform_use']"} checked {/in} class='ipt'>Android
+           <input type="checkbox" name="rule[platform_use][]" value="5" {in name="5" value="$object['platform_use']"} checked {/in} class='ipt'>WeChat
+           <input type="checkbox" name="rule[platform_use][]" value="6" {in name="6" value="$object['platform_use']"} checked {/in} class='ipt'>Wap
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>是否排他<font color='red'>*</font>：</th>
+         <td>
+           <input type="radio" name="rule[stop_rules_processing]" value="1" {if condition="$object.stop_rules_processing eq '1'"} checked {/if} class='ipt'>是
+           <input type="radio" name="rule[stop_rules_processing]" value="0" {if condition="$object.stop_rules_processing eq '0'"} checked {/if} class='ipt'>否
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>优先级<font color='red'>*</font>：</th>
+         <td><input type="text" id='sort_order' name='rule[sort_order]' data-rule="优先级: required;" value="{$object.sort_order}" style='width:300px;' class='ipt'></td>
+      </tr>
+      <tr>
+         <th width='150'>启用状态<font color='red'>*</font>：</th>
+         <td>
+           <input type="radio" name="rule[status]" value="1" {if condition="$object.status eq '1'"} checked {/if} class='ipt'/>是
+           <input type="radio" name="rule[status]" value="0" {if condition="$object.status eq '0'"} checked {/if} class='ipt'/>否
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>起始时间<font color='red'>*</font>：</th>
+         <td><input type="text" id="from_time" name="rule[from_time]" value="{$object.from_time}" style="margin:0px;vertical-align:baseline;" class="ipt" maxLength="20"/></td>
+      </tr>
+      <tr>
+         <th width='150'>截止时间<font color='red'>*</font>：</th>
+         <td><input type="text" id="to_time" name="rule[to_time]" value="{$object.to_time}" style="margin:0px;vertical-align:baseline;" class="ipt" maxLength="20"/></td>
+      </tr>
+      <tr>
+        <th width='150'>会员等级<font color='red'>*</font>：</th>
+         <td>
+          {volist name="ranks" id="vo"}
+            <input type="checkbox" name="rule[member_lv_ids][]" value="{$vo.rankId}" {in name="$vo.rankId" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">{$vo.rankName}</span>
+          {/volist}
+          <!--
+           <input type="checkbox" name="rule[member_lv_ids][]" value="1" {in name="1" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下深大校区学员</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="2" {in name="2" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下福田校区学员</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="3" {in name="3" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下宝安校区学员</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="4" {in name="4" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下南山校区学员</span>
+           <br>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="5" {in name="5" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下龙岗校区学员</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="6" {in name="6" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">官方注册会员</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="7" {in name="7" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下校区咨询师推广购买用户</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="8"  {in name="8" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">第三方合作机构学员</span>
+           <br>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="9" {in name="9" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">电销推广购买用户</span>
+           <input type="checkbox" name="rule[member_lv_ids][]" value="10" {in name="10" value="$object.member_lv_ids"} checked {/in} class='ipt'><span class="ck-span">中鹏线下校区学员推广用户</span>
+           -->
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>报名时身份<font color='red'>*</font>：</th>
+         <td>
+           <input type="checkbox" name="rule[member_type_ids][]" value="1" {in name="1" value="$object['member_type_ids']"} checked {/in} class='ipt'>新生报名
+           <input type="checkbox" name="rule[member_type_ids][]" value="2" {in name="2" value="$object['member_type_ids']"} checked {/in} class='ipt'>在校生加报
+           <input type="checkbox" name="rule[member_type_ids][]" value="3" {in name="3" value="$object['member_type_ids']"} checked {/in} class='ipt'>学员会员加报
+         </td>
+      </tr>
+      <tr>
+        <th><hr></th>
+        <td><hr></td>
+      </tr>
+      <tr>
+        <th><h4>优惠条件</h4></th>
+        <td></td>
+      </tr>
+      <tr>
+        <th width='150'>模板列表<font color='red'>*</font>：</th>
+        <td>
+          <ul>
+            <li>
+              <input type="hidden" id="c_template" value="{$object.c_template}">
+              <input id="rad_promotion_conditions_order_itemsquanityallsubjects" type="radio" name="rule[c_template]" value="promotion_conditions_order_itemsquanityallsubjects" {if condition="$object.c_template eq 'promotion_conditions_order_itemsquanityallsubjects'"} checked {/if} class='ipt' checked>
+              <span>当订单科目的数量满X，给予优惠</span>
+            </li>
+            <li>
+              <input id="rad_promotion_conditions_order_usersquanityall" type="radio" name="rule[c_template]" value="promotion_conditions_order_usersquanityall" {if condition="$object.c_template eq 'promotion_conditions_order_usersquanityall'"} checked {/if} class='ipt'>
+              <span>对报名人数满足X的团体报名，订单给予优惠</span>
+            </li>
+            <li>
+              <input id="rad_promotion_conditions_order_userdefined" type="radio" name="rule[c_template]" value="promotion_conditions_order_userdefined" {if condition="$object.c_template eq 'promotion_conditions_order_userdefined'"} checked {/if} class='ipt'>
+              <span>用户自定义订单促销模板</span>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>模板内容<font color='red'>*</font>：</th>
+        <td>
+          <div class="discountCondition">
+            {if condition="$object.c_template eq 'promotion_conditions_order_itemsquanityallsubjects'"}
+            <div class="cdnCONT" id="promotion_conditions_order_itemsquanityallsubjects">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>订单科目的数量</span>
+              <input type="checkbox" class="rangebut" id="rangebut0" value="0">
+              <label>订单科目数量清单</label>
+              <br/>
+              <div class="clearFa">
+                <div class="numcon1 fl">
+                  <select name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][0][type]' class='ipt1'>
+                    <option value=''>选择范围</option>
+                    <option value="gt" {if condition="$object.conditions.condition_1.0.type eq 'gt'"} selected {/if}>大于</option>
+                    <option value="lt" {if condition="$object.conditions.condition_1.0.type eq 'lt'"} selected {/if}>小于</option>
+                    <option value="eq" {if condition="$object.conditions.condition_1.0.type eq 'eq'"} selected {/if}>等于</option>
+                    <option value="lte" {if condition="$object.conditions.condition_1.0.type eq 'lte'"} selected {/if}>小于等于</option>
+                    <option value="gte" {if condition="$object.conditions.condition_1.0.type eq 'gte'"} selected {/if}>大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][0][value]' value="{$object.conditions.condition_1.0.value}" class='ipt1'>
+                </div>
+                <div id="numc1" class="numcon fl" >
+                  <select name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][1][type]' class='ipt1'>
+                    <option value=''>选择范围</option>
+                    <option value="gt" {if condition="$object.conditions.condition_1.1.type eq 'gt'"} selected {/if}>大于</option>
+                    <option value="lt" {if condition="$object.conditions.condition_1.1.type eq 'lt'"} selected {/if}>小于</option>
+                    <option value="eq" {if condition="$object.conditions.condition_1.1.type eq 'eq'"} selected {/if}>等于</option>
+                    <option value="lte" {if condition="$object.conditions.condition_1.1.type eq 'lte'"} selected {/if}>小于等于</option>
+                    <option value="gte" {if condition="$object.conditions.condition_1.1.type eq 'gte'"} selected {/if}>大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][1][value]' id="c1_v2" value="{$object.conditions.condition_1.1.value}" class='ipt1'>
+                </div>
+                <span>给予优惠</span>
+              </div>
+            </div>
+            {else/}
+            <div class="cdnCONT" id="promotion_conditions_order_itemsquanityallsubjects">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>订单科目的数量</span>
+              <input type="checkbox" class="rangebut" id="rangebut0" value="0">
+              <label>订单科目数量清单</label>
+              <br/>
+              <div class="clearFa">
+                <div class="numcon1 fl">
+                  <select name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][0][type]' class='ipt1'>
+                    <option value=''>选择范围</option>
+                    <option value="gt">大于</option>
+                    <option value="lt">小于</option>
+                    <option value="eq">等于</option>
+                    <option value="lte">小于等于</option>
+                    <option value="gte">大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][0][value]' class='ipt1'>
+                </div>
+                <div class="numcon fl">
+                  <select name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][1][type]' class='ipt1'>
+                    <option value=''>选择范围</option>
+                    <option value="gt">大于</option>
+                    <option value="lt">小于</option>
+                    <option value="eq">等于</option>
+                    <option value="lte">小于等于</option>
+                    <option value="gte">大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_itemsquanityallsubjects][condition_1][1][value]' id="c1_v2" class='ipt1'>
+                </div>
+                <span>给予优惠</span>
+              </div>
+            </div>
+            {/if}
+            {if condition="$object.c_template eq 'promotion_conditions_order_usersquanityall'"}
+            <div class="cdnCONT" id="promotion_conditions_order_usersquanityall">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>报名人数的数量</span>
+              <input type="checkbox" class="rangebut" id="rangebut1" value="1">
+              <label>报名人数数量在区间内</label>
+              <br/>
+              <div class="clearFa">
+                <div class="numcon2 fl">
+                  <select name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][0][type]' class='ipt2'>
+                    <option value=''>选择范围</option>
+                    <option value="gt" {if condition="$object.conditions.condition_1.0.type eq 'gt'"}selected{/if}>大于</option>
+                    <option value="lt" {if condition="$object.conditions.condition_1.0.type eq 'lt'"}selected{/if}>小于</option>
+                    <option value="eq" {if condition="$object.conditions.condition_1.0.type eq 'eq'"}selected{/if}>等于</option>
+                    <option value="lte" {if condition="$object.conditions.condition_1.0.type eq 'lte'"}selected{/if}>小于等于</option>
+                    <option value="gte" {if condition="$object.conditions.condition_1.0.type eq 'gte'"}selected{/if}>大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][0][value]' value="{$object.conditions.condition_1.0.value}" class='ipt2'>
+                </div>
+                <div id="numc2" class="numcon fl" >
+                  <select name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][1][type]' class='ipt2'>
+                    <option value=''>选择范围</option>
+                    <option value="gt" {if condition="$object.conditions.condition_1.1.type eq 'gt'"}selected{/if}>大于</option>
+                    <option value="lt" {if condition="$object.conditions.condition_1.1.type eq 'lt'"}selected{/if}>小于</option>
+                    <option value="eq" {if condition="$object.conditions.condition_1.1.type eq 'eq'"}selected{/if}>等于</option>
+                    <option value="lte" {if condition="$object.conditions.condition_1.1.type eq 'lte'"}selected{/if}>小于等于</option>
+                    <option value="gte" {if condition="$object.conditions.condition_1.1.type eq 'gte'"}selected{/if}>大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][1][value]' id="c2_v2" value="{$object.conditions.condition_1.1.value}" class='ipt2'>
+                </div>
+                <span>给予优惠</span>
+              </div>
+            </div>
+            {else/}
+            <div class="cdnCONT" id="promotion_conditions_order_usersquanityall">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>报名人数的数量</span>
+              <input type="checkbox" class="rangebut" id="rangebut1" value="1">
+              <label>报名人数数量在区间内</label>
+              <br/>
+              <div class="clearFa">
+                <div class="numcon2 fl">
+                  <select name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][0][type]' class='ipt2'>
+                    <option value=''>选择范围</option>
+                    <option value="gt">大于</option>
+                    <option value="lt">小于</option>
+                    <option value="eq">等于</option>
+                    <option value="lte">小于等于</option>
+                    <option value="gte">大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][0][value]' class='ipt2'>
+                </div>
+                <div class="numcon fl" >
+                  <select name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][1][type]' class='ipt2'>
+                    <option value=''>选择范围</option>
+                    <option value="gt">大于</option>
+                    <option value="lt">小于</option>
+                    <option value="eq">等于</option>
+                    <option value="lte">小于等于</option>
+                    <option value="gte">大于等于</option>
+                  </select>
+                  <input type="text" name='rule[conditions][promotion_conditions_order_usersquanityall][condition_1][1][value]' id="c2_v2" class='ipt2'>
+                </div>
+                <span>给予优惠</span>
+              </div>
+            </div>
+            {/if}
+            {if condition="$object.c_template eq 'promotion_conditions_order_userdefined'"}
+            <div class="cdnCONT" id="promotion_conditions_order_userdefined">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>交款方式</span>
+              <select name='rule[conditions][promotion_conditions_order_userdefined][condition_1][0][value]' class='ipt3'>
+                <option value="" >请选择</option>
+                <option value="1" {if condition="$object.conditions.condition_1.0.value eq 1"} selected {/if}>一次性交全款</option>
+                <option value="2" {if condition="$object.conditions.condition_1.0.value eq 2"} selected {/if}>预报+补费</option>
+              </select>
+              <br/>
+              <span>补费时学员身份</span>
+              <select name='rule[conditions][promotion_conditions_order_userdefined][condition_2][0][value]' class='ipt3'>
+                <option value="" >请选择</option>
+                <option value="1" {if condition="$object.conditions.condition_2.0.value eq 1"} selected {/if}>新生</option>
+                <option value="2" {if condition="$object.conditions.condition_2.0.value eq 2"} selected {/if}>在校生</option>
+                <option value="3" {if condition="$object.conditions.condition_2.0.value eq 3"} selected {/if}>会员</option>
+              </select>
+            </div>
+            {else/}
+            <div class="cdnCONT" id="promotion_conditions_order_userdefined">
+              <p>优惠条件（判断订单是否符合）</p>
+              <span>交款方式</span>
+              <select name='rule[conditions][promotion_conditions_order_userdefined][condition_1][0][value]' class='ipt3'>
+                <option value="" >请选择</option>
+                <option value="1">一次性交全款</option>
+                <option value="2">预报+补费</option>
+              </select>
+              <br/>
+              <span>补费时学员身份</span>
+              <select name='rule[conditions][promotion_conditions_order_userdefined][condition_2][0][value]' class='ipt3'>
+                <option value="" >请选择</option>
+                <option value="1">新生</option>
+                <option value="2">在校生</option>
+                <option value="3">会员</option>
+              </select>
+            </div>
+            {/if}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <th><hr></th>
+        <td><hr></td>
+      </tr>
+      <tr>
+        <th><h4>优惠方案</h4></th>
+        <td></td>
+      </tr>
+      <tr>
+        <th width='150'>模板列表<font color='red'>*</font>：</th>
+        <td>
+          <ul>
+            <li>
+              <input type="hidden" id="s_template" value="{$object.s_template}">
+              <input id="rad_promotion_solutions_topercent" type="radio"  name="rule[s_template]" value="promotion_solutions_topercent" {if condition="$object.s_template eq 'promotion_solutions_topercent'"} checked {/if} class='ipt' checked>
+              <span>订单以固定折扣出售</span>
+            </li>
+            <li>
+              <input id="rad_promotion_solutions_tofixed" type="radio"  name="rule[s_template]" value="promotion_solutions_tofixed" {if condition="$object.s_template eq 'promotion_solutions_tofixed'"} checked {/if} class='ipt'>
+              <span>订单以固定价格出售</span>
+            </li>
+            <li>
+              <input id="rad_promotion_solutions_byfixed" type="radio"  name="rule[s_template]" value="promotion_solutions_byfixed" {if condition="$object.s_template eq 'promotion_solutions_byfixed'"} checked {/if} class='ipt'>
+              <span>订单减固定价格出售</span>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>模板内容<font color='red'>*</font>：</th>
+        <td>
+          <div class="methodlist">
+          
+            <div class="methodlistitem" id="promotion_solutions_topercent">
+              <span>订单价格乘以</span>
+              <input type="text"  name="rule[action_solution][promotion_solutions_topercent][solution_1][0][value]" {if condition="$object.s_template eq 'promotion_solutions_topercent'"} value="{$object.action_solution.solution_1.0.value}" {else/} value='' {/if} class="ipt" >
+              <span>%出售</span>
+            </div>
+            <div class="methodlistitem" id="promotion_solutions_tofixed">
+              <span>订单价格以&nbsp;&nbsp;&nbsp;</span>
+              <input type="text"  name="rule[action_solution][promotion_solutions_tofixed][solution_1][0][value]" {if condition="$object.s_template eq 'promotion_solutions_tofixed'"} value="{$object.action_solution.solution_1.0.value}" {else/} value='' {/if} class="ipt" >
+              <span>元出售</span>
+            </div>
+            <div class="methodlistitem" id="promotion_solutions_byfixed">
+              <span>订单价格优惠</span>
+              <input type="text"  name="rule[action_solution][promotion_solutions_byfixed][solution_1][0][value]" {if condition="$object.s_template eq 'promotion_solutions_byfixed'"} value="{$object.action_solution.solution_1.0.value}" {else/} value='' {/if} class="ipt" >
+              <span>元出售</span>
+            </div>
+          
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+<script type="text/javascript">
+
+  $(document).ready(function(){
+    // 优惠条件选择
+    $(".cdnCONT:not(:eq(0))").hide();
+    $('input:radio[name="rule[c_template]"]').click(function(){
+      var num1=$('input:radio[name="rule[c_template]"]:checked').val();
+      $(".cdnCONT").hide(); 
+      $("#"+num1).show();
+    });
+
+    if($('#id').val() > 0){
+      $('#rad_{$object.c_template}').click();
+    }
+
+    // 优惠条件中区间选择
+    /*
+    if(($('#id').val() !== '') && ($('#c1_v2').val() !== '')){
+      $('#rangebut0').attr('checked','true');
+      $("#numc1").show();
+    }else
+    if(($('#id').val() !== '') && ($('#c2_v2').val() !== '')){
+      $('#rangebut1').attr('checked','true');
+      $("#numc2").show();
+    }else{
+      $("div.numcon").hide();
+    }
+    */
+    $("div.numcon").hide();
+    $('.rangebut').click(function(){
+      var num2=$('.rangebut:checked').val();
+      $("div.numcon").hide();
+      $(".numcon:eq("+num2+")").show();
+      if($('#id').val() == ''){
+        $(".numcon:not(:eq("+num2+"))").children().val('');
+      }
+    });
+    if(($('#id').val() !== '') && ($('#c1_v2').val() !== '')){
+      $('#rangebut0').click();
+    }
+    if(($('#id').val() !== '') && ($('#c2_v2').val() !== '')){
+      $('#rangebut1').click();
+    }
+
+
+    
+    $(".methodlistitem:not(:eq(0))").hide();                    
+    $('input:radio[name="rule[s_template]"]').click(function(){
+      var num3=$('input:radio[name="rule[s_template]"]:checked').val();
+      $(".methodlistitem").hide(); 
+      $("#"+num3).show();
+    });
+
+    if($('#id').val() > 0){
+      $('#rad_{$object.s_template}').click();
+    }
+  });
+</script>
+{/block}

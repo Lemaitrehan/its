@@ -1,0 +1,61 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/userworks/userworks.js?v={$v}" type="text/javascript"></script>
+<script type="text/javascript">
+{if condition="!empty($data.works_data)"}
+    {volist name="data.works_data" id="vo"}
+        addUploadPic('{$vo}');
+    {/volist}
+{/if}
+</script>
+<style>
+.upload-item{position:relative;width:100px;height:100px;float:left;margin-left:15px;}
+.upload-item .del-btn{display:inline-block;width:14px;height:14px;text-align:center;background:#ddd;cursor:pointer;position:absolute;right:0;top:0;}
+</style>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userWorkForm" autocomplete="off">
+<!-- 用户信息 -->
+<table class='wst-form wst-box-top'>
+      <tr>
+      <th width='150'></th>
+          <td>
+            <span style="color:red">{$users.trueName}</span> 的科目 <span style="color:red">{$subjects.name}</span> 上传作品
+          </td>
+       </tr>
+      
+</table>
+<!-- 上传及提交 -->
+<table class='wst-form wst-box-top' id="uploadBox">
+  <tr>
+      <th width='100'>选择作品图片：</th>
+      <td><div id='userranksPicker'>选择文件</div><span id='uploadMsg'></span></td>
+   </tr>
+   <tr>
+      <th width='100'>作品列表：</th>
+      <td>
+        <div style="min-height:100px;" id="preview">
+        </div>
+      </td>
+   </tr>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="id" id="Id" class="ipt" value="{$data['id']+0}" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+
+</form>
+<script>
+$(function(){editInit()});
+</script>
+
+{/block}
+

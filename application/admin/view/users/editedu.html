@@ -1,0 +1,223 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/users/edu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    editInit();
+    {if condition="$data['edu_id'] !=0 "}
+      MBIS.setValues({$data|json_encode});
+    {/if}
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<div class="tab-content" id="tabContent">
+<!-- 学历类 -->
+<table class='wst-form wst-box-top'>
+  <tr>
+    <th></th>
+    <td><h3>学员学历报名信息</h3></td>
+  </tr>
+  <tr>
+      <th>学校：</th>
+      <td>
+          <select class="ipt" id="edu_school_id" name="school_id" {if condition="$data['edu_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_school_edu" id="vo"}
+            <option value="{$vo.school_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>专业：</th>
+      <td>
+          <select class="ipt" id="edu_major_id" name="major_id" {if condition="$data['edu_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_major" id="vo"}
+            <option value="{$vo.major_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>课程：</th>
+      <td>
+          <select class="ipt" id="edu_course_id" name="course_id" {if condition="$data['edu_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_course" id="vo"}
+            <option value="{$vo.course_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>年级：</th>
+      <td>
+          <select class="ipt" id="grade_id" name="grade_id" {if condition="$data['edu_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_grade" id="vo"}
+            <option value="{$vo.grade_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <!--
+   <tr>
+      <th>课程编码：</th>
+      <td>
+          <input type="text" class="ipt" id="course_bn" name="course_bn" />
+      </td>
+   </tr>
+   -->
+   <tr>
+      <th>考籍号/用户名/准考证号：</th>
+      <td>
+          <input type="text" class="ipt" id="exam_no" name="exam_no" />
+      </td>
+   </tr>
+   <tr>
+      <th>登陆网址：</th>
+      <td>
+          <input type="text" class="ipt" id="login_url" name="login_url" />
+      </td>
+   </tr>
+   <tr>
+      <th>登陆密码：</th>
+      <td>
+          <input type="text" class="ipt" id="login_pass" name="login_pass" />
+      </td>
+   </tr>
+   <tr>
+      <th>信息来源：</th>
+      <td>
+          <input type="text" class="ipt" id="info_source" name="info_source" />
+      </td>
+   </tr>
+   <tr>
+      <th>校区代码：</th>
+      <td>
+          <input type="text" class="ipt" id="school_code" name="school_code" />
+      </td>
+   </tr>
+   <tr>
+      <th>应收学费：</th>
+      <td>
+          <input type="text" class="ipt" id="receivable_fee" name="receivable_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>实收费用：</th>
+      <td>
+          <input type="text" class="ipt" id="real_fee" name="real_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>欠费：</th>
+      <td>
+          <input type="text" class="ipt" id="arrearage_fee" name="arrearage_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>备注：</th>
+      <td>
+          <input type="text" class="ipt" id="remark" name="remark" />
+      </td>
+   </tr>
+   <tr>
+      <th>发票号码：</th>
+      <td>
+          <input type="text" class="ipt" id="invoice_no" name="invoice_no" />
+      </td>
+   </tr>
+   <tr>
+      <th>学费收缴情况：</th>
+      <td>
+          <input type="text" class="ipt" id="fee_content" name="fee_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>学员证是否制作：</th>
+      <td>
+          <select class="ipt" id="student_cert" name="student_cert">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>结业证是否制作：</th>
+      <td>
+          <select class="ipt" id="complete_cert" name="complete_cert">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>就业情况：</th>
+      <td>
+          <input type="text" class="ipt" id="job_content" name="job_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>结课情况：</th>
+      <td>
+          <input type="text" class="ipt" id="class_ending" name="class_ending" />
+      </td>
+   </tr>
+   <tr>
+      <th>交资料情况：</th>
+      <td>
+          <input type="text" class="ipt" id="delivery_info" name="delivery_info" />
+      </td>
+   </tr>
+   <tr>
+      <th>通知上课情况：</th>
+      <td>
+          <input type="text" class="ipt" id="notify_school_info" name="notify_school_info" />
+      </td>
+   </tr>
+   <tr>
+      <th>反馈情况：</th>
+      <td>
+          <input type="text" class="ipt" id="feedback_content" name="feedback_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>是否发送上课通知短信：</th>
+      <td>
+          <select class="ipt" id="is_school_sms" name="is_school_sms">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>报名时间：</th>
+      <td>
+          <input type="text" class="ipt" id="entry_time" name="entry_time" style="margin:0px;vertical-align:baseline;" maxLength="20"/>
+      </td>
+   </tr>
+</table>
+</div>
+
+<table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="userId" id="userId" class="ipt" value="{$userId}" />
+       <input type="hidden" name="edu_id" id="edu_id" class="ipt" value="<?=(int)$data['edu_id']?>" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+</form>
+{/block}
+

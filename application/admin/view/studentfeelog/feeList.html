@@ -1,0 +1,30 @@
+﻿{extend name="base" /}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+    <table class='its-table wst-form wst-box-top'>
+      <tr>
+	    <th>收款校区</th>
+        <th>单据号</th>
+		<th>缴费类型</th>
+		<th>缴费方式</th>
+        <th>收款日期</th>
+        <th>收款金额</th>
+      </tr>
+      {volist name="feeList" id="vo"}
+      <tr>
+		<td>{$vo.receiptSchool}</td>
+        <td>{$vo.receiptNo}</td>
+		<td>{$vo.pay_type}</td>
+		<td>{$vo.pay_name}</td>
+        <td>{$vo.receiptDate}</td>
+		<td>{$vo.receiptPrice}</td>
+      </tr>
+	  {/volist}
+    </table>
+<style>
+.its-table tr th,
+.its-table tr td{padding:10px;}
+.its-table tr th{text-align:center;font-weight:bold;}
+.its-table tr td{text-align:center;}
+</style>
+{/block}

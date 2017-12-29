@@ -1,0 +1,257 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/users/userst.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    editInit();
+    changeTab('tabTitle','tabContent');
+    {if condition="$data['userId'] !=0 "}
+     MBIS.setValues({$data|json_encode});
+    {/if} 
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<p class="tab-title" id="tabTitle">
+<a href="javascript:;" class="hover">基本信息</a> | 
+<a href="javascript:;">扩展信息</a>
+</p>
+<div class="tab-content" id="tabContent">
+<!-- 基本信息 -->
+<table class='wst-form wst-box-top'>
+  <tr>
+      <th width='150'>用户名<font color='red'></font>：</th>
+          <td width='370'>
+            {if ($data['userId']>0)}
+              {$data['loginName']}
+            {else /}
+              <input type="text" class="ipt" id="loginName" name="basic[loginName]"  />
+            {/if}
+              
+          </td>
+          <td rowspan="5">
+            <div id="preview" >
+                <img src="__ROOT__/{if $data['userPhoto']==''}{:MBISConf('CONF.userLogo')}{else}{$data['userPhoto']}{/if}"  height="150" />
+            </div>
+            <div id='adFilePicker' style="margin-left:40px;">上传头像</div>
+            <input type="hidden" id="userPhoto" name="basic[userPhoto]" class="ipt" />
+            <span id='uploadMsg'></span>
+
+          </td>
+       </tr>
+       {if ((int)$data['userId']==0)}
+
+         <tr>
+            <th>密码<font color='red'></font>：</th>
+            <td><input type="password" id='loginPwd' name="basic[loginPwd]" class='ipt' maxLength='20' value=''/>
+               <span id='msg_loginPwd'></span>
+             </td>
+         </tr>
+         <!--
+         <tr>
+            <th>密码<font color='red'>*</font>：</th>
+            <td><input type="password" id='loginPwd' name="basic[loginPwd]" class='ipt' maxLength='20' value='' data-rule="登录密码: required;length[6~20]" data-target="#msg_loginPwd"/>
+               <span id='msg_loginPwd'></span>
+             </td>
+         </tr>
+          -->
+       {/if}
+       <tr>
+          <th>真实姓名<font color='red'>*</font>：</th>
+          <td>
+              <input type="text" class="ipt" id="trueName" name="basic[trueName]" value="{$data['trueName']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>昵称<font color='red'></font>：</th>
+          <td>
+              <input type="text" class="ipt" id="nickName" name="basic[nickName]" value="{$data['nickName']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>性别<font color='red'></font>：</th>
+          <td>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==1)?'checked':'';?> value="1" />男</label>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==2)?'checked':'';?> value="2" />女</label>
+            <label><input type="radio" class="ipt" id="userSex" name="basic[userSex]" <?=($data['userSex']==0)?'checked':'';?> value="0" />保密</label>
+          </td>
+       </tr>
+       <tr>
+          <th>手机号码<font color='red'></font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userPhone" name="basic[userPhone]" value="{$data['userPhone']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>电子邮箱<font color='red'></font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userEmail" name="basic[userEmail]" value="{$data['userEmail']}" />
+          </td>
+       </tr>
+       <tr>
+          <th>QQ<font color='red'></font>：</th>
+          <td>
+              <input type="text" class="ipt" id="userQQ" name="basic[userQQ]" value="{$data['userQQ']}" />
+          </td>
+       </tr>
+       
+       {if ((int)$data['userId']==0)}
+         <tr>
+            <th>会员状态<font color='red'></font>：</th>
+            <td>
+                <label><input type="radio" class="ipt" id="userStatus" name="basic[userStatus]" <?=($data['userStatus']!==0)?'checked':'';?> value="1" />启用</label>
+                <label><input type="radio" class="ipt" id="userStatus" name="basic[userStatus]" <?=($data['userStatus']===0)?'checked':'';?> value="0" />停用</label>
+            </td>
+         </tr>
+       {/if}
+  
+</table>
+<!-- 扩展信息 -->
+<table class='wst-form wst-box-top' style="display:none;">
+  <tr>
+      <th>老师编号<font color='red'>*</font>：</th>
+      <td>
+          <input type="text" class="ipt" id="tc_no" name="extend[tc_no]" value="{$data['tc_no']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>老师类型：</th>
+      <td>
+          <select class="ipt" id="tc_type" name="extend[tc_type]">
+            <option value="1">全职</option>
+            <option value="2">兼职</option>
+            <option value="3">合作</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>老师状态：</th>
+      <td>
+          <select class="ipt" id="status" name="extend[status]">
+            <option value="1">正常</option>
+            <option value="0">过期</option>
+            <option value="2">暂停</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>老师等级：</th>
+      <td>
+          <select class="ipt" id="rank" name="extend[rank]">
+            <option value="1">初级</option>
+            <option value="2">能手</option>
+            <option value="3">专家</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>身份证号码：</th>
+      <td>
+          <input type="text" class="ipt" id="idcard_no" name="extend[idcard_no]" value="{$data['idcard_no']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>省份：</th>
+      <td>
+          <input type="text" class="ipt" id="province" name="extend[province]" value="{$data['province']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>城市：</th>
+      <td>
+          <input type="text" class="ipt" id="city" name="extend[city]" value="{$data['city']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>工作单位：</th>
+      <td>
+          <input type="text" class="ipt" id="company" name="extend[company]" value="{$data['company']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>详细地址：</th>
+      <td>
+          <input type="text" class="ipt" id="address" name="extend[address]" value="{$data['address']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>职务：</th>
+      <td>
+          <input type="text" class="ipt" id="job_content" name="extend[job_content]" value="{$data['job_content']}"/>
+      </td>
+   </tr>
+   <tr>
+      <th>联系电话2：</th>
+      <td>
+          <input type="text" class="ipt" id="mobile2" name="extend[mobile2]" value="{$data['mobile2']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>社保卡号：</th>
+      <td>
+          <input type="text" class="ipt" id="social_no" name="extend[social_no]" value="{$data['social_no']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>紧急联系人：</th>
+      <td>
+          <input type="text" class="ipt" id="urgency_contact" name="extend[urgency_contact]" value="{$data['urgency_contact']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>紧急联系电话：</th>
+      <td>
+          <input type="text" class="ipt" id="urgency_contact_mobile" name="extend[urgency_contact_mobile]" value="{$data['urgency_contact_mobile']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>行业：</th>
+      <td>
+          <input type="text" class="ipt" id="industry" name="extend[industry]" value="{$data['industry']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>薪水：</th>
+      <td>
+          <input type="text" class="ipt" id="salary" name="extend[salary]" value="{$data['salary']}" />
+      </td>
+   </tr>
+   <tr>
+      <th>简介：</th>
+      <td>
+          <textarea class="ipt" id="introduction" name="extend[introduction]">{$data['introduction']}</textarea>  
+      </td>
+   </tr>
+   <tr>
+      <th>个人履历：</th>
+      <td>
+          <textarea class="ipt" id="resume" name="extend[resume]">{$data['resume']}</textarea>  
+      </td>
+   </tr>
+   <tr>
+      <th>备注：</th>
+      <td>
+          <textarea class="ipt" id="remark" name="extend[remark]">{$data['remark']}</textarea>  
+      </td>
+   </tr>
+</table>
+</div>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="basic[userId]" id="userId" class="ipt" value="<?=(int)$data['userId']?>" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+
+</form>
+{/block}
+

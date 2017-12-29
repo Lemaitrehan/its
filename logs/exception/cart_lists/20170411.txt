@@ -1,0 +1,3 @@
+2017-04-11 14:58:14 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-11 17:09:20 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-11 17:45:32 >> [File] /data/wwwroot/mbis/thinkphp/library/think/Model.php [Line] 424 [Code] 0 [Message] property not exists:application\common\model\Course->stu_fee

@@ -1,0 +1,5 @@
+<select id="grade_id" name='grade_id' class='ipt'>
+{volist name="lists_grade" id="vo"}
+<option {if condition="$vo.grade_id eq $grade_id"}selected{/if} value="{$vo.grade_id}">{$vo.name} - {$vo.stu_fee}</option>
+{/volist}
+</select>

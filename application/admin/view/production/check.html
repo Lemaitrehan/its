@@ -1,0 +1,45 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/production/production.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<p class="tab-title" id="tabTitle">
+</p>
+<div class="tab-content" id="tabContent">
+<!-- 基本信息 -->
+<table class='wst-form wst-box-top'>
+   <tr>
+       <td>
+      <th width='150'><font color='red'></font></th>
+          {volist name="$rs['productions']" id="vo"}
+                  <td rowspan="5">
+                    <div id="preview" >
+                     <img src="__ROOT__/{if $vo!=''}{$vo}{else}{:MBISConf('CONF.userLogo')}{/if}"  height="150" />
+                    </div>
+                   </td>
+          {/volist}
+          </td>
+       </tr>
+</table>
+<!-- 扩展信息 -->
+<table class='wst-form wst-box-top' style="display:none;">
+
+</table>
+</div>
+</form>
+<script>
+$(function(){
+    editInit();
+    changeTab('tabTitle','tabContent');
+   
+});
+</script>
+
+{/block}
+

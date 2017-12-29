@@ -1,0 +1,16 @@
+<form id="gradeSetForm" style="padding:15px 20px;">
+分配姓名列表({$datas|count}个)：
+<ol style="padding-left:15px;padding-bottom:15px;">
+    {volist name="datas" id="vo"}
+    <li style="list-style:inherit">{$vo.userId}</li>
+    {/volist}
+</ol>
+年级选择：
+<div>
+    <select name="sel_grade_id" id="sel_grade_id" class="ipt">
+    {volist name="grades" id="vo"}
+    <option value="{$vo.grade_id}###{$vo.name}">{$vo.name}</option>
+    {/volist}
+    </select>
+</div>
+</form>

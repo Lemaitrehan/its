@@ -1,0 +1,119 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/users/teacherset.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<style type="text/css">
+  .t-s-info{
+    height:20%;
+    margin:5px 0 20px 10px;
+  }
+  .t-table{
+    height:40%;
+    margin:5px 0 20px 10px;
+  }
+  h4,ul{
+    margin:5px 0 5px 0;
+  }
+  #t_ipt{
+    height:40%;
+    margin:5px 0 10px 10px;
+  }
+  span{
+    width:150px;
+  }
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="t-info">
+  <div class="t-s-info">
+    <ul><h4>老师信息</h4></ul>
+    <li><span>姓名：{$teacher['trueName']}</span></li>
+    <li><span>手机：{$teacher['userPhone']}</span></li>
+    <li><span>邮箱：{$teacher['userEmail']}</span></li>
+    <li><span>Q  Q：{$teacher['userQQ']}</span></li>
+  </div>
+  <div class="t-table">
+    <h4>老师授课科目配置信息</h4>
+    <table id="t_set" style="text-align:center;width:68%;" border="1" sellspacing="1">
+      <tr style="font-weight: bold;background-color: #00ffff;">
+        <td>序号</td>
+        <td>老师姓名</td>
+        <td>授课科目类型</td>
+        <td>授课科目名称</td>
+        <td>操作</td>
+      </tr>
+      {if condition="$teacher['subject_set'] eq null"}
+      <tr id="no_info">
+        <td colspan="5">暂无科目配置信息</td>
+      </tr>
+      {/if}
+      {volist name="$teacher['subject_set']" id="voo"}
+      <tr id="t_{$voo.ss_id}">
+        <td>{$voo.ss_id}</td>
+        <td>{$voo.userId}</td>
+        <td>{$voo.type_id}</td>
+        <td>{$voo.subject_id}</td>
+        <td>
+          {if MBISGrant('LSCK_06')}
+          <!--<a href="{:url('admin/users/editTeacherSet',['id'=>$voo.ss_id])}">修改</a>-->
+          <a href="javascript:void(0);" onclick="toDel({$voo.ss_id})">删除</a>
+          {/if}
+        </td>
+      </tr>
+      {/volist}
+      <script type="text/javascript">
+        function toDel(id){
+          var box = MBIS.confirm({content:"您确定要删除该记录吗?",yes:function(){
+            var loading = MBIS.msg('正在提交数据，请稍后...', {icon: 16,time:60000});
+            $.post(MBIS.U('admin/users/delTeacherSet'),{ssId:id},function(data,textStatus){
+              layer.close(loading);
+              var json = MBIS.toAdminJson(data);
+              if(json.status=='1'){
+                  MBIS.msg("操作成功",{icon:1});
+                  layer.close(box);
+                  $('#t_'+id).remove();
+              }else{
+                  MBIS.msg(json.msg,{icon:2});
+              }
+            });
+          }
+          });
+        }
+      </script> 
+    </table>
+  </div>
+</div>
+<div id="t_ipt">
+  <h4>新增授课科目配置信息</h4>
+  <input type="hidden" id="userId" name="userId" value="{$teacher['userId']}" class="ipt">
+  授课科目类型：
+          <select id="type_id" name="type_id" calss="ipt">
+            <option value=''>请选择</option>
+            <option value="1">学历</option>
+            <option value="2">技能</option>
+          </select><br>
+  授课科目名称：
+          <select id="subject_id" name="subject_id" class="ipt">
+            <option value=''>请选择</option>
+            {volist name="subject" id="vo"}
+            <option value="{$vo.subject_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+  <table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+        {if MBISGrant('LSCK_05')}
+       <input type="button" id="btnsub" value="添加" class='btn btn-blue' />
+        {/if}
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+  </table>
+</div>
+
+{/block}
+

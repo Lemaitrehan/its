@@ -1,0 +1,121 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/studentmatriculate/studentedu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    editInit();
+    {if condition="$data['edu_id'] !=0 "}
+      MBIS.setValues({$data|json_encode});
+    {/if}
+});
+</script>
+{/block}
+{block name="main"}
+<style type="text/css">
+  .tab-content{
+    padding:8px 10px;
+  }
+  .wst-form th {
+    width: 20%;
+}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="eduForm" autocomplete="off" >
+<div class="tab-content" id="tabContent">
+  <table class='wst-form wst-box-top'>
+    <tr>
+    <th>真实姓名<font color='red'></font>：</th>
+    <td>
+        {$data['trueName']}
+    </td>
+    </tr>
+    <tr>
+    <th>身份证号<font color='red'></font>：</th>
+    <td>
+        {$data['idcard']}
+    </td>
+    </tr>
+    <tr>
+    <th>学员编号<font color='red'></font>：</th>
+    <td>
+        {$data['student_no']}
+    </td>
+    </tr>
+    <tr>
+    <th>报名院校<font color='red'></font>：</th>
+    <td>
+        {$data['school_name']}
+    </td>
+    </tr>
+    <tr>
+    <th>专业<font color='red'></font>：</th>
+    <td>
+        {$data['major_name']}
+    </td>
+    </tr>
+    <tr>
+    <th>层次<font color='red'></font>：</th>
+    <td>
+        {$data['level_id']}
+    </td>
+    </tr>
+    <tr>
+    <th>年级<font color='red'></font>：</th>
+    <td>
+        {$data['grade_name']}
+    </td>
+    </tr>
+  
+    <tr>
+    <th>报名状态：</th>
+    <td>
+        <select class="ipt" id="entry_status" {if condition="$data['entry_status'] eq 3"} disabled {/if} name="entry_status">
+          <option value="1" >未报考</option>
+          <option value="2" >未录取</option>
+          <option value="3" >已录取</option>
+        </select>
+    </td>
+    </tr>
+    {if condition="$data['entry_status'] neq 3"}
+    <tr>
+    <th>处理状态：</th>
+    <td>
+        <select class="ipt" id="dispose_status" name="dispose_status">
+          <option value="1" >未处理</option>
+          <option value="2" >已处理</option>
+        </select>
+    </td>
+    </tr>
+
+    <tr>
+    <th>处理结果：</th>
+    <td>
+        <select id="dispose_result" name="dispose_result" class="ipt">
+          <option value="1" >转其他课程</option>
+          <option value="2" >转下次</option>
+          <option value="3" >退费</option>
+          <option value="4" >其他</option>
+        </select>
+    </td>
+    </tr>
+    {else/}
+
+    {/if}
+  </table>
+</div>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="edu_id" id="edu_id" class="ipt" value="{$data['edu_id']}" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+</form>
+{/block}
+

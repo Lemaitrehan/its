@@ -1,0 +1,31 @@
+﻿{extend name="base" /}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='importForm' style="padding-top:20px;" method="post" action="{:url('admin/orders/import')}" autocomplete="off" enctype="multipart/form-data">
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <td colspan='2' align='center'>
+        <p style="padding-bottom:30px;" class="import-tab">
+            <a {if condition="$assign_get.key eq 'xj'"}style="font-weight:bold;"{/if}href="{:url('admin/orders/toImport')}?type_id=1&key=xj">学籍</a> | 
+            <a {if condition="$assign_get.key eq 'bm'"}style="font-weight:bold;"{/if} href="{:url('admin/orders/toImport')}?type_id=1&key=bm">报名</a>
+            </p>
+        </td>
+      </tr>
+      <tr>
+         <th width='250'>选择文件：</th>
+         <td><input type="file" name="importFile"></td>
+      </tr>
+      <tr>
+           <td style="padding-top:30px;" colspan='2' align='center'>
+               <input type="hidden" name="type_id" value="{$assign_get.type_id}">
+               <input type="hidden" name="key" value="{$assign_get.key}">
+               <button type="submit" class="btn btn-blue">提&nbsp;交</button>
+               <a href="/static/template/users/{$assign_get.key}-tmpl.xlsx">下载模板</a>
+           </td>
+         </tr>
+    </table>
+  </form>
+ <style>
+ .import-tab a{font-size:14px;color:blue;margin:0 5px;}
+ </style>
+{/block}

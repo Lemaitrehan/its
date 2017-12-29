@@ -1,0 +1,26 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/employeetype/employeetype.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid();})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	选择部门:<select id="department_id" style="width:165px;" class="query">
+    		<option value=''>请选择</option>
+			{volist name="department" id="vo"}
+     		<option value="{$vo.department_id}">{$vo.department}</option>
+     		{/volist}
+  			</select>
+	岗位名称：<input type='text' id='name' class="query"/>  
+   <button class="btn btn-blue" onclick='javascript:emptypeQuery()'>查询</button>
+   <button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+   {if MBISGrant('GWGL_01')}
+   <button class="btn btn-green f-right" onclick='javascript:toEdit(0)'>新增</button>
+   {/if}
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

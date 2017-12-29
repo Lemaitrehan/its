@@ -1,0 +1,201 @@
+{extend name="new_base" /}
+
+{block name="css"}
+<link rel="stylesheet" href="/static/css/Schoolroll/common.css"/>
+{/block}
+
+{block name="main"}
+
+<form class="layui-form" action="">
+    <br/>
+    <div class="layui-form-item">
+        <label class="layui-form-label">当前年月</label>
+        <div class="layui-input-inline">
+            <input type="text" name="date5" id="date5" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">对比年月</label>
+        <div class="layui-input-inline">
+            <input type="text" name="date6" id="date6" autocomplete="off" class="layui-input">
+        </div>
+        <button class="layui-btn">查询</button>
+    </div>
+    <div id="chartFour" class="charts-defult"></div>
+
+</form>
+
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript" src="/static/plugins/moment/moment.js"></script>
+
+
+<script type="text/javascript" src="/static/plugins/echarts/echarts.js"></script>
+
+
+<script type="text/javascript">
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths: {
+            echarts: '/static/plugins/echarts/'
+        }
+    });
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function (ec) {
+
+            var myChartFour = ec.init(document.getElementById('chartFour'));
+            var optionFour = {
+                title: {
+                    text: '各校区收费同期对比'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['{$format_start_date}', '{$format_end_date}']
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+
+                        magicType: {
+                            show: true,
+                            type: ['line', 'bar']
+                        },
+                        restore: {
+                            show: true,
+                            title: '刷新'
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                color: ['#ffb980', '#5ab1ef'],
+                calculable: true,
+                xAxis: [{
+                    type: 'category',
+                    data: ['宝安校区', '龙岗校区', '福田校区', '南山校区']
+                }],
+                yAxis: [{
+                    type: 'value'
+                }],
+                series: [{
+                    name: '{$format_start_date}',
+                    type: 'bar',
+                    barCategoryGap: '40%',
+                    barGap: '1%',
+                    data: {$chart_result_one},
+                    itemStyle: {
+                        normal: {
+                            label: {
+                                show: true,
+                                position: 'top',
+                                formatter: '{c}%'
+                            }
+                        }
+                    }
+
+                },
+                    {
+                        name: '{$format_end_date}',
+                        type: 'bar',
+                        barCategoryGap: '40%',
+                        barGap: '1%',
+                        data: {$chart_result_two},
+                        itemStyle: {
+                            normal: {
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: '{c}%'
+                                }
+                            }
+
+                        }
+                    }
+                ]
+            };
+
+            myChartFour.setOption(optionFour);
+
+        }
+    );
+
+</script>
+
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#date0',
+            type: 'year'
+        });
+        laydate.render({
+            elem: '#date1' //指定元素
+        });
+        laydate.render({
+            elem: '#date2' //指定元素
+        });
+        laydate.render({
+            elem: '#date3' //指定元素
+        });
+        laydate.render({
+            elem: '#date4' //指定元素
+        });
+        laydate.render({
+            elem: '#date5',
+            type: 'month'
+        });
+        laydate.render({
+            elem: '#date6',
+            type: 'month'
+        });
+
+        $(function () {
+            var weeks = moment().locale('zh-CN').isoWeekYear(2012).isoWeeksInYear() + 1;
+            for (var i = 1; i < weeks; i++) {
+                $("#weeks").append('<option value="' + i + '" >' + i + '</option>')
+            }
+        });
+    });
+
+    function calendarCycle() {
+        var year = $("#date0").val();
+        var week = $("#weeks").val();
+        if (year == "") {
+            layer.msg('请选择年份！');
+        } else if (week == "") {
+            layer.msg('请选择周！');
+        } else {
+            var startTime = moment().isoWeekYear(year).isoWeeks(week).isoWeekday(1).format("YYYY-MM-DD");
+            var endTime = moment().isoWeekYear(year).isoWeeks(week).isoWeekday(7).format("YYYY-MM-DD");
+            $("#date1").val(startTime);
+            $("#date2").val(endTime);
+        }
+
+    }
+
+</script>
+
+
+
+
+{/block}

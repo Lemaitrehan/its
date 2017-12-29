@@ -1,0 +1,53 @@
+{extend name="base" /}
+{block name="js"}
+<script>
+		//刷新
+		function refresh(){
+			if($('#key').val() !== ''){
+				$('#key').val('');
+			}
+			grid.set('url',MBIS.U('admin/Studentnoticelog/indexEducationHistory'));
+		}
+		//搜索
+		function loadGrid(){
+			grid.set('url',MBIS.U('admin/Studentnoticelog/indexEducationHistory','key='+$('#key').val()));
+		}
+		//分页
+		function initGrid(){
+			var url=MBIS.U('admin/Studentnoticelog/indexEducationHistory');
+	  		grid = $("#maingrid").ligerGrid({
+	  			url:url,
+	  			pageSize:MBIS.pageSize,
+	  			pageSizeOptions:MBIS.pageSizeOptions,
+	  			height:'99%',
+	  	        width:'100%',
+	  	        minColToggle:9,
+	  	        rownumbers:true,
+	  	        columns: [
+	  	            { display: 'ID', name: 'userId',width: 100,isSort: false,},
+	  	            { display: '通知模板', name: 'template_type',isSort: false},
+	  		        { display: '发送方式', name: 'type',isSort: false},
+	  	/*	        { display: '通知主题', name: 'title',isSort: false},*/
+	  		        { display: '通知内容', name: 'content',isSort: false},
+	  		        { display: '会员', name: 'user',isSort: false},
+	  		        //{ display: '学员编号', name: 'student_no',isSort: false},
+	  		        { display: '发送状态', name: 'status',isSort: false},
+	  		        { display: '收到回执', name: 'is_accept',isSort: false}
+	  	        ]
+	  	    });
+		}
+$(function(){
+	initGrid();
+})		
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	会员名、编号：<input type='text' id='key'/>  
+   <button class="btn btn-blue" onclick='javascript:loadGrid()'>查询</button>
+   <button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

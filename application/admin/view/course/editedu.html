@@ -1,0 +1,266 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/course/courseedu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo({$type_id},{$exam_type} );
+	{if condition="$object['course_id'] !=0 "}
+	   MBIS.setValues({$object});
+	{/if}
+	$('#infoForm').validator({
+	    fields: {
+            school_id: {
+              tip: "请选择院校",
+              rule: '院校:required;'
+            },
+            level_type: {
+              tip: "请选择层次",
+              rule: '层次:required;'
+            },
+            major_id: {
+              tip: "请选择专业",
+              rule: '专业:required;'
+	    	    },
+            grade_id: {
+              tip: "请选择年级",
+              rule: '年级:required;'
+	    	    },
+            name: {
+              tip: "请输入课程名称",
+              rule: '课程名称:required;'
+	    	    },
+            course_bn: {
+              tip: "请输入课程编号",
+              rule: '课程编号:required;'
+            },
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id,{$type_id});
+	    }
+	});
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='pkey' name="course_id" value='{$object["course_id"]}'/>
+<input type='hidden' id='type_id' name="type_id" value='{$type_id}'/>
+<table class='wst-form wst-box-top'>
+  <tr>
+    <th width='150'>学院<font color='red'>*</font>：</th>
+    <td>
+      <select id='school_id' name='school_id' class='ipt' onChange="getMajorList()" style='width:300px;'>
+        <option value=''>请选择</option>
+        {volist name="$school" id="vo"}
+        <option value="{$vo.school_id}">{$vo.name}</option>
+        {/volist}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>专业<font color='red'>*</font>：</th>
+    <td>
+      <select id="major_id" name="major_id" class='ipt' onChange="getLevel()" style='width:300px;'>
+        <option value=''>请选择</option>
+        { if !empty($major) }
+	        {volist name="major" id="vo"}
+	        <option value="{$vo.major_id}">{$vo.name}</option>
+	        {/volist}
+        {/if}
+      </select>
+    </td>
+  </tr>
+  
+  <tr>
+    <th width='150'>层次<font color='red'>*</font>：</th>
+    <td>
+      <select id='level_type' name='level_type' class='ipt' onChange="getLevel_1()" style='width:300px;'>
+        <option value=''>请选择</option>
+        <option value='2'>高升专</option>
+        <option value='3'>专升本</option>
+      </select>
+    </td>
+  </tr>
+  
+  <tr>
+    <th width='150'>类型<font color='red'>*</font>：</th>
+    <td>
+       <select id='exam_type' name='exam_type' class='ipt'  style='width:300px;'>
+        <option  value='1'>自考</option>
+        <option  value='2'>成考</option>
+        <option  value='3'>网教</option>
+      </select>
+    </td>
+  </tr>
+  
+  <tr>
+    <th width='150'>毕业时间<font color='red'>*</font>：</th>
+    <td>
+       <input id='graduate_time' name="graduate_time" class='ipt' >
+    </td>
+  </tr>
+  
+  <!--
+  <tr>
+    <th width='150'>年级<font color='red'>*</font>：</th>
+    <td>
+      <select id="grade_id" name="grade_id" class='ipt' style='width:300px;'>
+        <option value=''>请选择</option>
+        {volist name="$grade" id="vo"}
+        <option value="{$vo.grade_id}">{$vo.name}</option>
+        {/volist}
+      </select>
+    </td>
+  </tr>
+  -->
+  <tr>
+    <th width='150'>学习形式<font color='red'>*</font>：</th>
+    <td>
+      <select id="studyMode" name="studyMode" onChange="setCourseName()" class='ipt' style='width:300px;'>
+        <option value=''>请选择</option>
+        {volist name="studyMode" id="vo"}
+        <option value="{$key}">{$vo}</option>
+        {/volist}
+      </select>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>课程名称<font color='red'>*</font>：</th>
+    <td>
+      <input type="text" id='name' name='name' style='width:600px;' class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>课程编号<font color='red'>*</font>：</th>
+    <td>
+      <input type="text" id='course_bn' name='course_bn' style='width:300px;' class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>是否上架<font color='red'>*</font>：</th>
+    <td>
+       <span>上架：</span><input type="radio" class='is_sell' name='is_shelves' value="1" {if($is_sell==1 || !$is_sell)}checked{/if} class='ipt'/>
+       <span>下架：</span><input type="radio" class='is_sell' name='is_shelves' value="2" {if($is_sell==2) }checked {/if} class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+     <th width='150'>封面图<font color='red'>*</font>：</th>
+     <td>
+            <div id="preview" >
+                <img src="{if $object['cover_img']==''}{$defaultimg}{else}__ROOT__/{$object['cover_img']}{/if}"  height="150" />
+            </div>
+            <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+            <input type="hidden" id="cover_img" name="cover_img" class="ipt" />
+            <span id='uploadMsg'></span>
+     </td>
+  </tr>
+  <tr>
+    <th width='150'>原价：</th>
+    <td>
+      <input type="text" id='market_price' name='market_price' style='width:300px;'class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+     <th width='150'>标准价：</th>
+     <td>
+      <input type="text" id='sale_price' name='sale_price' style='width:300px;' class='ipt'/>
+     </td>
+  </tr>
+<!--  <tr>
+    <th width='150'>标准价：</th>
+    <td>
+      <input type="text" id='offers_price' name='offers_price' style='width:300px;' class='ipt'/>
+    </td>
+  </tr>-->
+<!--   <tr>
+    <th width='150'>开始报名时间：</th>
+    <td>
+      <input type="text" id='start_registration' name='start_registration' style="margin:0px;vertical-align:baseline;" class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>截止报名时间：</th>
+    <td>
+      <input type="text" id='stop_registration' name='stop_registration' style="margin:0px;vertical-align:baseline;" class='ipt'/>
+    </td>
+  </tr> -->
+  <tr>
+    <th width='150'>价格执行开始时间：</th>
+    <td>
+      <input type="text" id='start_execution' name='start_execution' style="margin:0px;vertical-align:baseline;" class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>价格执行截止时间：</th>
+    <td>
+      <input type="text" id='stop_execution' name='stop_execution' style="margin:0px;vertical-align:baseline;" class='ipt'/>
+    </td>
+  </tr>
+  <tr>
+    <th width='150'>简介：</th>
+    <td><textarea id='des' name='des' style='width:300px;height:80px;' class='ipt'></textarea></td>
+  </tr>
+  <tr>
+    <th width='150'>详情：</th>
+    <td>
+    	<textarea id='details' name='details' class="form-control ipt" style='width:80%;height:400px'></textarea>
+    </td>
+  </tr>  
+  <tr>
+    <td colspan='2' align='center'>
+       <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+       <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+    </td>
+  </tr>
+</table>
+</form>
+<div id="target1" style="width:1120px; display:none;">
+    <div style="padding:5px;">
+    </div>
+    <div id="search_div_z">
+    </div>
+</div>
+<script>
+  $(function(){
+    
+    //文件上传
+  	MBIS.upload({
+    	  pick:'#filePicker',
+    	  formData: {dir:'coverimg'},
+    	  accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+    	  callback:function(f){
+    		  var json = MBIS.toAdminJson(f);
+    		  if(json.status==1){
+          	$('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+          	$('#cover_img').val(json.savePath+json.thumb);
+    		  }
+  	  }
+      });
+    //编辑器
+      KindEditor.ready(function(K) {
+  		editor1 = K.create('textarea[name="details"]', {
+  			height:'350px',
+  			allowFileManager : false,
+  			allowImageUpload : true,
+  			items:[
+  			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+  			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+  			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+  			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+  			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+  			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+  			        'anchor', 'link', 'unlink', '|', 'about'
+  			],
+  			afterBlur: function(){ this.sync(); }
+  		});
+  	});
+  });
+</script>
+{/block}

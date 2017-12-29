@@ -1,0 +1,5 @@
+<select id='major_id' name='major_id' class='ipt'>
+     {volist name="lists_major" id="vo"}
+        <option {if $vo.major_id eq $major_id}selected{/if} value="{$vo.major_id}">{$vo.name}</option>
+     {/volist}
+     </select>

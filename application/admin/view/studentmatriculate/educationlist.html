@@ -1,0 +1,121 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/studentmatriculate/studentedu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid(1)})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+.query-pos8{margin-left: 8px;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	<form id="exportForm" action="{:url('admin/Studentmatriculate/expStudentEdu')}" method="get" autocomplete="off">
+		<div class='search-s'>
+	    	院校:<select id="school_id" onChange="majorGet()" style="width:165px;height:26px;" class="query">
+	             	<option value=''>请选择</option>
+	             	{volist name="$school" id="vo"}
+					<option value="{$vo.school_id}">{$vo.name}</option>
+	             	{/volist}
+	            	</select>
+	        专业:<select id="major_id" onChange="levelGet()" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	{volist name="$major" id="vo"}
+	              	<option value="{$vo.major_id}">{$vo.name}</option>
+	              	{/volist}
+	            	</select>
+	        层次:<select id="level_id" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	<option value='1'>高升专</option>
+	              	<option value='2'>专升本</option>
+	            	</select>    	
+	       	年级:<select id="grade_id" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	{volist name="$grade" id="vo"}
+	              	<option value="{$vo.grade_id}">{$vo.name}</option>
+	              	{/volist}
+	            	</select>
+
+	  	</div>
+	  	<div class='search-i'>
+	        搜索查询:<select id="key" name="key" class="query search-complex">
+	        <option value="">全部</option>  
+	        <option value="trueName">姓名</option>  
+	        <option value="student_no">编号</option>  
+	        <option value="userPhone">手机号</option>  
+	        <option value="idcard">身份证</option>  
+	        </select>
+	        <input type="text" id="key_value" name="key_value" class="query">
+	        <input type='hidden' value="{$type_id}" id="type_id" class="query">
+	    	<input type="button" class="btn btn-blue" onclick='javascript:eduQuery()' value="查询">
+	    	
+	    	<input type="button" class="btn btn-blue" onclick="javascript:matriculate({)" value="批量录取">
+	    	<input class="btn btn-blue f-right query-pos8" type="submit" value="导出">
+	    	<input type="button" class="btn btn-blue f-right" onclick="javascript:refresh()" value="刷新">
+	  	</div>
+	  	<!--
+	  	<form action="{:url('admin/Studentedu/import')}" enctype="multipart/form-data" method="post">
+    		<input type="submit" class="btn btn-blue f-right"  value="上传">
+    		<input type="file" name="exel"class="f-right">
+		</form>
+		-->
+	</form>
+   	<div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+<!--
+<div id="target1" style="width:auto; display:none;">
+    <div style="padding:5px;">
+    </div>
+    <div id="search_div_z1">
+		<table class='wst-form wst-box-top'>
+		<tr>
+		<th>报名状态：</th>
+		<td>
+		    <select id="entry_status" name="entry_status" class="submit" >
+		      <option value="1" >未报考</option>
+		      <option value="2" >未录取</option>
+		      <option value="3" >已录取</option>
+		    </select>
+		</td>
+		</tr>
+		<tr>
+		<th>处理状态：</th>
+		<td>
+		    <select id="dispose_status" name="dispose_status" class="submit" >
+		      <option value="1" >未处理</option>
+		      <option value="2" >已处理</option>
+		    </select>
+		</td>
+		</tr>
+		<tr>
+		<th>处理结果：</th>
+		<td>
+		    <select id="dispose_result" name="dispose_result" class="submit">
+		      <option value="1" >转其他课程</option>
+		      <option value="2" >转下次</option>
+		      <option value="3" >退费</option>
+		      <option value="4" >其他</option>
+		    </select>
+		</td>
+		</tr>
+		</table>
+		<table class='wst-form wst-box-top'>
+  		<tr>
+	    <td colspan='2' align='center'>
+	    	<button class="btn btn-blue" onclick='javascript:submit()'>提交</button>
+	       	<input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+	    </td>
+  		</tr>
+		</table>
+		</form>
+    </div>
+</div>
+-->
+{/block}

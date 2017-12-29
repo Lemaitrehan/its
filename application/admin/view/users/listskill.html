@@ -1,0 +1,27 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/users/skill.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	
+   <div id="query" style="float:left;">
+   			<input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+	   		<!--会员ID:<input type="text" name="userId"  placeholder='会员ID' id="userId" class="query" />-->
+	   		<input type="hidden" id="hidden" name="userId" value="{$userId}">
+	   		<!--订单号:<input type="text" name="orderNo" placeholder='订单号' id="orderNo" class="query" />-->
+	   		<!--<input type="button" class="btn btn-blue" onclick="javascript:userQueryS()" value="查询">-->
+	</div>
+
+   
+  <!-- <button class="btn btn-green f-right" onclick="javascript:location.href='<?=url("users/toEdit")?>'">新增</button> -->
+  
+   <div style="clear:both"></div>
+</div>
+<div id="maingrid"></div>
+<script>
+var userId = $('#hidden').val();
+  $(function(){initGrid(userId)});
+</script>
+{/block}

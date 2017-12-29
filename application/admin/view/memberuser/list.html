@@ -1,0 +1,101 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/memberuser/memberuser.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){initGrid();});
+</script>
+<style>
+  .clearFa:after{
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+    *zoom: 1;
+  }
+  input,select{
+    width:165px;height:28px;outline: none;
+  }
+  input[ type=button],input[ type=submit]{
+   width: 60px;
+  }
+  .search-list{float:left;margin: 4px 10px;}
+  .fl{
+    float: left;
+  }
+  .search-list .l-text-wrapper{width:168px;float:left;height: 28px;}
+  .search-list .search-time{
+    line-height: 32px;
+  }
+  .search-list .search-complex{
+    width: 70px;
+  }
+  .query-pos8{
+    margin: 8px;
+  }
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+  <form id="exportForm" action="{:url('admin/users/expUsersEdu')}" method="get" autocomplete="off">
+    <div class="search clearFa" >
+
+      <!-- <div class="search-list">
+        <span class='f-left search-time'>创建时间:</span>
+        <input type="text" id="start" name="start"  maxLength="20" class="query"/>
+        <span class='f-left search-time'>至</span>
+        <input type="text" id="end" name="end"  maxLength="20" class="query"/>
+      </div> -->
+      <!--
+      <div class="search-list">
+       选择学院:<select id="school_id" name="school_id" onchange="majorGet()"  class="query">
+       <option value=''>全部</option>
+       </select>
+      </div>
+      <div class="search-list">
+       选择专业:<select id="major_id" name="major_id" onchange="levelGet()"  class="query">
+       <option value=''>全部</option>
+       </select>
+      </div>
+      <div class="search-list">
+       层次:<select id="level_id" name="level_id" class="query">
+             <option value=''>请选择</option>
+             <option value='1'>高升专</option>
+             <option value='2'>专升本</option>
+         </select>
+      </div>
+      <div class="search-list" id="query">
+        学习状态:<select id="study_status" name="study_status"  class="query">
+        <option value=''>全部</option>
+        <option value="1">在读</option>
+        <option value="2">毕业</option>
+        <option value="3">过期</option>
+        <option value="4">弃学</option>
+        <option value="5">休学</option>
+        <option value="6">退学</option>
+        </select>
+      </div>
+      -->
+      <div class="search-list">
+        搜索查询:<select id="key" name="key" class="query search-complex">
+        <option value="">全部</option>  
+        <option value="trueName">姓名</option>  
+        <option value="student_no">编号</option>  
+        <option value="userPhone">手机号</option>  
+        <option value="idcard">身份证</option>  
+        </select>
+        <input type="text" id="key_value" name="key_value" class="query">
+      </div>
+      <input type="button" class="btn btn-blue query-pos8 fl" onclick="javascript:userQueryU()" value="查询">
+      <!--<input class="btn btn-blue f-right query-pos8" type="submit" value="导出">-->
+      <input type="button" class="btn btn-blue f-right query-pos8" onclick="javascript:refresh()" value="刷新">
+    </div>
+    <div class="clearFa">
+       
+    </div>           
+  </form>
+  <div style="clear:both"></div>
+  </div>
+  <div id="maingrid"></div>
+  {/block}

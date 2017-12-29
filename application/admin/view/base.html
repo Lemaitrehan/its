@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>后台管理中心 - {:MBISConf('CONF.mallName')}</title>
+<meta name="Keywords" content=""/>
+<meta name="Description" content=""/> 
+<link href="__ADMIN__/js/ligerui/skins/Aqua/css/ligerui-all.css?v={$v}" rel="stylesheet" type="text/css" /> 
+<link href="__STATIC__/plugins/validator/jquery.validator.css?v={$v}" rel="stylesheet">
+
+<!-- <link href="__STATIC__/select2-4.0.3/s2-docs.scss?v={$v}" rel="stylesheet">
+<link href="__STATIC__/select2-4.0.3/bootstrap.scss?v={$v}" rel="stylesheet">
+<link href="__STATIC__/select2-4.0.3/font-awesome.scss?v={$v}" rel="stylesheet"> -->
+<link href="__STATIC__/select2/select2-bootstrap.css?v={$v}" rel="stylesheet">
+<link href="__STATIC__/select2/select2.css?v={$v}" rel="stylesheet">
+
+{block name="css"}{/block}
+<link href="__ADMIN__/css/style.css?v={$v}" rel="stylesheet" type="text/css" />   
+<script src="__STATIC__/js/jquery.min.js?v={$v}"></script>  
+<script src="__ADMIN__/js/ligerui/js/ligerui.all.js?v={$v}" type="text/javascript"></script> 
+<script type='text/javascript' src='__STATIC__/plugins/layer/layer.js?v={$v}'></script> 
+<script src="__STATIC__/js/common.js?v={$v}"></script>
+<script>
+window.conf = {"ROOT":"__ROOT__","APP":"__APP__","STATIC":"__STATIC__","SUFFIX":"{:config('url_html_suffix')}","GOODS_LOGO":"{:MBISConf('CONF.goodsLogo')}","SHOP_LOGO":"{:MBISConf('CONF.shopLogo')}","MALL_LOGO":"{:MBISConf('CONF.mallLogo')}","USER_LOGO":"{:MBISConf('CONF.userLogo')}",'GRANT':'{:implode(",",session("MBIS_STAFF.privileges"))}'}
+</script>
+<script src="__ADMIN__/js/common.js?v={$v}"></script>
+<script type="text/javascript" src="__STATIC__/plugins/validator/jquery.validator.js?v={$v}"></script>
+<script type="text/javascript" src="__STATIC__/plugins/validator/local/zh-CN.js?v={$v}"></script>
+
+<script type="text/javascript" src="__STATIC__/select2/select2.js?v={$v}"></script>
+
+</head>
+<body>
+{block name="main"}{/block}
+{block name="js"}{/block}
+<script>
+function showImg(opt){
+	layer.photos(opt);
+}
+function showBox(opts){
+	return MBIS.open(opts);
+}
+function getSelData(obj,mdl,id,name,selval,filter,targetId,relationIds)
+{
+    checkUploadBox();
+    $(relationIds).html('');
+    if($(obj).val()=='') {
+        return;
+    }
+    $.get('{:url("admin/base/seldata")}',{mdl:mdl,id:id,name:name,selval:selval,filter:filter},function(rs){
+         
+         $('#'+targetId).html(rs);
+    });
+    
+    //getUpload($('#userSelData').val(),$('#majorSelData').val(),0)
+}
+function checkUploadBox()
+{
+    $('#uploadBox').hide();
+    if($('#subjectSelData option').length>1 && $('#subjectSelData').val()!='') $('#uploadBox').show();   
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+2017-03-30 14:02:09 >> [File] /data/wwwroot/mbis/thinkphp/library/think/db/Connection.php [Line] 362 [Code] 10501 [Message] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+2017-03-30 14:02:11 >> [File] /data/wwwroot/mbis/thinkphp/library/think/db/Connection.php [Line] 362 [Code] 10501 [Message] SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 1
+2017-03-30 15:41:17 >> [File] /data/wwwroot/mbis/thinkphp/library/think/Loader.php [Line] 385 [Code] 0 [Message] class not exists:application\common\model\Course
+2017-03-30 15:41:19 >> [File] /data/wwwroot/mbis/thinkphp/library/think/Loader.php [Line] 385 [Code] 0 [Message] class not exists:application\common\model\Course
+2017-03-30 15:41:20 >> [File] /data/wwwroot/mbis/thinkphp/library/think/Loader.php [Line] 385 [Code] 0 [Message] class not exists:application\common\model\Course
+2017-03-30 15:41:27 >> [File] /data/wwwroot/mbis/thinkphp/library/think/Loader.php [Line] 385 [Code] 0 [Message] class not exists:application\common\model\Course
+2017-03-30 15:43:10 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 653 [Code] 0 [Message] Undefined index: addr
+2017-03-30 15:43:11 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 653 [Code] 0 [Message] Undefined index: addr
+2017-03-30 15:43:13 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 653 [Code] 0 [Message] Undefined index: addr
+2017-03-30 15:43:14 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 653 [Code] 0 [Message] Undefined index: addr
+2017-03-30 15:47:14 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 653 [Code] 0 [Message] Undefined index: addr

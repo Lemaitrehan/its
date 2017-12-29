@@ -1,0 +1,109 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/examinationmanagement/menu.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){
+	  Initialize ('{$arrExamsStatus}');
+  initGrid();
+  });
+</script>
+<style>
+.date-s{width:100%;float:left; }
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+
+      报考学院:<select id="school_id" name="school_id" onchange="checkSchool()" style="width:165px;" class="query">
+                {volist name="arrSchool" id="vo"}
+                  <option value="{$vo.school_id}">{$vo.name}</option>
+                {/volist}
+              </select>
+      报考专业:<select id="major_id" name="major_id" onchange="checkMajor()" style="width:165px;" class="query">
+                {volist name="arrMajor" id="vo"}
+                  <option value="{$vo.major_id}">{$vo.name}</option>
+                {/volist}
+         </select>
+     专业层次:<select id="level_id" name="level_id" style="width:165px;" class="query">
+                {volist name="arrMajorLevel" id="vo"}
+                  <option value="{$key}">{$vo}</option>
+                {/volist}s
+          </select>
+    </div>  
+    
+    <!-- <div>
+              年级:<select id="grade_id" name="grade_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+                {volist name="arrGrade" id="vo"}
+                  <option value="{$vo.grade_id}">{$vo.name}</option>
+                {/volist}
+             </select>           
+              科目:<select id="subject_id" name="subject_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+           </select>
+    </div> -->
+    <div id="query" style="float:left;">
+        搜索查询:<select id="search_title" name="search_title" class="query">
+                  <option value="">全部</option>  
+                  <option value="1">学员编号</option>  
+                  <option value="2">学员名称</option>  
+                  <option value="3">准考证号</option>  
+                  <option value="4">身份证号</option>  
+                </select>
+                <input type="text" id="search_word" name="search_word" class="query">
+	   		<input type="button" class="btn btn-blue" onclick="javascript:initGrid()" value="查询">
+      	    <input type="button" class="btn btn-blue" onclick="javascript:sendSms()" value="发送通知">
+            <input type="button" class="btn btn-blue" onclick="javascript:dataAnalysis()" value="报考数据分析">
+            <input class="btn btn-blue daochu" type="button" value="导出">
+    
+    </div>
+    </form>
+    
+    <form id="target1" style="display:none;">
+      <div>
+         <table >
+	            {volist name="arrOneSubject" id="vo"}
+	            <tr>
+	            
+	              <td style="">
+	                <span>{$vo}</span>
+                    <input type="hidden" name="arrSubject[{$key+1}][subject_id]" value="{$key}">
+                  </td>
+                  
+                  <td>
+	                  <span>报考状态：</span>
+			          <select id="search_title" name="arrSubject[{$key+1}][status]" class="query">
+			            {volist name="arrOneExamsStatus" id="vo"}
+			            <option value="{$key}">{$vo}</option>  
+			            {/volist}  
+			          </select>
+		          </td>
+	            </tr>
+                {/volist} 
+          </table>
+      </div> 
+              
+    </form>
+    
+    <button href="{:url('admin/Examinationmanagement/manuallyAdd')}" class="btn btn-blue f-right addSD" style="margin-left:3px;">手动添加学员报考信息</button>
+     <form action="{:url('admin/Examinationmanagement/add')}" enctype="multipart/form-data" method="post">
+        <input type="submit" class="btn btn-blue f-right"  value="上传">
+        <input type="file" name="exel"class="f-right">
+    </form>
+
+    <div style="clear:both"></div>
+    <!--<iframe src="about:blank" name="hiddenIframe" class="hide" style="display:none;"></iframe>-->
+</div>
+<div id="maingrid"></div>
+<div id="import"></div>
+<div id="add"><a></a></div>
+{/block}

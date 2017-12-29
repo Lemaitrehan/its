@@ -1,0 +1,21 @@
+<table class='wst-form wst-box-top'>
+  {volist name="lists_subject_prop" id="vo"}
+  <tr>
+     <th width='150'>{$vo.name}：</th>
+     <td>
+     <input type="hidden" name="prop_id_list[]" value="{$vo.prop_id}" class="ipt">
+     {if condition="$vo.prop_input_type eq 1"}
+     <select name='prop_value_list[]' class='ipt'>
+     {volist name="vo.prop_value" id="vvo"}
+        <option {if condition="$vvo eq $vo.prop_default_value"} selected{/if} value="{$vvo}">{$vvo}</option>
+     {/volist}
+     </select>
+     {elseif condition="$vo.prop_input_type eq 2"/}
+     <textarea name="prop_value_list[]" style='width:300px;height:80px;'>{$vo.prop_default_value}</textarea>
+     {else /}
+     <input type="text" name='prop_value_list[]' value="{$vo.prop_default_value}" style='width:300px;' class='ipt'/>
+     {/if}
+     </td>
+  </tr>
+  {/volist}
+  </table>

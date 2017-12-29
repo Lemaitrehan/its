@@ -1,0 +1,83 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/department/department.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['department_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        name: {
+          tip: "请输入部门名称",
+          rule: '部门名称:required;'
+        },
+        uname: {
+          tip: "请输入负责人",
+          rule: '负责人:required;'
+        },
+        business_info: {
+          tip: "请输人部门简介",
+          rule: '部门简介:required;'
+        },
+      },
+      valid: function(form){
+        var department_id = $('#department_id').val();
+        toEdits(department_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='department_id' name="department_id" value='{$object["department_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>部门名称<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+      </tr>
+
+      <tr>
+        <th width='150'>上级部门<font color='red'>*</font>：</th>
+        <td>
+          <select id="parent_id" name="parent_id" class='ipt'>
+            <option value=''>请选择</option>
+            {volist name="department_list" id="vo"}
+            <option value="{$vo.department_id}" {if condition="$object.parent_id eq $vo.department_id"} selected {/if}>{$vo.name}</option>
+            {/volist}
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+         <th width='150'>负责人<font color='red'>*</font>：</th>
+         <td><input type="text" id='uname' name='uname' style='width:300px;' class='ipt'/></td>
+      </tr>
+      
+      <tr>
+         <th width='150'>主要业务<font color='red'>*</font>：</th>
+         <td><textarea id='business_info' name='business_info' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+     
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

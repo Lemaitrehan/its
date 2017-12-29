@@ -1,0 +1,27 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/users/userst.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	
+   <div id="query" style="float:left;">
+	   		用户名:<input type="text" name="loginName1"  placeholder='用户名' id="loginName1" class="query" />
+	   		手机号码:<input type="text" name="loginPhone" placeholder='手机号码' id="loginPhone" class="query" />
+	   		电子邮箱:<input type="text" name="loginEmail" placeholder='电子邮箱' id="loginEmail" class="query" />
+	   		
+	   		<input type="button" class="btn btn-blue" onclick="javascript:userQueryT()" value="查询">
+	   		<button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+	</div>
+
+   {if MBISGrant('LSCK_01')}
+   <button class="btn btn-green f-right" onclick="javascript:location.href='<?=url("users/toEditt")?>'">新增</button>
+   {/if}
+   <div style="clear:both"></div>
+</div>
+<div id="maingrid"></div>
+<script>
+  $(function(){initGrid()});
+</script>
+{/block}

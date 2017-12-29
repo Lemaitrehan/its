@@ -1,0 +1,324 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/users/edu.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<style type="text/css">
+    .clearFa:after{
+      content: " "; 
+      display: block; 
+      height: 0; 
+      clear: both; 
+      visibility: hidden;  
+      +zoom:1
+    }
+    .menu li{
+     float: left;
+     list-style: none;
+     height: 30px;
+     line-height: 30px;
+     margin-left: 10px;
+   }
+   .submenu li{
+     float: left;
+     list-style: none;
+     height: 30px;
+     line-height: 30px;
+     margin-left: 10px;
+     
+   }
+</style>
+<style>
+  .l-text-wrapper{width:168px;float:left;}
+  .tbr-h{height:30px;line-height:30px;}
+  .clearFa{padding:5px 0;}
+  .content{width:97%;padding:10px 15px;}
+  .table_title{padding:8px 0;}
+  .bottom{height:40px;width:90%;text-align:right;padding:4px 8px;}
+</style>
+<div>
+    <div class="content">
+      <div class="l-loading" style="display: block" id="wst-loading"></div>
+      <ul class="clearFa menu">
+         <li><a href="javascript:;">学员信息</a></li>
+         <li><a href="javascript:;">报名缴费</a></li>
+         <li><a href="javascript:;">考勤记录</a></li>
+      </ul>
+      <div class="tab1-wapper">
+        <!-- 学员信息 -->
+        <div class="tab1-info">
+          <table class='wst-form wst-box-top' border="1" cellspacing="0" cellpadding="0" style="width:80%;">
+              <tr>
+                  <th>姓名：</th>
+                  <td>{$userInfo['trueName']}</td>
+                  <th>性别：</th>
+                  <td>{$userInfo['userSex']}</td>
+                  <th>昵称：</th>
+                  <td>{$userInfo['nickName']}</td>
+              </tr>
+              <tr>
+                  <th>手机：</th>
+                  <td>{$userInfo['userPhone']}</td>
+                  <th>QQ：</th>
+                  <td>{$userInfo['userQQ']}</td>
+                  <th>邮箱：</th>
+                  <td>{$userInfo['userEmail']}</td>
+              </tr>
+              <tr>
+                  <th>学员编号：</th>
+                  <td>{$userInfo['student_no']}</td>
+                  <th>预报名编号：</th>
+                  <td>{$userInfo['pre_entry_no']}</td>
+                  <th>身份证号：</th>
+                  <td>{$userInfo['idcard']}</td>
+              </tr>
+              <tr>
+                  <th>学员类型：</th>
+                  <td>{$userInfo['student_type']}</td>
+                  <th>学员身份：</th>
+                  <td>{$userInfo['uidType']}</td>
+                  <th>学习状态：</th>
+                  <td>{$userInfo['study_status']}</td>
+              </tr>
+              <tr>
+                  <th>付费类型：</th>
+                  <td>{$userInfo['student_pay_type']}</td>
+                  <th>学习形式：</th>
+                  <td>{$userInfo['study_type']}</td>
+                  <th>会员等级：</th>
+                  <td>{$userInfo['rankId']}</td>
+              </tr>
+              <tr>
+                  <th>省份：</th>
+                  <td>{$userInfo['province']}</td>
+                  <th>城市：</th>
+                  <td>{$userInfo['city']}</td>
+                  <th>地址：</th>
+                  <td>{$userInfo['address']}</td>
+              </tr>
+              <tr>
+                  <th>联系电话2：</th>
+                  <td>{$userInfo['mobile2']}</td>
+                  <th>紧急联系人：</th>
+                  <td>{$userInfo['urgency_contact']}</td>
+                  <th>紧急联系电话：</th>
+                  <td>{$userInfo['urgency_contact_mobile']}</td>
+              </tr>
+              <tr>
+                  <th>公司：</th>
+                  <td>{$userInfo['company']}</td>
+                  <th>职位：</th>
+                  <td>{$userInfo['job_content']}</td>
+                  <th>薪水：</th>
+                  <td>{$userInfo['salary']}</td>
+              </tr>
+              <tr>
+                  <th>账号状态：</th>
+                  <td>{$userInfo['userStatus']}</td>
+                  <th>最后登录IP：</th>
+                  <td>{$userInfo['lastIP']}</td>
+                  <th>最后登录时间：</th>
+                  <td>{$userInfo['lastTime']}</td>
+              </tr>
+          </table>
+        </div>
+        <!-- 报名缴费 -->
+        <div class="tab1-info">
+          <h3 class="table_title">报名信息</h3>
+          {if condition="($eduInfo neq null) OR ($skillInfo neq null)"}
+          <table style="width:80%;text-align:center;" border="1" sellspacing="1">
+              <tr style="font-weight: bold;background-color: #00ffff;">
+                <td>类型</td>
+                <td>院校</td>
+                <td>专业</td>
+                <td>课程</td>
+                <!--<td>年级</td>-->
+                <td>准考证号</td>
+                <td>应收学费</td>
+                <td>实收学费</td>
+                <td>欠费</td>
+                <td>报名时间</td>
+                <td>备注</td>
+              </tr>
+              {if condition="$eduInfo neq null"}
+              {volist name="eduInfo" id="vo"}
+              <tr>
+                <td>{$vo.type}</td>
+                <td>{$vo.school_id}</td>
+                <td>{$vo.major_id}</td>
+                <td>{$vo.course_id}</td>
+                <!--<td>{$vo.grade_id}</td>-->
+                <td>{$vo.exam_no}</td>
+                <td>{$vo.receivable_fee}</td>
+                <td>{$vo.real_fee}</td>
+                <td>{$vo.arrearage_fee}</td>
+                <td>{$vo.entry_time}</td>
+                <td>{$vo.remark}</td>
+              </tr>
+              {/volist}
+              {/if}
+              {if condition="$skillInfo neq null"}
+              {volist name="skillInfo" id="vo"}
+              <tr>
+                <td>{$vo.type}</td>
+                <td>{$vo.school_id}</td>
+                <td>{$vo.major_id}</td>
+                <td>{$vo.course_id}</td>
+                <td>{$vo.exam_no}</td>
+                <td>{$vo.receivable_fee}</td>
+                <td>{$vo.real_fee}</td>
+                <td>{$vo.arrearage_fee}</td>
+                <td>{$vo.entry_time}</td>
+                <td>{$vo.remark}</td>
+              </tr>
+              {/volist}
+              {/if}
+          </table>
+          {else/}
+          暂无数据
+          {/if}
+          <!--
+          <table style="width:80%;text-align:center;" border="1" sellspacing="1">
+              <tr style="font-weight: bold;background-color: #00ffff;">
+                <td>类型</td>
+                <td>院校</td>
+                <td>专业</td>
+                <td>课程</td>
+                <td>准考证号</td>
+                <td>应收学费</td>
+                <td>实收学费</td>
+                <td>欠费</td>
+                <td>报名时间</td>
+                <td>备注</td>
+              </tr>
+          </table>
+          -->
+          <h3 class="table_title">缴费信息</h3>
+        {if condition="$feeInfo neq null"}
+          <table style="width:97%;text-align:center;" border="1" sellspacing="1">
+              <tr style="font-weight: bold;background-color: #00ffff;">
+                <td>会员ID</td>
+                <td>姓名</td>
+                <td>订单号</td>
+                <td>费用类别</td>
+                <td>收费类型</td>
+                <td>实收汇总</td>
+                <td>费目名称</td>
+                <td>费目价格</td>
+                <td>折扣金额</td>
+                <td>折后应收总学费</td>
+                <td>待收学费总额</td>
+                <td>预计收费日期</td>
+                <td>预计收费金额</td>
+                <td>实际收费日期</td>
+                <td>收费金额</td>
+                <td>票据号码</td>
+                <td>支付类型</td>
+                <td>添加时间</td>
+                <td>最后更新时间</td>
+              </tr>
+              {volist name="feeInfo" id="vo"}
+              <tr>
+                <td>{$vo.userId}</td>
+                <td>{$vo.trueName}</td>
+                <td>{$vo.orderNo}</td>
+                <td>{$vo.fee_class}</td>
+                <td>{$vo.fee_type}</td>
+                <td>{$vo.receive_amount}</td>
+                <td>{$vo.name}</td>
+                <td>{$vo.price}</td>
+                <td>{$vo.dis_amount}</td>
+                <td>{$vo.st_price}</td>
+                <td>{$vo.remain_amount}</td>
+                <td>{$vo.plan_paytime}</td>
+                <td>{$vo.plan_payamount}</td>
+                <td>{$vo.pay_time}</td>
+                <td>{$vo.real_amount}</td>
+                <td>{$vo.fee_no}</td>
+                <td>{$vo.pay_type}</td>
+                <td>{$vo.createtime}</td>
+                <td>{$vo.lastmodify}</td>
+              </tr>
+              {/volist}
+          </table>
+        {else/}
+          暂无数据
+        {/if}
+        </div>
+        <!-- 考勤记录 -->
+        <div class="tab1-info">
+          <table id="cktable" style="width:80%;text-align:center;" border="1" sellspacing="1">
+              {if condition="$ckworkInfo neq null"}
+              <tr >
+                <td colspan="8">
+                <div class="wst-toolbar">
+                <div class='f-left tbr-h'>考勤日期：</div>
+                <input type="hidden" id="hiddenId" value="{$userId}">
+                <input type="text" id="start" name="start" style="margin:0px;vertical-align:baseline;" maxLength="20" class="ipt"/>
+                <div class='f-left tbr-m'>至</div>
+                <input type="text" id="end" name="end" style="margin:0px;vertical-align:baseline;" maxLength="20" class="ipt"/>
+                <input type="button" class="btn btn-blue" onclick="javascript:dateSelect()" value="查询">
+                </div>
+                </td>
+              </tr>  
+              <tr id="title" style="font-weight: bold;background-color: #00ffff;">
+                <td>会员ID</td>
+                <td>学员编号</td>
+                <td>姓名</td>
+                <td>考勤课程/科目</td>
+                <td>考勤类型</td>
+                <td>消耗学币数</td>
+                <td>备注</td>
+                <td>考勤日期</td>
+              </tr>
+              {volist name="ckworkInfo" id="vo"}
+              <tr>
+                <td>{$vo.userId}</td>
+                <td>{$vo.user_no}</td>
+                <td>{$vo.trueName}</td>
+                <td>{$vo.object_id}</td>
+                <td>{$vo.ckwork_type}</td>
+                <td>{$vo.xb_count}</td>
+                <td>{$vo.remark}</td>
+                <td>{$vo.createtime}</td>
+              </tr>
+              {/volist}
+              {else/}
+                暂无数据
+              {/if}
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="bottom">
+      <button type='button' class='btn' onclick='javascript:history.go(-1)'>返&nbsp;回</button>
+    </div>
+</div>
+<script>
+  $(function(){
+      editInit();
+      //changeTab('tabTitle','tabContent');
+  });
+</script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.tab1-info:not(:eq(0))').hide();
+    $('.menu li').bind('click',function(){
+      var num1=$(this).index();
+      $('.menu li').css('fontWeight','normal');
+      $(this).css('fontWeight','bold');
+      $(".tab1-info:not(:eq("+num1+"))").hide();
+      $(".tab1-info:eq("+num1+")").show();
+    });
+
+    $('.submenulist:not(:eq(0))').hide();
+    $('.submenu li').bind('click',function(){
+      var num1=$(this).index();
+      $('.submenu li').css('fontWeight','normal');
+      $(this).css('fontWeight','bold');
+      $(".submenulist:not(:eq("+num1+"))").hide();
+      $(".submenulist:eq("+num1+")").show();
+    });
+  });
+</script>
+{/block}

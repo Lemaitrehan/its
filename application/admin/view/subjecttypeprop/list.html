@@ -1,0 +1,20 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/subjecttypeprop/subjecttypeprop.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid({$Think.get.type_id});})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	   名称：<input type='text' id='key'/>  
+   <button class="btn btn-blue" onclick='javascript:loadGrid({$Think.get.type_id})'>查询</button>
+   <button class="btn f-right" onclick="javascript:history.go(-1)">返回</button>
+   {if MBISGrant('KMLXSX_001')}
+   <button class="btn btn-green f-right" onclick='javascript:toEdit(0,{$Think.get.type_id})'>新增</button>
+   {/if}
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

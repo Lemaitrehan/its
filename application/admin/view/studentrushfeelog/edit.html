@@ -1,0 +1,122 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/studentrushfeelog/studentrushfeelog.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () { 
+  initCombo();
+  {if condition="$object['rush_fee_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        income_fee: {
+          tip: "请输入收入金额",
+          rule: '收入金额:required;'
+        },
+        income_point: {
+          tip: "请输入收入点数",
+          rule: '收入点数:required;'
+        },
+        unpaid_fee: {
+          tip: "请输入未缴金额",
+          rule: '未缴金额:required;'
+        },
+      },
+      valid: function(form){
+        var rush_fee_id = $('#rush_fee_id').val();
+        toEdits(rush_fee_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='rush_fee_id' name="rush_fee_id" value='{$object["rush_fee_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>会员信息<font color='red'>*</font>：</th>
+         <td>
+            <select id="userId" onchange="getInfo()" name="userId" class="ipt" {if condition="$object['rush_fee_id'] neq 0"} disabled="disabled" {/if}>
+              <option value=''>请选择</option>
+            {volist name="userlist" id="vo"}
+              <option {if condition="$object.userId eq $vo.userId"} selected{/if} value="{$vo.userId}">{$vo.trueName}({$vo.userId})</option>
+            {/volist}
+          </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>学员编号<font color='red'>*</font>：</th>
+         <td><input type="text" id='student_no' name='student_no' style='width:300px;' class='ipt' readonly/></td>
+      </tr>
+      <tr>
+         <th width='150'>账单编号<font color='red'>*</font>：</th>
+         <td><input type="text" id='fush_fee_no' name='fush_fee_no' style='width:300px;' class='ipt' readonly/></td>
+      </tr>
+      <tr>
+         <th width='150'>购买课程<font color='red'>*</font>：</th>
+         <td>
+            <input type="text" id='course_name' style='width:300px;' readonly />
+            <input type="hidden" id='course_id' name="course_id" class='ipt'/>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>收入金额<font color='red'>*</font>：</th>
+         <td><input type="text" id='income_fee' name='income_fee' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>收入点数<font color='red'>*</font>：</th>
+         <td><input type="text" id='income_point' name='income_point' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>未缴金额<font color='red'>*</font>：</th>
+         <td><input type="text" id='unpaid_fee' name='unpaid_fee' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>状态<font color='red'>*</font>：</th>
+         <td>
+           <select name="status">
+             <option value="1">定金学员</option>
+             <option value="2">补缴学费</option>
+           </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>选择模板<font color='red'>*</font>：</th>
+         <td>
+         <select id="notice_tmpl_id" name="notice_tmpl_id" onChange="javascript:chooseTmpl()" class="ipt">
+            <option value="">请选择</option>
+            {volist name="noticetmpl_list" id="vo"}
+            <option value="{$vo.notice_id}">{$vo.title}</option>
+            {/volist}
+         </select>
+         </td>
+      </tr>
+      <tr id="content-str" style="display:none;">
+        <th></th>
+        <td id="content-td"></td>
+      </tr>
+      <tr>
+         <th width='150'>截止时间<font color='red'>*</font>：</th>
+         <td><input type="text" id='endtime' name='endtime' style="margin:0px;vertical-align:baseline;" class='ipt' maxLength="20" /></td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

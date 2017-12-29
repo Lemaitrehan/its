@@ -1,0 +1,118 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/grade/grade.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+    $("#rp_start_time").ligerDateEditor();
+    $("#rp_end_time").ligerDateEditor();
+	initCombo();
+	{if condition="$object['grade_id'] !=0 "}
+	   MBIS.setValues({$object});
+	{/if}
+    //读取科目属性数据
+    //get_subject_prop_data($('#subject_type_id').val(),$('#pkey').val());
+	$('#infoForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入年级名称",
+	    		rule: '年级名称:required;'
+	    	},
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id);
+	    }
+	});
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='major_id' name="major_id" value='{$Think.get.major_id}'/>
+<input type='hidden' id='pkey' name="grade_id" value='{$object["grade_id"]}'/>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <th width='150'>年级名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>专业<font color='red'>*</font>：</th>
+     <td>
+     <select id='major_id' name='major_id' class='ipt'>
+     
+     </select>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>学习时间：</th>
+     <td><input type="text" id='stu_time' name='stu_time' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>标准学费：</th>
+     <td><input type="text" id='stu_fee' name='stu_fee' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>优惠学费价格：</th>
+     <td><input type="text" id='offers' name='offers' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>市场价：</th>
+     <td><input type="text" id='market_price' name='market_price' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>学习阶段时间：</th>
+     <td><input type="text" id='stu_state' name='stu_stage' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>开始报名时间：</th>
+     <td><input type="text" id='rp_start_time' name='rp_start_time' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>最后报名时间：</th>
+     <td><input type="text" id='rp_end_time' name='rp_end_time' class='ipt'/></td>
+  </tr>
+  <tr>
+       <th width='150'>详情：</th>
+       <td>
+       	<textarea id='rp_des' name='rp_des' class="form-control ipt" style='width:80%;height:400px'></textarea>
+       </td>
+  </tr>  
+ 
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+</form>
+<script>
+    $(function(){
+      //编辑器
+        KindEditor.ready(function(K) {
+    		editor1 = K.create('textarea[name="rp_des"]', {
+    			height:'350px',
+    			allowFileManager : false,
+    			allowImageUpload : true,
+    			items:[
+    			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+    			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+    			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+    			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+    			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+    			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+    			        'anchor', 'link', 'unlink', '|', 'about'
+    			],
+    			afterBlur: function(){ this.sync(); }
+    		});
+    	});
+    });
+</script>
+{/block}

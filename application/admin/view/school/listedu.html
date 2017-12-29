@@ -1,0 +1,22 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/school/schooledu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid({$type_id});})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+
+	院校名称：<input type='text' id='key'/>  
+   	<button class="btn btn-blue" onclick='javascript:loadGrid({$type_id})'>查询</button>
+   	<button class="btn btn-blue" onclick="javascript:refresh({$type_id})">刷新</button>
+   	{if MBISGrant('XLXY_01')}
+   	<button class="btn btn-green f-right" onclick='javascript:toEdit({$type_id},0)'>新增</button>
+   	{/if}
+   	<div style='clear:both'></div>
+   	
+</div>
+<div id="maingrid"></div>
+{/block}

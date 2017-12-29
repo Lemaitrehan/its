@@ -1,0 +1,21 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/studententry/studententry.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid(1);})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	学员名称、准考证号：<input type='text' id="search_word" name="search_word" class="query"/>  
+   	<button class="btn btn-blue" onclick='javascript:loadGrid()'>查询</button>
+   	<button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+   	<button class="btn btn-blue" onclick="javascript:sendSms()">发送通知</button>
+    <button class="btn btn-blue" onclick="javascript:batch_set_grade()">分配年级</button>
+    <button class="btn btn-blue" onclick="javascript:exportEdu()">导出数据</button>
+   	<div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+<div id="grade_info" style="display:none"></div>
+{/block}

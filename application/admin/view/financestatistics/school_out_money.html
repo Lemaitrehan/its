@@ -1,0 +1,222 @@
+{extend name="new_base" /}
+
+{block name="css"}
+<link rel="stylesheet" href="/static/css/Schoolroll/common.css"/>
+{/block}
+
+{block name="main"}
+
+<form class="layui-form" action="">
+    <br />
+    <div class="layui-form-item">
+        <label class="layui-form-label">按周</label>
+        <div class="layui-input-inline min-width-select">
+            <input type="text" name="date0" id="date0" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label min-width-lable">年</label>
+
+        <div class="layui-input-inline min-width-select">
+            <select name="quiz3" id="weeks" lay-search>
+                <option value="">请选择</option>
+            </select>
+        </div>
+        <label class="layui-form-label min-width-lable">周</label>
+        <a onclick="calendarCycle()" class="layui-btn">确定</a>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">日期选择</label>
+            <div class="layui-input-block">
+                <input type="text" name="date1" id="date1" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label min-width-lable">到</label>
+            <div class="layui-input-inline">
+                <input type="text" name="date2" id="date2" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <button class="layui-btn layui-btn-primary">今日</button>
+        <button class="layui-btn layui-btn-primary">本周</button>
+        <button class="layui-btn layui-btn-primary">本月</button>
+        <button class="layui-btn">查询</button>
+    </div>
+</form>
+
+<div id="chartOne" class="charts-defult"></div>
+<hr class="cut-line" />
+<br />
+
+
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript" src="/static/plugins/moment/moment.js"></script>
+
+<script type="text/javascript" src="/static/plugins/echarts/echarts.js"></script>
+
+
+
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function() {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate=layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#date0',
+            type: 'year'
+        });
+        laydate.render({
+            elem: '#date1' //指定元素
+        });
+        laydate.render({
+            elem: '#date2' //指定元素
+        });
+        laydate.render({
+            elem: '#date3' //指定元素
+        });
+        laydate.render({
+            elem: '#date4' //指定元素
+        });
+        laydate.render({
+            elem: '#date5',
+            type: 'month'
+        });
+        laydate.render({
+            elem: '#date6',
+            type: 'month'
+        });
+    });
+
+
+
+    function calendarCycle(){
+        var year = $("#date0").val();
+        var week = $("#weeks").val();
+        if(year==""){
+            layer.msg('请选择年份！');
+        }else if(week==""){
+            layer.msg('请选择周！');
+        }else{
+            var startTime = moment().isoWeekYear(year).isoWeeks(week).isoWeekday(1).format("YYYY-MM-DD");
+            var endTime = moment().isoWeekYear(year).isoWeeks(week).isoWeekday(7).format("YYYY-MM-DD");
+            $("#date1").val(startTime);
+            $("#date2").val(endTime);
+        }
+
+    }
+    $(function(){
+
+        var weeks = moment().locale('zh-CN').isoWeekYear(2012).isoWeeksInYear()+1;
+        for (var i = 1; i < weeks; i++) {
+            $("#weeks").append('<option value="'+i+'" >'+i+'</option>')
+        }
+
+    })
+</script>
+
+<script type="text/javascript">
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths: {
+            echarts: '/static/plugins/echarts/'
+        }
+    });
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function(ec) {
+
+            var result = {$chart_result};
+
+            var val = new Array();
+            var val_name = new Array();
+
+            for (var prop in result) {
+                val.push(result[prop].realPayMoney);
+                val_name.push(result[prop].school_name);
+            }
+
+
+            //--- 折柱 ---
+            var myChartOne = ec.init(document.getElementById('chartOne'));
+            var optionOne = {
+                title: {
+                    x: 'center',
+                    text: '各校区退费统计',
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        restore: {
+                            show: true,
+                            title: '刷新'
+                        },
+                        saveAsImage: {
+                            show: true
+                        }
+                    }
+                },
+                calculable: true,
+                grid: {
+                    borderWidth: 0,
+                    y: 80,
+                    y2: 60
+                },
+                xAxis: [{
+                    type: 'category',
+                    data: val_name,
+                    name: '校区'
+                }],
+                yAxis: [{
+                    type: 'value',
+                    name: '万'
+                }],
+                series: [{
+                    name: '校区收费统计',
+                    type: 'bar',
+                    barWidth: 40, //固定柱子宽度
+                    itemStyle: {
+                        normal: {
+                            color: function(params) {
+                                // build a color map as your need.
+                                var colorList = [
+                                    '#C1232B', '#B5C334', '#FCCE10', '#E87C25', '#27727B',
+                                    '#FE8463', '#9BCA63', '#FAD860', '#F3A43B', '#60C0DD',
+                                    '#D7504B', '#C6E579', '#F4E001', '#F0805A', '#26C0C0'
+                                ];
+                                return colorList[params.dataIndex]
+                            },
+                            label: {
+                                show: true,
+                                position: 'top',
+                                formatter: '{b}\n{c}万'
+                            }
+                        }
+                    },
+                    data: val,
+
+                }]
+            };
+            myChartOne.setOption(optionOne);
+        }
+    );
+</script>
+
+
+{/block}

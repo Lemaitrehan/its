@@ -1,0 +1,78 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/subjecttypeprop/subjecttypeprop.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo();
+	{if condition="$object['prop_id'] !=0 "}
+	   MBIS.setValues({$object});
+       changePropvalue({$object['prop_input_type']});
+	{/if}
+	$('#majorForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入属性名称",
+	    		rule: '属性名称:required;'
+	    	},
+            field_name: {
+	    		tip: "请输入字段名称",
+	    		rule: '字段名称:required;'
+	    	},
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id);
+	    }
+	})
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='majorForm' autocomplete="off">
+<input type='hidden' id='pkey' name="prop_id" value='{$object["prop_id"]}'/>
+<input type='hidden' id='type_id' name="type_id" class="ipt" value="{$Think.get.type_id}"/>
+<table class='wst-form wst-box-top'>
+  
+  <tr>
+     <th width='150'>属性名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>字段名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='field_name' name='field_name' style='width:300px;' class='ipt'/><br>
+     <span class="tips-text">只能填写英文字母</span>
+     </td>
+  </tr>
+  
+  {volist name="sel_data" id="vo"}
+  <tr style="{$vo.style}">
+     <th width='150'>{$vo.name}<font color='red'>*</font>：</th>
+     <td>
+     <select {if condition="$vo.key eq 'prop_input_type'"} onChange="changePropvalue($(this).val())"{/if} id="{$vo.key}" name="{$vo.key}" class="ipt">
+        {volist name="vo.lists" id="vvo"}
+        <option value="{$vvo.id}">{$vvo.name}</option>
+        {/volist}
+     </select>
+     </td>
+  </tr>
+  {/volist}
+  
+  <tr>
+     <th width='150'>可选值列表：</th>
+     <td><textarea disabled id='prop_value' name='prop_value' style='width:300px;height:80px;' class='ipt'></textarea>
+     <br>
+     <span style="color:#999;">选择下拉列表，可输入该项，一行代表一条记录</span>
+     </td>
+  </tr>
+
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+ </form>
+{/block}

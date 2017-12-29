@@ -1,0 +1,218 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/studentaudition/studentaudition.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['sa_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#auditionForm').validator({
+      fields: {
+        income_fee: {
+          tip: "请输入收入金额",
+          rule: '收入金额:required;'
+        },
+      },
+      valid: function(form){
+        var sa_id = $('#sa_id').val();
+        toEdits(sa_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='auditionForm' autocomplete="off">
+    <input type='hidden' id='sa_id' name="sa_id" value='{$object["sa_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th>是否是会员<font color='red'>*</font>：</th>
+        <td>
+          <input type="radio" id="member_yes" name="member_choice" value="yes" checked/>已经是会员
+          <input type="radio" id="member_no" name="member_choice" value="no"/>还不是会员
+        </td>
+      </tr>
+      <tr id="yes" class="MemberChoice">
+         <th width='150'>会员信息<font color='red'>*</font>：</th>
+         <td>
+            <select id="userId" name="userId" class="ipt" {if condition="$object['userId'] neq 0"} disabled="disabled" {/if}>
+              <option value=''>请选择</option>
+            {volist name="userlist" id="vo"}
+              <option {if condition="$object.userId eq $vo.userId"} selected{/if} value="{$vo.userId}">{$vo.trueName}({$vo.userId})</option>
+            {/volist}
+          </select>
+         </td>
+      </tr>
+      <tr id="no" class="MemberChoice">
+        <th width='150'>申请人信息<font color='red'>*</font>：</th>
+        <td><input type="text" id="username" name="username" style='width:300px;' {if condition="$object['username'] neq null"} readonly {/if}></td>
+      </tr>
+      <tr>
+        <th width='150'>试听校区<font color='red'>*</font>：</th>
+        <td>
+          <select id="campus_id" name="campus_id">
+            <option value='1' {if condition="$object['campus_id'] eq 1"} selected {/if}>龙岗校区</option>
+            <option value='2' {if condition="$object['campus_id'] eq 2"} selected {/if}>福田校区</option>
+            <option value='3' {if condition="$object['campus_id'] eq 3"} selected {/if}>宝安校区</option>
+            <option value='4' {if condition="$object['campus_id'] eq 4"} selected {/if}>南山校区</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th></th>
+        <td>
+          <input type="radio" id="course_choice" name="choice" value="course" checked/>试听课程
+          <input type="radio" id="subject_choice" name="choice" value="subject"/>试听科目
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>选择专业<font color='red'>*</font>：</th>
+        <td>
+          <select id="major_id" onchange="majorSelect()">
+            <option value=''>请选择</option>
+            {volist name="majorlist" id="vo"}
+            <option value="{$vo.major_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>试听选择<font color='red'>*</font>：</th>
+        <td>
+          <div id="content" style="padding:5px 0 5px 0;">
+            <div id="course" class="Choice" style="height:140px;">
+               <span>选择课程：</span>
+               <br>
+               <select id="course_id" name="course_id" onchange="courseSelect()" class='ipt'>
+                 <option value=''{if condition="$object.course_id eq 0"} selected {/if}>请选择</option>
+                 {volist name="courselist" id="vo"}
+                 <option value="{$vo.course_id}" {if condition="$object.course_id eq $vo.course_id"} selected {/if}>{$vo.name}</option>
+                 {/volist}
+               </select>
+               <br>
+               <span>课程名称：</span>
+               <br>
+               <input type="text" id='name' name='name' style='width:300px;' {if condition="$object.name eq null"} value="" {else/} value="{$object.name}" {/if} class='ipt' readonly/><br>
+               <span>课程编号：</span>
+               <br>
+               <input type="text" id='course_bn' name='course_bn' style='width:300px;' {if condition="$object.course_bn eq null"} value="" {else/} value="{$object.course_bn}" {/if} class='ipt' readonly/>
+            </div>
+            <div id="subject" class="Choice" style="height:40px;">
+                <span>选择科目：</span><br>
+               <select id="subject_id" name="subject_id" class='ipt'>
+                 <option value='' {if condition="$object.subject_id eq 0"} selected {/if}>请选择</option>
+                 {volist name="subjectlist" id="vo"}
+                 <option value="{$vo.subject_id}" {if condition="$object.subject_id eq $vo.subject_id"} selected {/if}>{$vo.name}</option>
+                 {/volist}
+               </select>
+            </div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+         <th width='150'>业务员<font color='red'>*</font>：</th>
+         <td>
+           <select id="ey_userId" name="ey_userId" class='ipt'>
+             <option value=''>请选择</option>
+             {volist name="employeelist" id="vo"}
+             <option value="{$vo.employee_id}">{$vo.name} </option>
+             {/volist}
+           </select>
+         </td>
+      </tr>
+  <!--<tr>
+         <th width='150'>员工编号<font color='red'>*</font>：</th>
+         <td><input type="text" name='employee_no' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>姓名<font color='red'>*</font>：</th>
+         <td><input type="text" name='username' style='width:300px;' class='ipt'/></td>
+      </tr>-->
+      <tr>
+         <th width='150'>审核状态<font color='red'>*</font>：</th>
+         <td>
+           <select id="status" name="status" class='ipt'>
+             <option value="1">待审核</option>
+             <option value="2">审核通过</option>
+             <option value="3">审核不通过</option>
+           </select>
+         </td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+  <script type="text/javascript">
+    $(document).ready(function(){
+      $(".Choice:not(:eq(0))").hide();
+      $('input:radio[name="choice"]').click(function(){
+        var value=$('input:radio[name="choice"]:checked').val();
+        $(".Choice").hide(); 
+        $("#"+value).show();
+        if(value == 'subject'){
+          $("#course_id option:first").attr('selected',true);
+          $('#name').val('');
+          $('#course_bn').val('');
+        }
+        if(value == 'course'){
+          $("#subject_id option:first").attr('selected',true);
+        }
+        
+      });
+
+      $(".MemberChoice:not(:eq(0))").hide();
+      $('input:radio[name="member_choice"]').click(function(){
+        var vl = $('input:radio[name="member_choice"]:checked').val();
+        $(".MemberChoice").hide();
+        $("#"+vl).show();
+        if(vl == 'yes'){
+          $("#username").val('');
+        }else
+        if(vl == 'no'){
+          $("#userId option:first").attr('selected',true);
+        }
+      });
+
+
+      {if condition="$object.subject_id neq 0"}
+        $('#subject_choice').click();
+        var value = 'subject';
+        $(".Choice").hide();
+        $("#"+value).show();
+      {elseif condition="$object.course_id neq 0"/}
+        $('#course_choice').click();
+        var v = 'course';
+        $(".Choice").hide();
+        $("#"+v).show();
+      {/if}
+
+      {if condition="$object.userId neq 0"}
+        $('#member_yes').click();
+        var vl = 'yes';
+        $(".MemberChoice").hide();
+        $('#'+vl).show();
+      {elseif condition="$object.username neq null"/}
+        $('#member_no').click();
+        var vl = 'no';
+        $(".MemberChoice").hide();
+        $('#'+vl).show();
+      {/if}
+    });
+  </script>
+{/block}

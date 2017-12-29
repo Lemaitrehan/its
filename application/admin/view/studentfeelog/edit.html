@@ -1,0 +1,201 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/studentfeelog/studentfeelog.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+    initCombo();
+  {if condition="$object['fee_id'] !=0 "}
+    MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        name: {
+          tip: "请输入费目名称",
+          rule: '费目名称:required;'
+        },
+        price: {
+          tip: "请输入费目价格",
+          rule: '费目价格:required;'
+        },
+        fee_no: {
+          tip: "请输入票据号码",
+          rule: '票据号码:required;'
+        },
+      },
+      valid: function(form){
+        var fee_id = $('#fee_id').val();
+        toEdits(fee_id,'{$type}');
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='fee_id' name="fee_id" value='{$object["fee_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <!--
+      <tr>
+        <th width='150'>报名类别<font color='red'>*</font>：</th>
+        <td>
+          <select id="type" onchange="check()" name="type" class="ipt" {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if}>
+              <option value=''>请选择</option>
+              <option value="edu">学历类</option>
+              <option value="skill">技能类</option>
+          </select>
+        </td>
+      </tr>
+      -->
+      <tr>
+         <th width='150'>会员信息<font color='red'>*</font>：</th>
+         <td>
+            <select id="userId" onchange="getInfo()" name="userId" class="ipt" {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if}>
+              <option value=''>请选择</option>
+            {volist name="userlist" id="vo"}
+              <option {if condition="$object.userId eq $vo.userId"} selected{/if} value="{$vo.userId}">{$vo.trueName} {$vo.userId}</option>
+            {/volist}
+          </select>
+         </td>
+      </tr>
+      <!--
+      <tr>
+         <th width='150'>报名ID<font color='red'>*</font>：</th>
+         <td><input type="text" id='entry_id' name='entry_id' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>订单ID<font color='red'>*</font>：</th>
+         <td><input type="text" id='orderId' name='orderId' style='width:300px;' class='ipt'/></td>
+      </tr>
+      -->
+      <!--
+      <tr>
+         <th width='150'>订单信息<font color='red'>*</font>：</th>
+         <td>
+          <select id="orderId" name="orderId" class="ipt">
+              <option value='0'>请选择</option>
+          </select>
+          </td>
+      </tr>
+      -->
+      <tr>
+         <th width='150'>学员编号<font color='red'>*</font>：</th>
+         <td><input type="text" id='student_no' name='student_no' style='width:300px;' readonly class='ipt' {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if} /></td>
+      </tr>
+      <tr>
+         <th width='150'>学员姓名<font color='red'>*</font>：</th>
+         <td><input type="text" id='student_name' name='student_name' style='width:300px;' readonly class='ipt' {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if} /></td>
+      </tr>
+      <tr>
+         <th width='150'>报名日期<font color='red'>*</font>：</th>
+         <td><input type="text" id='entry_time' name='entry_time' style='width:300px;' readonly class='ipt' {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if} /></td>
+      </tr>
+      <tr>
+         <th width='150'>合作院校<font color='red'>*</font>：</th>
+         <td><input type="text" id='partners' name='partners' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>订单号<font color='red'>*</font>：</th>
+         <td>
+          <input type="text" id='orderNo' name='orderNo' style='width:300px;' class='ipt' {if condition="$object['fee_id'] neq 0"} disabled="disabled" {/if} />
+          </td>
+      </tr>
+      <tr>
+        <th width='150'>收费类别<font color='red'>*</font>：</th>
+         <td>
+         <select id="fee_class" name="fee_class" class="ipt">
+            <option {if condition="$object.fee_class eq 1"} selected {/if} value="1">培训费</option>
+            <option {if condition="$object.fee_class eq 2"} selected {/if} value="2">证书费</option>
+            <option {if condition="$object.fee_class eq 3"} selected {/if} value="3">报考费</option>
+            <option {if condition="$object.fee_class eq 4"} selected {/if} value="4">学位费</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>收费类型<font color='red'>*</font>：</th>
+         <td>
+         <select id="fee_type" name="fee_type" class="ipt">
+            <option {if condition="$object.fee_type eq 1"} selected {/if} value="1">一次性收费</option>
+            <option {if condition="$object.fee_type eq 2"} selected {/if} value="2">定金</option>
+            <option {if condition="$object.fee_type eq 3"} selected {/if} value="3">补费</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>费目名称<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>费目价格<font color='red'>*</font>：</th>
+         <td><input type="text" id='price' name='price' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>折扣金额<font color='red'>*</font>：</th>
+         <td><input type="text" id='dis_amount' name='dis_amount' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>折后应收总学费<font color='red'>*</font>：</th>
+         <td><input type="text" id='st_price' name='st_price' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>待收学费总额<font color='red'>*</font>：</th>
+         <td><input type="text" id='remain_amount' name='remain_amount' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>预计收费时间<font color='red'>*</font>：</th>
+         <td><input type="text" id='plan_paytime' name='plan_paytime' style="margin:0px;vertical-align:baseline;" class='ipt' maxLength="20" /></td>
+      </tr>
+      <tr>
+         <th width='150'>预计收费金额<font color='red'>*</font>：</th>
+         <td><input type="text" id='plan_payamount' name='plan_payamount' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>实际收费日期<font color='red'>*</font>：</th>
+         <td><input type="text" id='pay_time' name='pay_time' style="margin:0px;vertical-align:baseline;" class='ipt' maxLength="20" /></td>
+      </tr>
+      <tr>
+         <th width='150'>收费金额<font color='red'>*</font>：</th>
+         <td><input type="text" id='real_amount' name='real_amount' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>实收汇总<font color='red'>*</font>：</th>
+         <td><input type="text" id='receive_amount' name='receive_amount' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>票据号码<font color='red'>*</font>：</th>
+         <td><input type="text" id='fee_no' name='fee_no' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+        <th width='150'>支付类型<font color='red'>*</font>：</th>
+         <td>
+         <select id="pay_type" name="pay_type" class="ipt">
+            <option {if condition="$object.pay_type eq 5"} selected {/if} value="5">线下收款-现金</option>
+            <option {if condition="$object.pay_type eq 1"} selected {/if} value="1">线上收款-支付宝</option>
+            <option {if condition="$object.pay_type eq 2"} selected {/if} value="2">线上收款-微信</option>
+            <option {if condition="$object.pay_type eq 3"} selected {/if} value="3">线上收款-银联</option>
+            <option {if condition="$object.pay_type eq 4"} selected {/if} value="4">线下收款-POS机</option>
+            <option {if condition="$object.pay_type eq 6"} selected {/if} value="6">线下收款-对公转账</option>
+            <option {if condition="$object.pay_type eq 7"} selected {/if} value="7">线下收款-支票支付</option>
+            <option {if condition="$object.pay_type eq 8"} selected {/if} value="8">其他支付</option>
+         </select>
+         </td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

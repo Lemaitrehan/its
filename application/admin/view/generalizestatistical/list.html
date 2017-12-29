@@ -1,0 +1,99 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/Generalizestatistical/customuser.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){
+	  initGrid(0);
+	  $("#start").ligerDateEditor();
+	  $("#end").ligerDateEditor();
+  });
+</script>
+<style>
+.date-s{width:100%;float:left; }
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-eight:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+h2{font-size: 22px;text-align: center;line-height: 52px;border-bottom: 1px solid #ccc;}
+.btn{margin: 12px 10px;}
+h3{font-size: 20px;text-align: left;line-height: 52px;border-top: 1px solid #ccc;padding-left:10px;}
+.line{width:1000px;height:1px;background-color:#ccc;    margin-bottom: 28px;}
+#upLoadFrm1{font-size: 18px;margin: 16px 2px 20px 10px;}
+#upLoadFrm1 input[type="submit"]{width: 72px;height: 36px;}
+h3:nth-of-type(2){border-top:none;}
+.l-text-wrapper{}
+.timeQuery1{
+	
+}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+
+<div class="wst-toolbar">
+    <!-- <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+    </div>   -->
+    
+    <h2>数据中心：数据导入</h2>
+    {volist name="arrTitle" id="vo"}
+      <button class="titleText btn {if condition="$key == 0"}btn-blue{/if}" style="width:120px;height:50px;" value='{$key}'>{$vo}</button>
+    {/volist}
+    <h3>文件导入</h3>
+    <div class="line"></div>
+    <form  id="upLoadFrm1" action="{:url('admin/Generalizestatistical/addData0')}" enctype="multipart/form-data" method="post">
+        
+        <input type="file" name="exel">
+        <input type="submit" class="btn btn-blue"  value="上传">
+    </form>
+    <h3>提交记录</h3>
+    <div class="line"></div>
+    
+           <div id="query" >
+               <!--  <div  > 
+                  <span>搜索查询:</span><select id="search_title" name="search_title" class="query">
+                  <option value="">全部</option>  
+                  <option value="1">账户名称</option>  
+                  <option value="2">推广计划</option>  
+                </select> -->
+               <div class="timeQuery1">
+                    <span >提交时间：&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	                <span  >开始：</span>
+	                <input type="text"  name="create_start" id="create_start" class="query" />
+	                <span >结束：</span>
+	                <input type="text"   name="create_end" id="create_end" class="query" />
+               </div>
+               <br>
+               
+               <div style="clear:both"></div>
+                              
+               <div class="" >
+                    <span style="float:left;">文件数据时间：&nbsp;&nbsp;&nbsp;&nbsp;</span>
+	                <span style="float:left;" >开始：</span>
+	                <input style="float:left;" type="text"  name="start" id="start" class="query" />
+	                <span style="float:left;margin-left:19px;" >结束：</span>
+	                <input style="float:left;" type="text"   name="end" id="end" class="query" />
+               </div>
+               <div style="clear:both"></div>
+                <br>
+                <span>操作人:</span>
+                <input  type="text"   id="search_word" name="yg" class="query">
+                <input  type="hidden" id="type" name="type"  value="0" class="query">
+          </div>
+                
+           <br>
+           
+           <div style="clear:both"></div>
+           <input style="float:right;margin-left: 34px;padding: 8px 10px;display: inline-block;height: 34px;margin-top: 2px;" type="button" class="btn btn-blue" onclick="javascript:initGrid()" value="查询">
+           <input placeholder="请输入文件 " class="query"  style="float:right;padding: 8px 10px;" type="text"    id="file_name" name="file_name" class="query">
+<!--       	    <input type="button" class="btn btn-blue" onclick="javascript:sendSms()" value="发送通知">
+ -->      <!--   <input class="btn btn-blue" type="submit" value="导出"> -->
+                
+    <div style="clear:both"></div>
+    <!--<iframe src="about:blank" name="hiddenIframe" class="hide" style="display:none;"></iframe>-->
+</div>
+<div class="line"></div>
+<div id="maingrid"></div>
+{/block}

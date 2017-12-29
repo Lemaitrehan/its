@@ -1,0 +1,48 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/teachingmaterial/teachingmaterial.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid('{$type}');})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	<div class='search-s'>
+		教材类型:<select id="material_type" style="width:165px;height:26px;" class="query">
+              <option value=''>全部</option>
+              <option value='1'>书本</option>
+              <option value='2'>画板</option>
+              <option value='3'>其他</option>
+            </select>
+    	教材状态:<select id="status" style="width:165px;height:26px;" class="query">
+              <option value=''>全部</option>
+              <option value='0'>在库</option>
+              <option value='1'>借出</option>
+              <option value='2'>丢失</option>
+              <option value='3'>损坏</option>
+            </select>
+    	是否上架:<select id="is_shelves" style="width:165px;height:26px;" class="query">
+              <option value=''>全部</option>
+              <option value='2'>待上架</option>
+              <option value='1'>已上架</option>
+              <option value='0'>已下架</option>
+            </select>
+    {if ( $type == 1 &&  MBISGrant('CKJC_01') ) || ( $type == 2 &&  MBISGrant('JCCK_01') ) }
+   		<button class="btn btn-green f-right" onclick='javascript:toEdit(0,{$type})'>新增</button>
+   	{/if}
+	</div>
+	   教材名称:<input type='text' placeholder='教材名称' id="name" class="query"/>  
+   <button class="btn btn-blue" onclick='javascript:tmQuery()'>查询</button>
+   <button class="btn btn-blue f-right" onclick="javascript:refresh()">刷新</button>
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

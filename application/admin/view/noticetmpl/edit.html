@@ -1,0 +1,88 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/noticetmpl/noticetmpl.js?v={$v}" type="text/javascript"></script>
+<script>
+initCombo({$send_type},{$content});
+$(function () {
+  {if condition="$object['notice_id'] !=0 "}
+     /* MBIS.setValues({$object}); */
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        title: {
+          tip: "请输入模板主题",
+          rule: '主题:required;'
+        },
+        content: {
+          tip: "请输入模板内容",
+          rule: '内容:required;'
+        },
+      },
+      valid: function(form){
+        var notice_id = $('#notice_id').val();
+        toEdits(notice_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='notice_id' name="notice_id" value='{$object["notice_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>发送方式<font color='red'>*</font>：</th>
+         <td>
+            <select id="send_type" name="send_type" class="ipt">
+             
+             {foreach name="arrSendType" item="vo" key="k" }
+                 <option {if condition="$send_type eq $k"} selected{/if} value="{$k}">{$vo}</option>
+              {/foreach}
+            </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>模板类型<font color='red'>*</font>：</th>
+         <td>
+         <select id="tmpl_type" name="tmpl_type" class="ipt">
+             {foreach name="arrTempletType" item="vo" key="k" }
+                 <option {if condition="$object.tmpl_type eq $k"}selected{/if} value="{$k}">{$vo}</option>
+              {/foreach}
+           </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>模板主题<font color='red'>*</font>：</th>
+         <td><input type="text" id='title' name='title' style='width:400px;' value="{$object.title}" class='ipt'/></td>
+      </tr>
+      {if condition="$send_type eq 1"}
+      <tr>
+         <th width='150'>模板内容<font color='red'>*</font>：</th>
+         <td><textarea id='content' name='content' style='width:400px;height:240px;' class='ipt'>{:htmlspecialchars_decode($object.content)}</textarea></td>
+      </tr>
+      {else/}
+       <tr>
+         <th width='150'>模板内容<font color='red'></font>：</th>
+         <td><textarea id='content' name='content' style='width:400px;;height:240px;' class='ipt'></textarea></td>
+      </tr>
+      {/if}
+      
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

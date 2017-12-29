@@ -1,0 +1,178 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/sjexams/menu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+    select2('selectx');
+    function formatRepo(repo) {
+        return repo.name;
+    }
+    var userID = '';
+    function formatRepoProvince(repo) {
+        if (repo.name) {
+        	var url = "{:url('Sjexams/manuallyAdd')}";
+        	 userID = repo.id;
+          	$.post(url,{action:'userInfo',userId:repo.id},function(data){
+     			  if(data){
+     				  var html = '';
+     				  var student_no = '';
+     				  var idcard     = '';
+     				  $(data).each(function(i,e){
+     					 student_no = e.student_no;
+     					 idcard     = e.idcard; 
+     					 html += '<div class="userDiv" style="width:auto;height:60px;border:1px solid gray;float:left">'
+		     					     +'<div data-value="'+e.school_id+'">'+e.school_name+'</div>'
+		     					     +'<div data-value="'+e.major_id+'">'+e.major_name+'</div>'
+		     					     +'<div data-value="'+e.level_id+'">'+e.level_name+'</div>'
+		     					+'</div>';
+     				  })
+     				  $('#student_no').val(student_no);
+     				  $('#idcard').val(idcard);
+     				  $('.info').html(html);
+     			  }else{
+     			     MBIS.msg('找不到学员考试信息',{icon:2});
+     			  }
+     		}); 
+            return repo.name;
+        } else {
+            return repo.text;
+        }
+    }
+    //选择专业 层次 下面的 科目
+    $(document).on('click','.userDiv',function(){
+    	 $('.is_click').removeClass('is_click');
+    	 $(this).addClass('is_click');
+    	 var school_id = $(this).find('div:eq(0)').attr('data-value');
+    	 var major_id  = $(this).find('div:eq(1)').attr('data-value');
+    	 var level_id  = $(this).find('div:eq(2)').attr('data-value');
+    	 if( userID && school_id && major_id && level_id ){
+    	     var url  = "{:url('Sjexams/manuallyAdd')}";
+    		 var parm = {action:'subject',userId:userID,school_id:school_id,major_id:major_id,level_id:level_id};
+          	$.post(url,parm,function(data){
+          		  var html ='';
+          		  $('.subject_tr').remove();
+     			  if(data){
+     				 var arrExmsPassStatus = {$arrExmsPassStatus};
+     			     $(data).each(function(i,e){
+     			    	 if(e.exam_method==1){
+     			    		var textStatus = '<input type="text" class="subject_score" name="subject_score" style="width:300px;"/>'; 
+     			    	 }else{
+      			    		var textStatus = '<select  class="subject_score" name="subject_score">';
+     			    		$.each(arrExmsPassStatus,function(i,e){
+     			    			textStatus += '<option value="'+i+'">'+e+'</option>' 
+     			    		})
+     			    		    textStatus += '</select>';
+     			    	 }
+     					 html += ' <tr class="subject_tr">'
+		     				         +'<th width="150">'+e.name+'<font color="red">*</font>：</th>'
+		     				         +'<td>'
+		     				             +'<input type="hidden"  name="subject_id" value="'+e.subject_id+'" />'
+		     				             +textStatus
+		     				         +'</td>'
+		     				      '</tr>';
+     				  })
+     				  $('table').append(html);
+     			  }else{
+     			     MBIS.msg('找不到学员考试信息',{icon:2});
+     			  }
+     		}); 
+    	 }else{
+    		 alert('数据错误');
+    	 }
+    })
+    
+    function select2(name) {
+          $('#'+name).select2({
+              placeholder: '请输入学员名称，编号，身份证号',
+              allowClear: true,
+              minimumInputLength: 1,
+              width: 160,
+              ajax: {
+                  url: "/index.php/admin/SjExams/manuallyAdd.html",
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                      return {
+                          search_name: params.term, // search term
+                      };
+                  },
+                  processResults: function (data, params) {
+                      return {
+                          results: data
+                      };
+                  },
+              },
+              templateResult: formatRepo, // omitted for brevity, see the source of this page
+              templateSelection: formatRepoProvince // omitted for brevity, see the source of this page
+          });
+     }
+    
+    //提交考试成绩
+    $('.tijiao').click(function(){
+    	 var obj = $('.is_click');
+    	 if(obj.length >0){
+	    	 var school_id = obj.find('div:eq(0)').attr('data-value');
+	    	 var major_id  = obj.find('div:eq(1)').attr('data-value');
+	    	 var level_id  = obj.find('div:eq(2)').attr('data-value');
+	    	 var subject   = [];
+	    	 $('.subject_tr').each(function(i,e){
+	    		  var subject_id    = $(e).find('input[name="subject_id"]').val();
+	    		  var subject_score = $(e).find('.subject_score').val();
+	    		  console.log(subject_id+'-'+subject_score)
+	    		  subject.push(subject_id+'-'+subject_score)
+	    	 })
+	    	 if(subject.length<=0){
+	    		 alert('科目信息错误！！！');
+	    	 }
+	    	 var url  = "{:url('Sjexams/manuallyAdd')}";
+    	     var subjectString  = subject.join('--');
+    	     var parm = {action:'addSubject',userID:userID,school_id:school_id,major_id:major_id,level_id:level_id,subjectString:subjectString};
+    	 	 $.post(url,parm,function(data){
+     			  if(data.status >0){
+     				 window.location.href = "{:url('Sjexams/indexEducation')}";
+     			  }else{
+     			     MBIS.msg(data.msg,{icon:2});
+     			  }
+     		 });
+    	 }
+    })
+
+});
+</script>
+{/block}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <div autocomplete="off">
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>学员信息<font color='red'>*</font>：</th>
+         <td>
+             <select class="search_class select2 sel_menu" id="selectx">
+			        <option value="">请输入学员名称，编号，身份证号</option>
+			  </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>学员编号<font color='red'>*</font>：</th>
+         <td><input type="text" id='student_no' name='student_no' style='width:300px;' readonly class='ipt'  /></td>
+      </tr>
+      <tr>
+         <th width='150'>身份证号<font color='red'>*</font>：</th>
+         <td><input type="text" id='idcard' name='idcard' style='width:300px;' readonly class='ipt' /></td>
+      </tr>
+      <tr>
+        <th width='150'>报考信息<font color='red'>*</font>：</th>
+        <td class="info">
+        </td>
+      <tr>
+    </table>
+    <div style="text-align:center"> 
+    <button  class="btn btn-blue tijiao" >提交学员成绩</button>
+    </div>
+  </div>
+{/block}

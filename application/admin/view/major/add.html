@@ -1,0 +1,204 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/major/major_s.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='addForm' autocomplete="off">
+     <input type="hidden" id='major_id' name='major_id' value="{$arrInfo['major_id']}"/>
+
+    <table class='wst-form wst-box-top'>
+        <tr>
+            <th width='150'>专业名称<font color='red'>*</font>：</th>
+            <td><input type="text" id='name' name='name' style='width:300px;' class='ipt' value="{$arrInfo['name']}"/></td>
+        </tr>
+        <tr>
+            <th width='150'>专业编号<font color='red'>*</font>：</th>
+            <td><input type="text" id='major_number' name='major_number' style='width:300px;' class='ipt' value="{$arrInfo['major_number']}" /></td>
+        </tr>
+         <tr>
+	        <th width='150'>是否上架：</th>
+	        <td>
+	                        上架:<input type="radio" name="is_sell" {if($arrInfo['is_sell'] == 1 || !$arrInfo['is_sell']) } checked='checked' {/if} value="1">
+	                        下架:<input type="radio" name="is_sell" {if($arrInfo['is_sell'] == 2) } checked='checked' {/if} value="2">
+	        </td>
+        </tr>
+        <tr>
+            <th width='150'>前台显示</th>
+            <td>
+	            <select id="is_show" name="is_show" style="width:165px;height:26px;" class="query ipt">
+		            <option value='1' {$arrInfo['is_show']=='1'?'selected=selected':' ';}>是</option>
+		            <option value='0' {$arrInfo['is_show']=='2'?'selected=selected':' ';} >否</option>
+	            </select>
+            </td>
+        </tr>
+        
+        <tr>
+        <th width='150'>选择学校：</th>
+        <td>
+           <a href="javascript:void(0);" onclick="initGrid1(1);">选择学校...</a>
+           <input type="hidden" name="school_id1" id="subject_ids1" class="ipt" value="{$arrInfo['school_ids']}">
+        </td>
+        </tr>
+        <tr>
+      <th width='150'>已选科学校<font color='red'></font>：</th>
+      <td>
+        <div class="checkSubjectIds1 divText" tag="1">
+          {volist name="arrSchool" id="vo"}
+             <div class="ddd" style="float:left;border:1px solid gray;width:auto;text-align:left;margin-right:2px;"><span class="num_1">{$key+1}</span>、{$vo['name']}<a  data-type="{$vo['school_id']}" class="del_phone del_phone1 xxx" style="color:red;">✘</a></div>
+          {/volist}
+        </div>
+      </td>
+        </tr>
+        
+        <tr>
+	    <!-- teaching_type ==1 -->
+	        <th width='150'>层次：</th>
+	        <td>
+	           高升专<input id="level" type="checkbox" name="level_id[0]" {$arrLevel[2]['level_id']==2?'checked=checked':' '} value="2">
+	           毕业时间<input type="text"  name="graduate_time[0]" value="{$arrLevel[2]['graduate_time']}">
+	           {if $exam_type eq 1}
+	           <a href="javascript:void(0);" onclick="initGrid1(2);">选择科目</a>
+	           {/if}
+	           <input type="hidden" name="subject_ids[0]" id="subject_ids2" class="ipt" value="{$arrLevel[2]['subject_ids']}" >
+	        </td>
+        </tr>
+        <tr>
+	      <th width='150'>已选择科目<font color='red'></font>：</th>
+	      <td>
+	        <div class="checkSubjectIds2 divText" tag="2">
+	          {volist name="$arrLevel[2]['subject']" id="vo"}
+	             <div class="ddd" style="float:left;border:1px solid gray;width:auto;text-align:left;margin-right:2px;"><span class="num_2">{$key+1}</span>、{$vo['subject_name']}<a  data-type="{$vo['subject_id']}" class="del_phone del_phone2 xxx" style="color:red;">✘</a></div>
+	          {/volist}
+	        </div>
+	      </td>
+      </tr>
+        
+      <tr>
+	    <th width='150'>层次：</th>
+	    <td>
+	            专升本<input id="level" type="checkbox" name="level_id[1]" value="3" {$arrLevel[3]['level_id']==3?'checked=checked':' '}>
+	            毕业时间<input type="text" id="" name="graduate_time[1]" value="{$arrLevel[3]['graduate_time']}" >
+	            {if $exam_type eq 1}
+	           <a href="javascript:void(0);" onclick="initGrid1(3);">选择科目</a>
+	           {/if}
+	           <input type="hidden" name="subject_ids[1]" id="subject_ids3" class="ipt" value="{$arrLevel[3]['subject_ids']}">
+	        </td>
+	  </tr>
+	  <tr>
+	      <th width='150'>已选择科目<font color='red'></font>：</th>
+	      <td>
+	        <div class="checkSubjectIds3 divText" tag="3" >
+	          {volist name="$arrLevel[3]['subject']" id="vo"}
+	             <div class="ddd" style="float:left;border:1px solid gray;width:auto;text-align:left;margin-right:2px;"><span class="num_3">{$key+1}</span>、{$vo['subject_name']}<a  data-type="{$vo['subject_id']}" class="del_phone del_phone3 xxx" style="color:red;">✘</a></div>
+	          {/volist}
+	        </div>
+	      </td>
+      </tr>
+        
+       <tr>
+            <th width='150'>封面图<font color='red'>*</font>：</th>
+            <td>
+                <div id="preview" >
+                    <img src="{if !empty($arrInfo['cover_img'])}/{$arrInfo['cover_img']}{else}__ROOT__/{:MBISConf('CONF.userLogo')}{/if}"  height="150" />
+                </div>
+                <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+                <input type="hidden" id="cover_img" name="cover_img" value="{$arrInfo['cover_img']}" class="ipt" />
+                <span id='uploadMsg'></span>
+            </td>
+        </tr>
+        <tr>
+            <th width='150'>考试类型：</th>
+            <td>
+            {if $exam_type eq 1}
+            <p>自考</p>
+            {/if}
+            {if $exam_type eq 2}
+            <p>成考</p>
+            {/if}
+            {if $exam_type eq 3}
+            <p>网教</p>
+            {/if}
+            </td>
+        </tr>
+        <tr>
+            <th width='150'>专业简介：</th>
+            <td><textarea id='des' name='des' class="form-control ipt" style='width:80%;height:80px'>{$arrInfo['des']}</textarea></td>
+        </tr>
+        <tr>
+            <th width='150'>专业详情：</th>
+            <td><textarea id='detail' name='detail'  class="form-control ipt" style='width:80%;height:400px'>{$arrInfo['detail']}</textarea></td>
+        </tr>
+        <tr>
+            <td colspan='2' align='center'>
+                <button type="button" class="btn btn-blue" onclick="javascript:toSave()">保&nbsp;存</button>
+                <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+            </td>
+        </tr>
+    </table>
+</form>
+<script>
+    $(function () {
+    	
+    	int("{$school_ids}","{$subject_ids1}","{$subject_ids2}");
+
+//文件上传
+        MBIS.upload({
+            pick: '#filePicker',
+            formData: {dir: 'coverimg'},
+            accept: {extensions: 'gif,jpg,jpeg,bmp,png', mimeTypes: 'image/*'},
+            callback: function (f) {
+                var json = MBIS.toAdminJson(f);
+                if (json.status == 1) {
+                    $('#preview').html('<img src="' + MBIS.conf.ROOT + '/' + json.savePath + json.thumb + '" height="152" />');
+                    $('#cover_img').val(json.savePath + json.thumb);
+                }
+            }
+        });
+
+//编辑器
+        KindEditor.ready(function (K) {
+            editor1 = K.create('textarea[name="details"]', {
+                height: '350px',
+                allowFileManager: false,
+                allowImageUpload: true,
+                items: [
+                    'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                    'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                    'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                    'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                    'anchor', 'link', 'unlink', '|', 'about'
+                ],
+                afterBlur: function () {
+                    this.sync();
+                }
+            });
+        });
+    });
+</script>
+<div id="target1" style="width:auto; display:none;">
+    <div style="padding:5px;">
+    </div>
+    <div id="search_div_z1">
+    </div>
+</div>
+<div id="target2" style="width:auto; display:none;">
+    <div style="padding:5px;">
+    </div>
+    <div id="search_div_z2">
+    </div>
+</div>
+<div id="target3" style="width:1120px; display:none;">
+    <div style="padding:5px;">
+    </div>
+    <div id="search_div_z3">
+    </div>
+</div>
+{/block}

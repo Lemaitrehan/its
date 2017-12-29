@@ -1,0 +1,20 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/studentnoticelog/studentnoticelog.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid("{$type}");})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	会员ID：<input type='text' id='key'/>  
+   <button class="btn btn-blue" onclick='javascript:loadGrid({$type})'>查询</button>
+   <button class="btn btn-blue" onclick="javascript:refresh({$type})">刷新</button>
+   {if (MBISGrant('CKTZJN_02') && $type == 2 ) || ( MBISGrant('CKTZ_02') && $type == 1 ) }
+   <button class="btn btn-green f-right" onclick='javascript:toAdd({$type})'>发送通知</button>
+   {/if}
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

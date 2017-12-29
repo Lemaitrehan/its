@@ -1,0 +1,21 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/major/major_sl.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid({$major_id},{$level});})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

@@ -1,0 +1,184 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/memberuser/memberuser.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    {if condition="$data['userId'] !=0 "}
+      MBIS.setValues({$data|json_encode});
+    {/if}
+});
+</script>
+{/block}
+{block name="main"}
+<style type="text/css">
+  .tab-content{
+    padding:8px 10px;
+  }
+  .wst-form th {
+    width: 20%;
+}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<div class="tab-content" id="tabContent">
+  <table class='wst-form wst-box-top'>
+    <tr>
+    <th>用户名：</th>
+    <td>{$data['loginName']}</td>
+    <td rowspan="5">
+      <div id="preview" >
+          <img src="__ROOT__/{if $data['userPhoto']==''}{:MBISConf('CONF.userLogo')}{else}{$data['userPhoto']}{/if}"  height="150" />
+      </div>
+    </td>
+    </tr>
+    <tr>
+    <th>真实姓名：</th>
+    <td><input type="text" name="trueName" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>身份证号：</th>
+    <td><input type="text" name="idcard" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>学员编号：</th>
+    <td><input type="text" name="student_no" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>手机号码：</th>
+    <td><input type="text" name="userPhone" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>性别：</th>
+    <td><input type="text" name="userSex" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>民族：</th>
+    <td><input type="text" name="nation" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>电子邮箱：</th>
+    <td><input type="text" name="userEmail" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>QQ：</th>
+    <td><input type="text" name="userQQ" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>微信号：</th>
+    <td><input type="text" name="user_weixin" class="ipt" readonly ></td>
+    </tr>
+    <!--
+    <tr>
+    <th>学员身份：</th>
+    <td>
+        <select class="ipt" id="uidType" name="basic[uidType]">
+          <option value="1" >新生</option>
+          <option value="2" >在学生</option>
+          <option value="3" >会员</option>
+        </select>
+    </td>
+    </tr>
+    <tr>
+    <th>学员类型：</th>
+    <td>
+        <select class="ipt" id="student_type" name="basic[student_type]">
+          <option value="1" >技能</option>
+          <option value="2" >学历</option>
+          <option value="3" >技能学历</option>
+        </select>
+    </td>
+    </tr>
+    -->
+    <tr>
+    <th>学习状态：</th>
+    <td><input type="text" name="study_status" class="ipt" readonly ></td>
+    </tr>
+    <!--
+    <tr>
+    <th>学习形式：</th>
+    <td>
+        <select class="ipt" id="study_type" name="extend[study_type]">
+        </select>
+    </td>
+    </tr>
+    -->
+    <tr>
+    <th>详细地址：</th>
+    <td><input type="text" name="address" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>工作单位：</th>
+    <td><input type="text" name="company" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>紧急联系人：</th>
+    <td><input type="text" name="urgency_contact" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>紧急联系电话：</th>
+    <td><input type="text" name="urgency_contact_mobile" class="ipt" readonly ></td>
+    </tr>
+    <!--
+    <tr>
+    <th>报考院校：</th>
+    <td><input type="text" name="school_name" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>报考专业：</th>
+    <td><input type="text" name="major_name" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>层次：</th>
+    <td><input type="text" name="level_id" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>年级：</th>
+    <td><input type="text" name="grade_name" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>培养方式：</th>
+    <td><input type="text" name="culture_method" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>文化程度：</th>
+    <td><input type="text" name="education_level" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>入学前毕业证发放院校：</th>
+    <td><input type="text" name="graduate_colleges" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>入学前毕业证发放院校学校代码：</th>
+    <td><input type="text" name="colleges_number" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>入学前毕业时间：</th>
+    <td><input type="text" name="graduate_date" class="ipt" readonly ></td>
+    </tr>
+    <tr>
+    <th>入学前毕业证证书编号：</th>
+    <td><input type="text" name="certificate_number" class="ipt" readonly ></td>
+    </tr>
+    -->     
+  </table>
+</div>
+ 
+<table class='wst-form wst-box-top'>
+  <tr>
+    <td colspan='2' align='center'>
+      <!--
+      <input type="hidden" name="userId" id="userId" class="ipt" value="{$data['userId']}" />
+      <input type="submit" value="提交" class='btn btn-blue' />
+      -->
+      <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+    </td>
+  </tr>
+</table>
+
+</form>
+{/block}
+

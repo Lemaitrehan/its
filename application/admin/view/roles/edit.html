@@ -1,0 +1,205 @@
+{extend name="base" /}
+{block name="css"}
+<link href="__ADMIN__/js/ztree/css/zTreeStyle/zTreeStyle.css?v={$v}" rel="stylesheet" type="text/css" />
+{/block}
+{block name="js"}
+<script src="__ADMIN__/js/ztree/jquery.ztree.all-3.5.js?v={$v}"></script>
+<script src="__ADMIN__/roles/roles.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+
+<style>
+.hide{
+	display:none;
+}
+</style>
+
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form autocomplete='off'>
+<input type='hidden' id='roleId' class='ipt' value="{$object['roleId']}"/>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <th width='120'>角色名称<font color='red'>*</font></th>
+     <td><input type="text" id='roleName' class='ipt' value="{$object['roleName']}" maxLength='20' data-rule="角色名称: required;"/></td>
+  </tr>
+  <tr>
+     <th>角色备注</th>
+     <td><input type="text" id='roleDesc' class='ipt' value="{$object['roleDesc']}" style='width:70%' maxLength='100'/></td>
+  </tr>
+  <tr>
+     <th>是否是教师</th>
+     <td>
+                 是<input type="radio" {if condition="$object['is_teachers'] ==1 || $object['is_teachers'] === null "  }checked{/if}  name="is_teachers" class='is_teachers ipt' value="1" />
+                 否<input type="radio"  name="is_teachers" {if condition="$object['is_teachers'] ===0 "  }checked{/if}  class='is_teachers ipt' value="0" />
+     </td>
+  </tr>
+  
+  <tr class="is_hide  hideSchool">
+      <th>请选择对应信息</th>
+      <td class="schoolTd">
+      
+         {if condition="$arrUserRange"}
+            
+            {foreach  name="arrUserRange" item="vo" key="kk"}
+               <div class="addDivHtml">
+	            <div style="float:left">
+				  <span>学历类型</span>
+				  <select class="education_type" name="education_type" style="width:165px;" class="query ipt">
+				      <option value=" ">请选择</option>
+				      <option value="1" {$vo.education_type == 1 ?'selected':' '} >自考</option>
+				      <option value="2" {$vo.education_type == 2 ?'selected':' '}>成考</option>
+				      <option value="3" {$vo.education_type == 3 ?'selected':' '} >网教</option>         			
+				  </select>
+				    <span>学校：</span>
+				  <select class="school" name="school" style="width:165px;" class="query ipt">
+				      <option value=" ">请选择</option>
+				      {volist name="arrSchool[$kk]" id="v1"}
+				        <option value="{$v1.id}" {$vo.school == $v1.id?'selected':''} >{$v1.name}</option>
+				      {/volist}
+				  </select>
+				  
+				  <span>专业：</span>
+				  <select class="major" name="major" style="width:165px;" class="query ipt">
+				     <option value=" ">请选择</option>
+				     {volist name="arrMajor[$kk]" id="v2"}
+				        <option value="{$v1.id}" {$vo.major == $v2.id?'selected':''} >{$v2.name}</option>
+				      {/volist}
+				  </select>
+				  <span>年级：</span>
+				  <select class="grade grade_id{$kk+1}" num="{$kk+1}" name="grade" style="width:165px;" class="query ipt">
+				     <option value=" ">请选择</option>
+				     <option value="{$vo.grade}" selected >{if condition="$vo.grade"}{$arrNewGrade[ $vo.grade ]}{/if}</option>
+				  </select>
+				</div>
+				<div style="float:left">
+				    {if condition="$kk neq 0"}
+				      <span  class="btn btn-gray delUserSchool" style="color:red;font-size:20px">-</span>
+				    {else}
+				      <span  class="btn btn-gray addUserSchool" style="color:red;font-size:20px">+</span>
+				    {/if}
+				</div>   
+			 </div>
+			 <script>
+			    $(function(){
+			    	var num = {$kk+1};
+			    	select2('.grade_id'+num);
+			    })
+			 </script>
+            {/foreach}
+            
+         
+         {else}
+	         <div class="addDivHtml">
+	            <div style="float:left">
+				  <span>学历类型</span>
+				  <select class="education_type" name="education_type" style="width:165px;" class="query ipt">
+				      <option value=" ">请选择</option>
+				      <option value="1">自考</option>
+				      <option value="2">成考</option>
+				      <option value="3">网教</option>         			
+				  </select>
+				  
+				  <span>学校：</span>
+				  <select class="school" name="school" style="width:165px;" class="query ipt">
+				      <option value=" ">请选择</option>
+				  </select>
+				  
+				  <span>专业：</span>
+				  <select class="major" name="major" style="width:165px;" class="query ipt">
+				     <option value=" ">请选择</option>
+				  </select>
+				  
+				  <span>年级：</span>
+				  <select class="grade grade_id1" num="1" name="grade" style="width:165px;" class="query ipt">
+				     <option value=" ">请选择</option>
+				  </select>
+				</div>
+				<div style="float:left">
+				    <span  class="btn btn-gray addUserSchool" style="color:red;font-size:20px">+</span>
+				</div>   
+			 </div>
+		 {/if}
+		 
+		 
+	  </td>
+  </tr>
+  
+  <tr class="is_hide">
+     <th valign='top'>所在校区</th>
+     <td>
+         <span>全部：</span><input type="checkbox" name=""  class="allCheck" value="" {if condition=" $isEdit && $arrS == null "}checked{/if}/>
+         {volist name="arrD" id="vo" key="k"}
+         <span>{$vo.name}：</span><input type="checkbox" {if condition=" ($arrS && in_array($vo.department_id,$arrS) ) || ( $isEdit && $arrS == null ) "}checked{/if} name="" value="{$vo.department_id}" class="oneCheck" >
+         {/volist}
+     </td>
+  </tr>
+  
+  <tr>
+     <th valign='top'>权限</th>
+     <td>
+       <ul id="menuTree" class="ztree"></ul>
+     </td>
+  </tr>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type='button' value='保存' class='btn btn-blue' onclick='javascript:save()'>
+       <input type='button' value='返回' class='btn' onclick='javascript:history.go(-1)'>
+     </td>
+  </tr>
+</table>
+</form>
+
+<div class="hide cloneDiv addDivHtml">
+  <div style="float:left">
+  <span>学历类型</span>
+  <select class="education_type" name="education_type" style="width:165px;" class="query ipt">
+      <option value=" ">请选择</option>
+      <option value="1">自考</option>
+      <option value="2">成考</option>
+      <option value="3">网教</option>         			
+  </select>
+  
+  <span>学校：</span>
+  <select class="school" name="school" style="width:165px;" class="query ipt">
+      <option value=" ">请选择</option>
+  </select>
+  
+  <span>专业：</span>
+  <select class="major" name="major" style="width:165px;" class="query ipt">
+     <option value=" ">请选择</option>
+  </select>
+  
+  <span>年级：</span>
+  <select class="grade" name="grade" style="width:165px;" class="query ipt">
+     <option value=" ">请选择</option>
+  </select>
+</div>
+<div style="float:left">
+    <span  class="btn btn-gray delUserSchool" style="color:red;font-size:20px">-</span>
+</div>   
+</div>
+
+<script>
+
+var zTree,rolePrivileges = '{$object['privileges']}'.split(',');
+$(function(){
+	 var roleId = $('#roleId').val();
+	var setting = {
+		    check: {
+				enable: true
+			},
+		    async: {
+		        enable: true,
+		        url:MBIS.U('admin/privileges/listQueryByRole'),
+		        autoParam:["id", "name=n", "level=lv"],
+		        otherParam:["roleId",roleId]
+		    },
+		    callback:{
+		    	onNodeCreated:getNodes
+		    }
+	};
+	$.fn.zTree.init($("#menuTree"), setting);
+	zTree = $.fn.zTree.getZTreeObj("menuTree"); 
+})
+</script>
+{/block}

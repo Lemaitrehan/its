@@ -1,0 +1,30 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/major/major.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+	initGrid();
+	
+})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+    <input type="text" name="name"  id="name" class="query" value="" placeholder="请输入专业" />
+   	<button class="btn btn-blue" onclick='javascript:query()'>查询</button>
+	  	<button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+	  	{if MBISGrant('ZYSJ_01')}
+   		<button class="btn btn-green f-right" onclick='javascript:toAdd()'>新增</button>
+   		{/if}
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

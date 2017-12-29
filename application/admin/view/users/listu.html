@@ -1,0 +1,127 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/users/usersu.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<script>
+  $(function(){initGrid({$type_id});});
+</script>
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+#query{width:100%;}
+#export{text-decoration:none;color:#ffffff;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+{if condition="$type_id eq 2"}
+    <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+      <!--
+      <div class='f-left tbr-h'>创建时间:</div>
+      <input type="text" id="start" name="start" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+      <div class='f-left tbr-m'>至</div>
+      <input type="text" id="end" name="end" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+      -->
+      选择学院:<select id="school_id" name="school_id" onchange="checkSchool()" style="width:165px;" class="query">
+                <option value=''>全部</option>
+                {volist name="schools" id="vo"}
+                  <option value="{$vo.school_id}">{$vo.name}</option>
+                {/volist}
+              </select>
+      选择专业:<select id="major_id" name="major_id" onchange="checkMajor()" style="width:165px;" class="query">
+                <option value=''>全部</option>
+              </select>
+      选择课程:<select id="course_id" name="course_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+              </select>
+      {if MBISGrant('XYRD_01')}
+      <input type="button" class="btn btn-green f-right" onclick="javascript:toAdd({$type_id})" value="新增">
+      {/if}
+    </div>
+    <div id="query" style="float:left;">
+        学习状态:<select id="study_status" name="study_status" style="width:165px;" class="query">
+                  <option value=''>全部</option>
+                  <option value="1">在读</option>
+                  <option value="2">毕业</option>
+                  <option value="3">过期</option>
+                  <option value="4">弃学</option>
+                  <option value="5">休学</option>
+                  <option value="6">退学</option>
+                </select>
+        搜索查询:<select id="key" name="key" class="query">
+                  <option value="">全部</option>  
+                  <option value="trueName">姓名</option>  
+                  <option value="student_no">编号</option>  
+                  <option value="userPhone">手机号</option>  
+                  <option value="idcard">身份证</option>  
+              <!--<option value="major_name">专业</option>  
+                  <option value="course_name">课程</option>  
+                  <option value="subject_name">科目</option>-->  
+                </select><input type="text" id="key_value" name="key_value" class="query">
+	   		<input type="button" class="btn btn-blue" onclick="javascript:userQueryU()" value="查询">
+        <input type="hidden" class="query" id="type_id" name="type_id" value="{$type_id}">
+        <input class="btn btn-blue" type="submit" value="导出">
+    </form>
+        <input type="button" class="btn btn-blue f-right" onclick="javascript:refresh({$type_id})" value="刷新">
+    </div>
+{elseif condition="$type_id eq 1"/}
+    <form id="exportForm" action="{:url('admin/users/expUsersU')}" method="get" autocomplete="off">
+    <div class='date-s'>
+      <!--
+      <div class='f-left tbr-h'>创建时间:</div>
+      <input type="text" id="start" name="start" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+      <div class='f-left tbr-m'>至</div>
+      <input type="text" id="end" name="end" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+      -->
+      选择学院:<select id="school_id" name="school_id" onchange="checkSchool()" style="width:165px;" class="query">
+                <option value=''>全部</option>
+                {volist name="schools" id="vo"}
+                  <option value="{$vo.school_id}">{$vo.name}</option>
+                {/volist}
+              </select>
+      选择专业:<select id="major_id" name="major_id" onchange="checkMajor()" style="width:165px;" class="query">
+                <option value=''>全部</option>
+              </select>
+      选择课程:<select id="course_id" name="course_id" style="width:165px;" class="query">
+                <option value=''>全部</option>
+              </select>
+      {if MBISGrant('XYCK_01')}
+      <input type="button" class="btn btn-green f-right" onclick="javascript:toAdd({$type_id})" value="新增">
+      {/if}
+    </div>
+    <div id="query" style="float:left;">
+        学习状态:<select id="study_status" name="study_status" style="width:165px;" class="query">
+                  <option value=''>全部</option>
+                  <option value="1">在读</option>
+                  <option value="2">毕业</option>
+                  <option value="3">过期</option>
+                  <option value="4">弃学</option>
+                  <option value="5">休学</option>
+                  <option value="6">退学</option>
+                </select>
+        搜索查询:<select id="key" name="key" class="query">
+                  <option value="">全部</option>  
+                  <option value="trueName">姓名</option>  
+                  <option value="student_no">编号</option>  
+                  <option value="userPhone">手机号</option>  
+                  <option value="idcard">身份证</option>  
+              <!--<option value="major_name">专业</option>  
+                  <option value="course_name">课程</option>  
+                  <option value="subject_name">科目</option>-->  
+                </select><input type="text" id="key_value" name="key_value" class="query">
+        <input type="button" class="btn btn-blue" onclick="javascript:userQueryU()" value="查询">
+        <input type="hidden" class="query" id="type_id" name="type_id" value="{$type_id}">
+        <input class="btn btn-blue" type="submit" value="导出">
+    </form>
+        <input type="button" class="btn btn-blue f-right" onclick="javascript:refresh({$type_id})" value="刷新">
+    </div>
+{/if}
+    <div style="clear:both"></div>
+    <!--<iframe src="about:blank" name="hiddenIframe" class="hide" style="display:none;"></iframe>-->
+</div>
+<div id="maingrid"></div>
+{/block}

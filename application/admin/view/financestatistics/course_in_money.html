@@ -1,0 +1,229 @@
+{extend name="new_base" /}
+
+{block name="css"}
+<link rel="stylesheet" href="/static/css/Schoolroll/common.css"/>
+{/block}
+
+{block name="main"}
+
+<form class="layui-form" action="">
+    <br />
+    <div class="layui-form-item">
+        <label class="layui-form-label">学习类型</label>
+        <div class="layui-input-inline ">
+            <select name="quiz1">
+                <option value="" selected="">技能</option>
+                <option value="2016">学历</option>
+                <option value="2015">管理</option>
+                <option value="2014">其他项目</option>
+            </select>
+        </div>
+        <label class="layui-form-label ">专业</label>
+        <div class="layui-input-inline ">
+            <select name="quiz2">
+                <option value="1" selected="">平面设计</option>
+                <option value="2">艺术设计</option>
+                <option value="3">室内设计</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-inline">
+            <label class="layui-form-label">日期选择</label>
+            <div class="layui-input-block">
+                <input type="text" name="date1" id="date1" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <label class="layui-form-label min-width-lable">到</label>
+            <div class="layui-input-inline">
+                <input type="text" name="date2" id="date2" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <button class="layui-btn layui-btn-primary">今日</button>
+        <button class="layui-btn layui-btn-primary">本周</button>
+        <button class="layui-btn layui-btn-primary">本月</button>
+        <button class="layui-btn">查询</button>
+    </div>
+</form>
+{volist name="schools" id="value"}
+<div id="chart_{$key}" class="charts-two"></div>
+{/volist}
+
+
+<br />
+
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript" src="/static/plugins/moment/moment.js"></script>
+
+
+<script type="text/javascript" src="/static/plugins/echarts/echarts.js"></script>
+
+
+<script type="text/javascript">
+    // Step:3 conifg ECharts's path, link to echarts.js from current page.
+    // Step:3 为模块加载器配置echarts的路径，从当前页面链接到echarts.js，定义所需图表路径
+    require.config({
+        paths: {
+            echarts: '/static/plugins/echarts/'
+        }
+    });
+
+    // Step:4 require echarts and use it in the callback.
+    // Step:4 动态加载echarts然后在回调函数中开始使用，注意保持按需加载结构定义图表路径
+    require(
+        [
+            'echarts',
+            'echarts/chart/bar',
+            'echarts/chart/line',
+            'echarts/chart/map'
+        ],
+        function (ec) {
+
+            var data={$chart_result};
+
+            for (var v in data){
+                //--- 折柱 ---
+                var myChartOne = ec.init(document.getElementById('chart_'+v));
+
+                var tmp_name=data[v][0]['department_name'];
+
+                var tmp_majors=new Array();
+
+                var tmp_prices=new Array();
+
+                for (var vs in data[v]){
+
+                    tmp_majors.push(data[v][vs]['major_name']);
+                    tmp_prices.push(data[v][vs]['real_pay_price']);
+                }
+
+//                console.debug(tmp_prices);
+//                console.debug(tmp_majors);
+
+                var optionOne = {
+                    title: {
+                        x: 'center',
+                        text: '课程收费统计',
+                        subtext:tmp_name
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            restore: {
+                                show: true,
+                                title: '刷新'
+                            },
+                            saveAsImage: {
+                                show: true
+                            }
+                        }
+                    },
+                    calculable: true,
+                    grid: {
+                        borderWidth: 0,
+                        y: 80,
+                        y2: 60
+                    },
+                    xAxis: [{
+                        type: 'category',
+                        data: tmp_majors,
+                        name: '课程'
+                    }],
+                    yAxis: [{
+                        type: 'value',
+                        name: '万'
+                    }],
+                    series: [{
+                        name: '校区收费统计',
+                        type: 'bar',
+                        barWidth: 40, //固定柱子宽度
+                        itemStyle: {
+                            normal: {
+                                color: function(params) {
+                                    // build a color map as your need.
+                                    var colorList = [
+                                        '#C1232B', '#B5C334', '#FCCE10', '#E87C25', '#27727B',
+                                        '#FE8463', '#9BCA63', '#FAD860', '#F3A43B', '#60C0DD',
+                                        '#D7504B', '#C6E579', '#F4E001', '#F0805A', '#26C0C0'
+                                    ];
+                                    return colorList[params.dataIndex]
+                                },
+                                label: {
+                                    show: true,
+                                    position: 'top',
+                                    formatter: '{b}\n{c}万'
+                                }
+                            }
+                        },
+                        data: tmp_prices,
+
+                    }]
+                };
+
+                myChartOne.setOption(optionOne);
+
+            }
+
+
+        }
+    );
+
+</script>
+
+
+
+<script type="text/javascript">
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            layedit = layui.layedit,
+            laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#date0',
+            type: 'year'
+        });
+        laydate.render({
+            elem: '#date1' //指定元素
+        });
+        laydate.render({
+            elem: '#date2' //指定元素
+        });
+        laydate.render({
+            elem: '#date3' //指定元素
+        });
+        laydate.render({
+            elem: '#date4' //指定元素
+        });
+        laydate.render({
+            elem: '#date5',
+            type: 'month'
+        });
+        laydate.render({
+            elem: '#date6',
+            type: 'month'
+        });
+
+        $(function () {
+            var weeks = moment().locale('zh-CN').isoWeekYear(2012).isoWeeksInYear() + 1;
+            for (var i = 1; i < weeks; i++) {
+                $("#weeks").append('<option value="' + i + '" >' + i + '</option>')
+            }
+        });
+    });
+
+
+</script>
+
+
+
+
+{/block}

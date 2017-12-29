@@ -1,0 +1,251 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/logstafflogins/logstafflogins.js?v={$v}" type="text/javascript"></script>
+<script src="__ADMIN__/studentnoticelog/studentnoticelog.js?v={$v}" type="text/javascript"></script>
+<script>
+initCombo({$type},'{$sendType}',{$specialTag},"{$smsLog['userIds']}");
+editOrAdd({$enjn});
+threeSms('{$arrU}');
+$(function () {
+   var template_id =  "{$smsLog['template_id']}";
+   if(template_id){
+	   $('.template'+template_id).show();
+   }
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+<style>
+
+.hide{
+  display:none;
+}
+
+#search_div{
+width:98%;
+margin:8px auto;
+}
+#user_table{
+width:98%;
+text-align:center;
+margin:0 auto;
+font-size:13px;  
+}
+#first_tr{
+font-weight: bold;
+background-color: #00ffff;  
+}
+#pagecount{
+width:98%;
+margin:8px auto;
+font-size:15px;
+text-align: center;
+}
+.page_span{
+  padding:0 5px;
+}
+.black_overlay{
+display: none;
+position: absolute;
+top: 0%;
+left: 0%;
+width: 100%;
+height: 100%;
+background-color: #b3b3b3;
+z-index:1001;
+-moz-opacity: 0.8;
+opacity:.80;
+filter: alpha(opacity=80);
+}
+.white_content {
+display: none;
+position: absolute;
+top: 2%;
+left: 1%;
+width: 97.5%;
+height:95%;
+border: 2px solid lightblue;
+background-color: white;
+z-index:1002;
+overflow: auto;
+}
+#btn{
+width:100%;
+text-align: center;
+bottom:5px;
+}
+#content{
+vertical-align: middle; 
+}
+.hide{
+   display:none; 
+}
+</style>
+<style>
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+</style>
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  
+  <form id='departmentForm' method="post" autocomplete="off">
+    <input type='hidden' id='sms_id' name="sms_id" value='{$smsLog["id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th width='150'>选择模板<font color='red'>*</font>：</th>
+         <td>
+         <select id="notice_id"  name="notice_id" onChange="javascript:chooseTmpl()" class="ipt">
+            <option value="">请选择</option>
+            {volist name="noticetmpl_list" id="vo"}
+            <option {if condition="$smsLog['template_id'] eq $vo.notice_id"} selected{/if} value="{$vo.notice_id}">{$vo.title}</option>
+            {/volist}
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>发送方式:</th>
+         <td id="send_type">{$sendTypeName}</td>
+      </tr> 
+      <tr>
+        <th>模板内容</th>
+        <td>
+          {volist name="specialTagMemo" id="vo"}
+          <p style="color:red;">{$key}:{$vo}</p>
+          {/volist}
+          <textarea id='content' name='content' style='width:300px;height:100px;' class='ipt qc'>{if condition="$smsLog['contentMb']"}{$smsLog['contentMb']}{/if}
+          </textarea>
+         </td>
+      </tr>
+  
+   <!--    {if condition="$smsLog['template_id']" }
+      <tr>
+        <th>短信内容</th>
+        <td><div  name='content1' disabled style='width:500px;height:300px;border:1px solid gray ' class=''>
+                {if condition="$smsLog['content']"}{:htmlspecialchars_decode($smsLog['content'])}{/if}
+            </div>
+         </td>
+      </tr>
+      {/if} -->
+      
+      <tr {if condition="$is_three"}style="display:none;"{/if}>
+         <th width='150'>发送对象<font color='red'>*</font>：</th>
+         <td>
+           <a href="javascript:void(0);" onclick="initGrid1({$enjn})">选择学员...</a>
+           <input type="hidden" name="userIds" id="userIds"  value="{$smsLog['userIds']}" class="ipt qc">
+         </td>
+      </tr>
+     
+      
+      <tr  class="userTr">
+         <th width='150'>已选择对象<font color='red'>*</font>：</th>
+         <td>
+            <div class="checkUserIds">
+              {if condition="!empty($arrUserDiv)"}
+                 {volist name="arrUserDiv" id="vo"}
+                    <div class="ddd" style="float:left;border:1px solid gray;width:auto;text-align:left;margin-right:2px;"><span class="num">{$key+1}</span>{$vo.trueName}<a  data-type="{$vo.userId}" class="del_phone xxx" style="color:red;">X</a></div>
+                 {/volist}
+              {/if} 
+            </div>
+         </td>
+      </tr>
+      
+      {if condition="$smsLog['template_id']"}
+		  {volist name="templateReplaceText" id="vo"}
+			   {if condition="$SpecialTag1 eq $key" }{
+			       <tr class="tem_bl hide">
+					   <th width="150">{$key}<font color="red">*</font>:</th>
+					   <td><input type="text" class="ipt" name="smsText[]" value="true" ></td>
+				   </tr>
+			   {else}
+			       <tr class="tem_bl">
+					   <th width="150">{$key}<font color="red">*</font>:</th>
+					   <td><input type="text" class="ipt" name="smsText[]" value="{$vo}" ></td>
+				   </tr>
+			   {/if}
+	       {/volist} 
+      {/if} 
+      <tr>
+         <th width='150'>定时发送时间：</th>
+         <td><input type="text" name="targetTime" id="targetTime" value="{$smsLog['targetTime']}"/></td>
+      </tr>
+      
+       <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">发&nbsp;送</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+       </tr>
+    </table>
+  </form>
+  
+ <div id="target1" style="width:800px; margin:3px; display:none;">
+	    <div>
+	       <table>
+			  <tr class="hideSchool">
+			      <td>
+			         <div>
+						  <span>学校：</span>
+						  <select id="school" name="school" style="width:165;" class="query ipt">
+						      <option value="">请选择</option>
+						      {foreach  name="arrSchool" item="vo" }
+						        <option value="{$vo.school_id}">{$vo.name}</option>
+						      {/foreach}
+						  </select>
+						  <span>专业：</span>
+						  <select id="major" name="major" style="width:165;"  class="query ipt">
+						     <option value="">请选择</option>
+						  </select>
+						  <br>
+						  {if condition="$type eq 1"}
+						  <span>层次：</span>
+						  <select id="level_id" name="level_id" style="width:165;"  class="query ipt">
+						     <option value="">请选择</option>
+						  </select>
+						  <span>年级：</span>
+						  <select id="grade_id" name="grade_id" style="width:165;"  class="query ipt">
+						     <option value="">请选择</option>
+						      {volist name="arrGrade" id="vo"}
+				                   <option value="{$vo.grade_id}">{$vo.name}</option>
+				               {/volist}
+						  </select>
+						  {elseif condition="$type eq 2" /}
+						  <span>科目：</span>
+						  <select id="subject_id" name="subject_id"  style="width:165;" class="query ipt">
+						     <option value="">请选择</option>
+						  </select>
+						  {/if}
+					  </div>
+				  </td>
+			  </tr>
+			  <tr>
+			    <td>
+			       搜索标题：<select id="search_title"  name="search_title" class="query ipt" >
+			              <option value="1">学员名称</option>
+			              <option value="2">学员编号</option>
+			              <option value="3">学员身份证号码</option>
+			              <option value="4">学员手机号码</option>
+			          </select>
+			          <input type="text" id="search_word"  name="search_word" class="query ipt" value="">
+			          
+			    </td>
+			    <td>
+			    <input type="button" class="btn btn-blue" onclick="javascript:initGrid1({$enjn})" value="查询">
+			    </td>
+			  </tr>
+		  </table>
+		  <div id="search_div_z">
+		  </div>
+	  </div>
+</div>
+
+
+{/block}

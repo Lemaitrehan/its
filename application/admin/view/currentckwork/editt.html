@@ -1,0 +1,94 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/currentckwork/currentckworkt.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['cc_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+      },
+      valid: function(form){
+        var cc_id = $('#cc_id').val();
+        toEdits(cc_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='cc_id' name="cc_id" value='{$object["cc_id"]}'/>
+    <!--
+    学员编号：<input type="text" id='student_no' name='student_no' style='width:200px;' class='ipt'/>
+    <input type="button" class="btn" onclick="search()" value="查&nbsp;找"/>
+    -->
+    
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>老师编号<font color='red'>*</font>：</th>
+         <td>
+          <select id="user_no" name="user_no" class="ipt" {if condition="$object['cc_id'] neq 0"} disabled="disabled" {/if}>
+            {volist name="teacher_list" id="vo"}
+              <option {if condition="$object.user_no eq $vo.tc_no"} selected{/if} value="{$vo.tc_no}">{$vo.trueName} {$vo.tc_no}</option>
+            <!--
+              <input type="text" id='user_no' name='user_no' style='width:300px;' class='ipt'/>
+             <input type="button" class="btn" onclick="search()" value="查&nbsp;找"/>-->
+            {/volist}
+          </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>考勤科目<font color='red'>*</font>：</th>
+        <td>
+          <select id="object_id" name="object_id" class="ipt">
+            {volist name="subject_list" id="vo"}
+            <option {if condition="$object.object_id eq $vo.subject_id"} selected{/if} value="{$vo.subject_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>考勤日期<font color='red'>*</font>：</th>
+        <td><input type="text" id="createtime" name="createtime" style="margin:0px;vertical-align:baseline;" maxLength="20" class="ipt" /></td>
+      </tr>
+      <tr>
+         <th width='150'>考勤类型<font color='red'>*</font>：</th>
+         <td>
+          <select id="ckwork_type" name="ckwork_type" class="ipt">
+            <option {if condition="$object.ckwork_type eq 1"} selected{/if} value="1">标准考勤</option>
+            <option {if condition="$object.ckwork_type eq 2"} selected{/if} value="2">自定义考勤</option>
+          </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>课时数<font color='red'>*</font>：</th>
+         <td><input type="text" id='class_count' name='class_count' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>备注<font color='red'>*</font>：</th>
+         <td><textarea id='remark' name='remark' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  
+  </form>
+{/block}

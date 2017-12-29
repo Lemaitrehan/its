@@ -1,0 +1,67 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/orders/orders.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  $('#orderAuditForm').validator({
+      fields: {
+        orderRemarks: {
+          tip: "请输入订单备注",
+          rule: '订单备注:required;'
+        },
+      },
+      valid: function(form){
+        var orderId = $('#orderId').val();
+        toAudit(orderId);
+      }
+  })
+});
+</script>
+{/block}
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='orderAuditForm' autocomplete="off">
+    <input type='hidden' id='type_id' name="type_id" value='{$object["type_id"]}'/>
+    <input type='hidden' id='orderId' name="orderId" value='{$object["orderId"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th width='150'>确认状态<font color='red'>*</font>：</th>
+        <td>
+          <select name="confirmStatus" id='confirmStatus'>
+            <option {if condition="$object.confirmStatus eq 0"} selected{/if} value="0">未确认</option>
+            <option {if condition="$object.confirmStatus eq 1"} selected{/if} value="1">已确认</option>
+            <option {if condition="$object.confirmStatus eq 2"} selected{/if} value="2">已取消</option>
+           </select>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>付款状态<font color='red'>*</font>：</th>
+        <td>
+          <select name="payStatus" id='payStatus'>
+            <option {if condition="$object.payStatus eq 0"} selected{/if} value="0">未付款</option>
+            <option {if condition="$object.payStatus eq 1"} selected{/if} value="1">已付款</option>
+            <option {if condition="$object.payStatus eq 2"} selected{/if} value="2">已退款</option>
+           </select>
+        </td>
+      </tr>
+      <tr>
+        <th width='150'>订单备注<font color='red'>*</font>：</th>
+        <td>
+          <textarea name="orderRemarks" id="orderRemarks" style="width:200px;height:80px;">{$object.orderRemarks}</textarea>
+        </td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">提&nbsp;交</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

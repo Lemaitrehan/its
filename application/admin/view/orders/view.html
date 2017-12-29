@@ -1,0 +1,245 @@
+{extend name="base" /}
+{block name="main"}
+<div style='margin:10px;'>
+  <div class='order-box'>
+    <div class='box-head'>基本信息</div>  
+  </div>
+  <table class='wst-form wst-box-top'>
+      <tr>
+        <th width='150'>订单号：</th>
+        <td>{$object['orderNo']}</td>
+      </tr>
+      <tr>
+        <th width='150'>订单总金额：</th>
+        <td>{$object['totalMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>应付金额：</th>
+        <td>{$object['realTotalMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>实付金额：</th>
+        <td>{$object['realPayMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>未付金额：</th>
+        <td>{$object['depositRemainMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>课程总金额：</th>
+        <td>{$object['courseMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>学杂费总额：</th>
+        <td>{$object['adItMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>优惠金额：</th>
+        <td>{$object['discountMoney']}</td>
+      </tr>
+      <tr>
+        <th width='150'>订单促销金额：</th>
+        <td>{$object['pmt_order']}</td>
+      </tr>
+      <tr>
+        <th>订单状态：</th>
+        <td>{$object['orderStatusName']}</td>
+      </tr>
+      <tr>
+        <th>创建时间：</th>
+        <td>{$object['createtime']}</td>
+      </tr>
+      <tr>
+        <th>报名人姓名：</th>
+        <td>{$object['name']}</td>
+      </tr>
+      <tr>
+        <th>报名人手机号：</th>
+        <td>{$object['mobile']}</td>
+      </tr>
+      <tr>
+        <th>报名人身份证：</th>
+        <td>{$object['idcard']}</td>
+      </tr>
+      <tr>
+        <th>订单类型：</th>
+        <td>{$object['typeName']}</td>
+      </tr>
+      <tr>
+        <th>支付类型：</th>
+        <td>{$object['payTypeName']}</td>
+      </tr>
+      <tr>
+        <th>支付方式：</th>
+        <td>{$object['payFromName']}</td>
+      </tr>
+      <tr>
+        <th>购买方式：</th>
+        <td>{$object['buyType']}</td>
+      </tr>
+      <tr>
+        <th>代购咨询师：</th>
+        <td>{$object['agent_truename']}</td>
+      </tr>
+   </table>
+   <div class='order-box'>
+    <div class='box-head'>课程 && 学杂费</div>  
+  </div>
+   <table style="text-align:left;" class='wst-form wst-box-top'>
+      <!--<tr>
+        <th>代购咨询师工号：</th>
+        <td>-</td>
+      </tr>-->
+      {volist name="object.courseDetail" id="vo"}
+      <tr><th colspan="2" style="text-align:left"><b>课程{$key+1}</b></th></tr>
+      <tr>
+        <th width="150">课程名称：</th>
+        <td>{$vo.course_name}</td>
+      </tr>
+      {if condition="!empty($vo['subject_id']) && empty($vo['subjectLists'])"}
+      <tr>
+        <th>讲师：</th>
+        <td>{$vo.teacher_name}</td>
+      </tr>
+      <tr>
+        <th>课时：</th>
+        <td>{$vo.course_hours}</td>
+      </tr>
+      {/if}
+      <tr>
+        <th>标准价：</th>
+        <td>{$vo.price}</td>
+      </tr>
+      <tr>
+        <th>优惠价：</th>
+        <td>{$vo.fee_price}</td>
+      </tr>
+      {if condition="isset($vo['is_full_pay'])"}
+      <tr>
+        <th>是否全款：</th>
+        <td>{$vo.is_full_pay_name}</td>
+      </tr>
+      <tr>
+        <th>应付款：</th>
+        <td>{$vo.deal_pay_price}</td>
+      </tr>
+      <tr>
+        <th>实付款：</th>
+        <td>{$vo.real_pay_price}</td>
+      </tr>
+      <tr>
+        <th>未付款：</th>
+        <td>{$vo.remain_pay_price}</td>
+      </tr>
+      <tr>
+        <th>定金金额分摊价：</th>
+        <td>{$vo.deposit_aver_price}</td>
+      </tr>
+      <tr>
+        <th>优惠金额分摊价：</th>
+        <td>{$vo.discount_aver_price}</td>
+      </tr>
+      <tr>
+        <th>订单促销分摊价：</th>
+        <td>{$vo.pmt_order_aver_price}</td>
+      </tr>
+      {/if}
+      {if condition="!empty($vo['subjectLists'])"}
+      <tr>
+        <td colspan="2">
+          <table style="text-align:center;width:75%;" border="1" sellspacing="1">
+            <tr style="font-weight: bold;background-color: #00ffff;">
+              <td>科目名称</td>
+              <td>讲师</td>
+              <td>课时</td>
+              <td>标准价</td>
+              <td>优惠价</td>
+              <td>应付款</td>
+              <td>实付款</td>
+              <td>未付款</td>
+              <td>定金金额分摊价</td>
+              <td>优惠金额分摊价</td>
+              <td>订单促销分摊价</td>
+              <td>是否全款</td>
+            </tr>
+            {volist name="vo.subjectLists" id="voo"}
+            <tr>
+              <td>{$voo.obj_name}</td>
+              <td>{$voo.teacher_name}</td>
+              <td>{$voo.course_hours}</td>
+              <td>{$voo.price}</td>
+              <td>{$voo.subject_offer_price}</td>
+              <td>{$voo.deal_pay_price}</td>
+              <td>{$voo.real_pay_price}</td>
+              <td>{$voo.remain_pay_price}</td>
+              <td>{$voo.deposit_aver_price}</td>
+              <td>{$voo.discount_aver_price}</td>
+              <td>{$voo.pmt_order_aver_price}</td>
+              <td>{$voo.is_full_pay_name}</td>
+            </tr>
+            {/volist}
+          </table>
+        </td>
+      </tr>
+      {/if}
+      {if condition="!empty($vo['adItemLists'])"}
+      <tr>
+        <th>学杂费明细：</th>
+        <td>
+          {volist name="vo.adItemLists" id="voo"}
+          {if condition="$voo.it_price gt 0"}
+          <span>{$voo.it_name}</span><span>{$voo.it_price}</span>&nbsp;&nbsp;&nbsp;
+          {/if}
+          {/volist}
+        </td>
+      </tr>
+      {/if}
+      <tr><td colspan="2"><hr></td></tr>
+      {/volist}
+  </table>
+  <!-- 团购信息 -->
+  {if condition="!empty($object['orderTeamLists'])"}
+  <div class='order-box'>
+    <div class='box-head'>团购信息</div>  
+  </div>
+  <table style="text-align:center;width:70%;" border="1" sellspacing="1">
+    <tr style="font-weight: bold;background-color: #00ffff;">
+      <td>姓名</td>
+      <td>手机号</td>
+      <td>身份证号码</td>
+    </tr>
+    {volist name="object.orderTeamLists" id="vo"}
+    <tr>
+      <td>{$vo.name}</td>
+      <td>{$vo.mobile}</td>
+      <td>{$vo.idcard}</td>
+    </tr>
+    {/volist} 
+  </table>
+  {/if}
+  <!-- 订单促销信息 -->
+  {if condition="!empty($object['orderRuleLists'])"}
+  <div class='order-box'>
+    <div class='box-head'>订单促销信息</div>  
+  </div>
+  <table style="text-align:center;width:70%;" border="1" sellspacing="1">
+    <tr style="font-weight: bold;background-color: #00ffff;">
+      <td>规则名称</td>
+      <td>规则描述</td>
+      <td>优惠金额</td>
+    </tr>
+    {volist name="object.orderRuleLists" id="vo"}
+    <tr>
+      <td>{$vo.name}</td>
+      <td>{$vo.description}</td>
+      <td>{$vo.discount_price}</td>
+    </tr>
+    {/volist} 
+  </table>
+  {/if}
+      
+    <div style="text-align:center;padding:15px;">
+          <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+    </div>
+</div>
+{/block}

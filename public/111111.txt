@@ -1,0 +1,1 @@
+UPDATE `mbis_sj_exams`  SET `status`=1,`update_time`=1497855223,`update_person_id`=1  WHERE  `userId` IN (6759)  AND `school_id` = 12  AND `major_id` = 182  AND `level_id` = 2

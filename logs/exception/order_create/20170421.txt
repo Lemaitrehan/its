@@ -1,0 +1,15 @@
+2017-04-21 13:57:15 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 13:57:18 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 13:57:28 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 13:57:45 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 13:58:01 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:12 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:13 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:13 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:14 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:14 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:14 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:14 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:15 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:00:18 >> [File] /data/wwwroot/mbis/application/common/model/Orders.php [Line] 35 [Code] 0 [Message] Undefined index: system
+2017-04-21 14:08:11 >> [File] /data/wwwroot/mbis/thinkphp/library/think/db/Builder.php [Line] 664 [Code] 0 [Message] fields not exists:[platform_use]

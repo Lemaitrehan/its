@@ -1,0 +1,2 @@
+2017-04-12 11:35:03 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-12 11:35:19 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId

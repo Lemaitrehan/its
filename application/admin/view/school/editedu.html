@@ -1,0 +1,175 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/school/schooledu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo();
+	{if condition="$object['school_id'] !=0 "}
+	   MBIS.setValues({$object});
+	{/if}
+	$('#schoolForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入院校名称",
+	    		rule: '院校名称:required;'
+	    	},
+        school_no: {
+          tip: "请输入院校编号",
+          rule: '院校编号:required;'
+        },
+	    },
+	    valid: function(form){
+	    	var school_id = $('#school_id').val();
+	    	toEdits(school_id);
+	    }
+	})
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='schoolForm' autocomplete="off">
+<input type='hidden' id='school_id' name="school_id" value='{$object["school_id"]}'/>
+<input type='hidden' id='type_id' name="jump_type" value='{$type_id}'/>
+<table class='wst-form wst-box-top'>
+
+  <!--<tr>
+     <th width='150'>跳转类型<font color='red'>*</font>：</th>
+     <td>
+     <select id='jump_type' name='jump_type' class='ipt'>
+     <option value="1">学历</option>
+     <option value="2">技能</option>
+     </select>
+     </td>
+  </tr>-->
+  <tr>
+     <th width='150'>是否作为首页导航显示：</th>
+     <td>
+     <select id='is_nav' name='is_nav' class='ipt'>
+     <option value="0">否</option>
+     <option value="1">是</option>
+     </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>院校名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>院校编号<font color='red'>*</font>：</th>
+     <td><input type="text" id='school_no' name='school_no' style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+    <th width='150'>是否上架<font color='red'>*</font>：</th>
+    <td>
+       <span>上架：</span><input type="radio"  class='is_sell' name='is_sell' value="1" {$is_sell==1 || !$is_sell ?'checked':''} class='ipt'/>
+       <span>下架：</span><input type="radio"  class='is_sell' name='is_sell' value="2" {$is_sell==2?'checked':''} class='ipt'/>
+    </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>学历考试类型<font color='red'>*</font>：</th>
+     <td>
+       <select name="exam_type">
+           <option value="">考试类型</option>
+           <option value="1" {if condition="$object['exam_type'] == 1"}selected{/if}>自考</option>
+           <option value="2" {if condition="$object['exam_type'] == 2"}selected{/if} >成考</option>
+           <option value="3" {if condition="$object['exam_type'] == 3"}selected{/if} >网教</option>
+       </select>
+     </td>
+  </tr>
+  
+  <tr>
+     <th width='150'>封面图：</th>
+     <td>
+            <div id="preview" >
+                <img src="{if $object['cover_img']==''}{$defaultimg}{else}__ROOT__/{$object['cover_img']}{/if}"  height="150" />
+            </div>
+            <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+            <input type="hidden" id="cover_img" name="cover_img" class="ipt" />
+            <span id='uploadMsg'></span>
+     </td>
+  </tr>
+  
+  <tr style="display:none;">
+     <th width='150'>成本结算比例：</th>
+     <td><input type="text" id='costst' name='costst' style='width:300px;' class='ipt'/><br>(范围0-1)</td>
+  </tr>
+  
+  <tr>
+     <th width='150'>校长名称：</th>
+     <td><input type="text" id='principal_name' name='principal_name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>学校联系电话：</th>
+     <td><input type="text" id='principal_mobile' name='principal_mobile' style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>地址：</th>
+     <td><input type="text" id='addr' name='addr' style='width:300px;' class='ipt'/></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>简介：</th>
+     <td><textarea id='info' name='info' style='width:300px;' class='ipt'></textarea></td>
+  </tr>
+  
+  <tr>
+     <th width='150'>详情：</th>
+     <td><textarea id='details' name='details' class="form-control ipt" style='width:80%;height:400px'></textarea></td>
+  </tr>
+ 
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+ </form>
+    <script>
+$(function(){
+  
+  //文件上传
+	MBIS.upload({
+  	  pick:'#filePicker',
+  	  formData: {dir:'coverimg'},
+  	  accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+  	  callback:function(f){
+  		  var json = MBIS.toAdminJson(f);
+  		  if(json.status==1){
+        	$('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+        	$('#cover_img').val(json.savePath+json.thumb);
+  		  }
+	  }
+    });
+    
+  //编辑器
+    KindEditor.ready(function(K) {
+		editor1 = K.create('textarea[name="details"]', {
+			height:'350px',
+			allowFileManager : false,
+			allowImageUpload : true,
+			items:[
+			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+			        'anchor', 'link', 'unlink', '|', 'about'
+			],
+			afterBlur: function(){ this.sync(); }
+		});
+	});
+});
+</script>
+{/block}

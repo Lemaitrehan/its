@@ -1,0 +1,61 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/course/courseedu.js?v={$v}" type="text/javascript"></script>
+<script>
+	$(function(){initGrid({$type_id});})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+		<div class='search-s'>
+	    	院校:<select id="school_id" onChange="getMajorList()" style="width:165px;height:26px;" class="query">
+	             	<option value=''>请选择</option>
+	             	{volist name="$school" id="vo"}
+					<option value="{$vo.school_id}">{$vo.name}</option>
+	             	{/volist}
+	            	</select>
+	        专业:<select id="major_id" onChange="getLevel()" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	{volist name="$major" id="vo"}
+	              	<option value="{$vo.major_id}">{$vo.name}</option>
+	              	{/volist}
+	            	</select>
+	        层次:<select id="level_type" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	<option value='2'>高升专</option>
+	              	<option value='3'>专升本</option>
+	            	</select>    	
+	    	
+			<!--
+	       	年级:<select id="grade_id" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	{volist name="$grade" id="vo"}
+	              	<option value="{$vo.grade_id}">{$vo.name}</option>
+	              	{/volist}
+	            	</select>
+			-->
+			{if MBISGrant('XLKC_01')}
+	        <button class="btn btn-green f-right" onclick='javascript:toEdit({$type_id},0)'>新增</button>
+			{/if}
+	  	</div>
+	  	<div class='search-i'>
+	    	名称:<input type='text' placeholder='课程名称' id="name" class="query"/>
+	    	编号:<input type='text' placeholder='课程编号' id="course_bn" class="query"/>
+	        <input type='hidden' value="{$type_id}" id="type_id" class="query">
+	    	<button class="btn btn-blue" onclick='javascript:courseQuery({$type_id})'>查询</button>
+	    	<button class="btn btn-blue f-right" onclick="javascript:refresh({$type_id})">刷新</button>
+	  	    <button class="btn btn-blue f-right" onclick="javascript:export_data({$type_id})">导出</button>
+	  	    &nbsp;&nbsp;&nbsp;&nbsp;
+	  	</div>
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

@@ -1,0 +1,95 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/logstafflogins/logstafflogins.js?v={$v}" type="text/javascript"></script>
+<script src="__ADMIN__/partnerlog/partnerlog.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+      },
+      valid: function(form){
+        var id = $('#id').val();
+        toEdits(id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='id' name="id" value='{$object["id"]}'/>
+    <table class='wst-form wst-box-top'>
+    <!--
+      <tr>
+         <th width='150'>会员ID<font color='red'>*</font>：</th>
+         <td><input type="text" id='userid' name='userid' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>报名ID<font color='red'>*</font>：</th>
+         <td><input type="text" id='entry_id' name='entry_id' style='width:300px;' class='ipt'/></td>
+      </tr>
+    -->
+      <tr>
+        <th width='150'>合作方<font color='red'>*</font>：</th>
+         <td>
+         <select id="p_id" name="p_id" class="ipt">
+            {volist name="partners_list" id="vo"}
+            <option {if condition="$object.p_id eq $vo.p_id"} selected{/if} value="{$vo.p_id}">{$vo.name}</option>
+            {/volist}
+         </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>业务结算类型<font color='red'>*</font>：</th>
+         <td>
+         <select id="settlement_type" name="settlement_type" class="ipt">
+            <option {if condition="$object.settlement_type eq 0"} selected{/if} value="0">未知</option>
+            <option {if condition="$object.settlement_type eq 1"} selected{/if} value="1">管理费</option>
+            <option {if condition="$object.settlement_type eq 2"} selected{/if} value="2">统考费</option>
+            <option {if condition="$object.settlement_type eq 3"} selected{/if} value="3">实践报考费</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>结算方式<font color='red'>*</font>：</th>
+        <td>
+          <select id="pay_type" name="business_center_id" class="ipt">
+            <option {if condition="$object.pay_type eq 0"} selected{/if} value="0">未知</option>
+            <option {if condition="$object.pay_type eq 1"} selected{/if} value="1">现金支付</option>
+            <option {if condition="$object.pay_type eq 2"} selected{/if} value="2">银行转账</option>
+            <option {if condition="$object.pay_type eq 3"} selected{/if} value="3">支付宝支付</option>
+            <option {if condition="$object.pay_type eq 4"} selected{/if} value="4">微信支付</option>
+            <option {if condition="$object.pay_type eq 5"} selected{/if} value="5">支票/汇票</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+         <th width='150'>结算时间<font color='red'>*</font>：</th>
+         <td>
+            <input type="text" style="margin:0px;vertical-align:baseline;" id="settlement_time" name="settlement_time" class="ipt" maxLength="20"/>
+         </td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

@@ -1,0 +1,30 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/taskmessage/task.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid();})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+
+<div class="wst-toolbar">
+   <span>状态：</span>
+   <select id="status" name="status" style="width:165;" class="query ipt">
+      <option value="">请选择</option>
+      <option value="1">未完成</option>
+      <option value="2">已完成</option>
+   </select>   
+   <button class="btn btn-blue" onclick='javascript:loadGrid()'>查询</button>
+   <button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+   <button class="btn btn-green f-right" onclick='javascript:toAdd()'>新增任务</button>
+   <div style='clear:both'></div>
+</div>
+<div>
+   <button class="btn btn-blue mail" onclick="javascript:sendReSms(1,this)">收件箱</button>
+   <button class="btn mail"  onclick="javascript:sendReSms(2,this)">发件箱</button>
+   <button class="btn mail"  onclick="javascript:sendReSms(3,this)">审核任务</button> 
+<!--     <button class="btn btn-red trash" onclick="javascript:trash()">垃圾桶</button> -->
+</div>
+<div id="maingrid"></div>
+{/block}

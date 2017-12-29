@@ -1,0 +1,8 @@
+2017-04-10 11:13:31 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 18 [Code] 0 [Message] Undefined index: cartData
+2017-04-10 11:15:58 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 11:16:04 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 11:17:31 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 11:20:00 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 11:23:30 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 11:24:09 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId
+2017-04-10 13:47:28 >> [File] /data/wwwroot/mbis/application/common/model/Users.php [Line] 380 [Code] 0 [Message] Undefined index: userId

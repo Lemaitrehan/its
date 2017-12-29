@@ -1,0 +1,23 @@
+{extend name="base" /}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='articleForm' autocomplete="off">
+<table class='wst-form wst-box-top' style="padding:20px;width:800px;margin:0 auto;">
+  <tr>
+     <td><h2 style="text-align:center;padding:20px;border-bottom:1px solid #ccc;">{$object.articleTitle}</h2></td>
+  </tr>
+   <tr>
+       <td>
+        <div style="padding:20px;">
+       	{$object.articleContent}
+        </div>
+       </td>
+    </tr>  
+     <tr>
+       <td align='center'>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+ </form>
+{/block}

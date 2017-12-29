@@ -1,0 +1,39 @@
+{extend name="base" /}
+{block name="css"}
+<link href="__ADMIN__/js/ztree/css/zTreeStyle/zTreeStyle.css?v={$v}" rel="stylesheet" type="text/css" />
+<style>
+body{padding:5px;}
+</style> 
+{/block}
+{block name="js"}
+<script src="__ADMIN__/js/ztree/jquery.ztree.all-3.5.js?v={$v}"></script>
+<script src="__ADMIN__/Examinationperformancemanagement/menu.js?v={$v}" type="text/javascript"></script>
+<script>
+
+</script>  
+{/block}
+{block name="main"}
+<div class="l-loading" style="display:block" id="wst-loading"></div>
+<div data-type="{$type}" id="layout">
+    
+    <div  position="left" title="菜单管理" showClose='true' style='overflow:auto;'>
+        <ul id="menuTree" class="ztree"></ul>
+    </div>
+    
+    <!-- <div style="clear:both;"></div> -->
+    
+    <div  class="wst-toolbar" style='Width:81%;float:right;' >
+    
+	         科目名称<select id="search_major_id" name="search_major_id" onchange="checkMajor()" style="width:165px;" name="major_id" class="query">
+            			<option value=''>请选择</option>
+          			</select> 
+	   <button class="btn f-right" onclick="javascript:history.go(-1)">返回</button>
+	   <button class="btn btn-green f-right add" style="display:none;">新增</button>
+	   <div style='clear:both'></div>
+	   <div id="maingrid"></div>
+   </div>
+</div>
+{/block}
+
+
+

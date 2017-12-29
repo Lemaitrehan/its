@@ -1,0 +1,71 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/grade/gradeedu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo();
+	{if condition="$object['grade_id'] !=0 "}
+	   MBIS.setValues({$object});
+	{/if}
+	$('#infoForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入年级名称",
+	    		rule: '年级名称:required;'
+	    	},
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id);
+	    }
+	});
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='pkey' name="grade_id" value='{$object["grade_id"]}'/>
+<table class='wst-form wst-box-top'>
+  <tr>
+     <th width='150'>年级名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+
+  
+  <tr>
+    <td colspan='2' align='center'>
+       <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+       <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+    </td>
+  </tr>
+</table>
+</form>
+<script>
+    $(function(){
+      //编辑器
+        KindEditor.ready(function(K) {
+    		editor1 = K.create('textarea[name="rp_des"]', {
+    			height:'350px',
+    			allowFileManager : false,
+    			allowImageUpload : true,
+    			items:[
+    			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+    			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+    			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+    			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+    			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+    			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+    			        'anchor', 'link', 'unlink', '|', 'about'
+    			],
+    			afterBlur: function(){ this.sync(); }
+    		});
+    	});
+    });
+</script>
+{/block}

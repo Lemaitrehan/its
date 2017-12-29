@@ -1,0 +1,201 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/users/edu.js?v={$v}" type="text/javascript"></script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>	
+<p class="tab-title" id="tabTitle">
+	<a href="javascript:;" class="hover">学员基本信息</a> | 
+	<a href="javascript:;">学员扩展信息</a> |
+	<a href="javascript:;">报名记录</a> |
+	<a href="javascript:;">考勤记录</a> |
+	<a href="javascript:;">缴费记录</a> 
+</p>
+<div class="tab-content" id="tabContent">
+<!-- 学员基本信息 -->
+<table class='wst-form wst-box-top'>
+	<tr>
+  		<th>姓名：</th>
+      	<td>
+        
+      	</td>
+      	<th>学员编号：</th>
+        <td>
+            
+        </td>
+        <th>预报名编号：</th>
+        <td>
+        	
+        </td>
+   	</tr>
+   	<tr>
+      	<th>手机号：</th>
+      	<td>
+      		
+      	</td>
+      	<th>邮箱：</th>
+      	<td>
+      		
+      	</td>
+      	<th>性别：</th>
+      	<td>
+      		
+      	</td>
+  	</tr>
+   	<tr>
+      	<th>手机：</th>
+      	<td>
+      		
+      	</td>
+      	<th>电子邮箱：</th>
+      	<td>
+          
+      	</td>
+      	<th>电子邮箱：</th>
+      	<td>
+          
+      	</td>
+   	</tr>
+   	<tr>
+      	<th>QQ号码：</th>
+      	<td>
+          
+      	</td>
+      	<th>添加时间：</th>
+      	<td>
+          
+      	</td>
+      	<th>最后更新时间：</th>
+      	<td>
+          
+      	</td>
+   	</tr>
+</table>
+<!-- 学员扩展信息 -->
+<table class='wst-form wst-box-top' style="display:none;">
+  	<tr>
+  		<th>学员编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>预报名编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+</table>
+<!-- 报名记录 -->
+<table class='wst-form wst-box-top' style="display:none;">
+  	<tr>
+  		<th>学员编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>预报名编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>报名时间：</th>
+   		<td>
+   			
+   		</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+</table>
+<!-- 考勤记录 -->
+<table class='wst-form wst-box-top' style="display:none;">
+  	<tr>
+  		<th>学员编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>预报名编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+</table>
+<!-- 缴费记录 -->
+<table class='wst-form wst-box-top' style="display:none;">
+  	<tr>
+  		<th>学员编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>预报名编号：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+   	<tr>
+   		<th>学员类型：</th>
+      	<td>
+      		
+      	</td>
+   	</tr>
+</table>
+</div>
+<script>
+$(function(){
+    editInit();
+    changeTab('tabTitle','tabContent');
+});
+</script>
+{/block}

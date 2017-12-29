@@ -1,0 +1,156 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/subjectedu/subjectedu.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+	initCombo();
+	{if condition="$object['subject_id'] !=0 "}
+	   MBIS.setValues({$object});
+  {/if}
+	$('#infoForm').validator({
+	    fields: {
+	    	name: {
+	    		tip: "请输入科目名称",
+	    		rule: '科目名称:required;'
+	    	},
+        subject_no: {
+          tip: "请输入科目代码",
+          rule: '科目代码:required;'
+        },
+        type_number: {
+          tip: "请输入类型序号",
+          rule: '类型序号:required;'
+        },
+	    },
+	    valid: function(form){
+	    	var id = $('#pkey').val();
+	    	toEdits(id,{$type_id});
+	    }
+	});
+});
+</script>
+{/block}
+{block name="main"}
+
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='pkey' name="subject_id" value='{$object["subject_id"]}'/>
+<input type='hidden' id='type_id' name="type_id" value='{$type_id}'/>
+
+<table class='wst-form wst-box-top'>
+  <tr>
+     <th width='150'>科目名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>科目代码<font color='red'>*</font>：</th>
+     <td><input type="text" id='subject_no' name='subject_no' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>类型序号<font color='red'>*</font>：</th>
+     <td><input type="text" id='type_number' name='type_number' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>学分：</th>
+     <td>
+        <select id='credit' name='credit' style="width:200px;" class='ipt'>
+          <option value=''>请选择</option>
+          <option value='1'>1</option>
+          <option value='2'>2</option>
+          <option value='3'>3</option>
+          <option value='4'>4</option>
+          <option value='5'>5</option>
+          <option value='6'>6</option>
+          <option value='7'>7</option>
+          <option value='8'>8</option>
+          <option value='9'>9</option>
+          <option value='10'>10</option>
+          <option value='11'>11</option>
+          <option value='12'>12</option>
+          <option value='13'>13</option>
+          <option value='14'>14</option>
+          <option value='99'>不计学分</option>
+        </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>类型：</th>
+     <td>
+        <select id='genre' name='genre' style="width:200px;" class='ipt'>
+          <option value=''>请选择</option>
+          <option value='1'>必考</option>
+          <option value='2'>选考</option>
+          <option value='3'>加考</option>
+        </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>考试方式：</th>
+     <td>
+        <select id='exam_method' name='exam_method' style="width:200px;" class='ipt'>
+          <option value=''>请选择</option>
+          <option value='1'>笔试</option>
+          <option value='2'>实践考核</option>
+        </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>考试时间(月)：</th>
+     <td>
+        <select id='exam_time' name='exam_time' style="width:200px;" class='ipt'>
+          <option value=''>请选择</option>
+          <option value='1'>1、7</option>
+          <option value='2'>4、10</option>
+        </select>
+     </td>
+  </tr>
+  <tr>
+    <td colspan='2' align='center'>
+      <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+      <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+    </td>
+  </tr>
+</table>
+</form>
+
+<script>
+  $(function(){
+    //文件上传
+  	MBIS.upload({
+    	  pick:'#filePicker',
+    	  formData: {dir:'coverimg'},
+    	  accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+    	  callback:function(f){
+    		  var json = MBIS.toAdminJson(f);
+    		  if(json.status==1){
+          	$('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+          	$('#cover_img').val(json.savePath+json.thumb);
+    		  }
+  	  }
+      });
+    //编辑器
+      KindEditor.ready(function(K) {
+  		editor1 = K.create('textarea[name="details"]', {
+  			height:'350px',
+  			allowFileManager : false,
+  			allowImageUpload : true,
+  			items:[
+  			        'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+  			        'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+  			        'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+  			        'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+  			        'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+  			        'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+  			        'anchor', 'link', 'unlink', '|', 'about'
+  			],
+  			afterBlur: function(){ this.sync(); }
+  		});
+  	});
+  });
+</script>
+{/block}

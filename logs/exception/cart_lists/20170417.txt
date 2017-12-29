@@ -1,0 +1,9 @@
+2017-04-17 11:34:30 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:32 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:34 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:36 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:38 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:50 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:34:52 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:35:22 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero
+2017-04-17 11:39:22 >> [File] /data/wwwroot/mbis/application/common/model/Course.php [Line] 571 [Code] 0 [Message] Division by zero

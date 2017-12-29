@@ -1,0 +1,63 @@
+{extend name="base" /}
+{block name="js"}
+<script>
+$(function(){
+
+	select2('selectx');
+	
+    function formatRepo(repo) {
+    	console.log(1)
+        return repo.name;
+    }
+    function formatRepoProvince(repo) {
+        if (repo.name) {
+            return repo.name;
+        } else {
+            return repo.text;
+        }
+    }
+	  function select2(name) {
+          $('#'+name).select2({
+              placeholder: '请选择',
+              allowClear: true,
+              minimumInputLength: 1,
+              width: 160,
+              ajax: {
+                  url: "/index.php/admin/testli/index.html",
+                  dataType: 'json',
+                  delay: 250,
+                  data: function (params) {
+                      return {
+                          search_name: params.term, // search term
+                      };
+                  },
+                  processResults: function (data, params) {
+                      return {
+                          results: data
+                      };
+                  },
+              },
+              templateResult: formatRepo, // omitted for brevity, see the source of this page
+              templateSelection: formatRepoProvince // omitted for brevity, see the source of this page
+          });
+      }
+	
+})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+ <select class="search_class select2 sel_menu" id="selectx">
+    <option value="1">选项卡1</option>
+    <option value="2">选项卡2</option>
+    <option value="3">选项卡3</option>
+    <option value="4">选项卡4</option>
+    <option value="5">选项卡5</option>
+ </select>
+{/block}

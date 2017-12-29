@@ -1,0 +1,36 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/logstafflogins/logstafflogins.js?v={$v}" type="text/javascript"></script>
+<script src="__ADMIN__/studentfeelog/studentfeelog.js?v={$v}" type="text/javascript"></script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='fee_id' name="fee_id" value=''/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>姓名<font color='red'>*</font>：</th>
+         <td></td>
+      </tr>
+      <tr>
+         <th width='150'>学员编号<font color='red'>*</font>：</th>
+         <td></td>
+      </tr>
+      <tr>
+         <th width='150'>收费记录<font color='red'>*</font>：</th>
+         <td></td>
+      </tr>
+      <hr/>
+    </table>
+  </form>
+{/block}

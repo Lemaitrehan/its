@@ -1,0 +1,12 @@
+<select {if $type_id eq 1}onChange="getGradeLists($(this).val(),0)"{/if} id='major_id' name='major_id' class='ipt'>
+     {volist name="lists_major" id="vo"}
+        <option {if $vo.major_id eq $major_id}selected{/if} value="{$vo.major_id}">{$vo.name}{if condition="$type_id eq 1"} - {$vo.level_type} - {$vo.exam_type}{/if}</option>
+     {/volist}
+     </select>
+     <script>
+     $(function(){
+        {if condition="$type_id eq 1"}
+        $('#major_id').change();
+        {/if}
+     });
+     </script>

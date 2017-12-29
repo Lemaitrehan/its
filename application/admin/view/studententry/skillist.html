@@ -1,0 +1,18 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/studententry/studententry1.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid(2)})
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	学员名称、准考证号：<input type='text' id="search_word" name="search_word" class="query"/>  
+   	<button class="btn btn-blue" onclick='javascript:loadGrid()'>查询</button>
+   	<button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+   	<button class="btn btn-blue" onclick="javascript:expUsersSkil()">导出</button>
+   	<div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

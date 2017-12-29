@@ -1,0 +1,93 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/staffckwork/staffckwork.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['sc_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        xb_count: {
+          tip: "请输入考勤分",
+          rule: '考勤分:required'
+        }
+      },
+      valid: function(form){
+        var sc_id = $('#sc_id').val();
+        toEdits(sc_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='sc_id' name="sc_id" value='{$object["sc_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th width='150'>岗位<font color='red'>*</font>：</th>
+         <td>
+         <select id="employee_type_id" name="employee_type_id" onchange="checkemployee()" class="ipt" {if condition="$object['sc_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="employeetype_list" id="voo"}
+            <option {if condition="$object.employee_type_id eq $voo.employee_type_id"} selected{/if} value="{$voo.employee_type_id}">{$voo.department}{$voo.name}</option>
+            {/volist}
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>员工信息<font color='red'>*</font>：</th>
+         <td>
+          <select id="user_no" name="user_no" class="ipt" {if condition="$object['sc_id'] neq 0"} disabled="disabled" {/if} >
+            <option value=''>请选择</option>
+            {volist name="employeelist" id="voo"}
+            <option {if condition="$object.user_no eq $voo.employee_no"} selected{/if} value="{$voo.employee_no}">{$voo.name} {$voo.employee_no}</option>
+            {/volist}
+          </select>
+         </td>
+      </tr>
+      <!--
+      <tr>
+         <th width='150'>考勤人姓名<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt' {if condition="$object['sc_id'] neq 0"} disabled="disabled" {/if} /></td>
+      </tr>
+      -->
+      <tr>
+         <th width='150'>考勤类型<font color='red'>*</font>：</th>
+         <td>
+          <select id="ckwork_type" name="ckwork_type" class="ipt">
+            <option {if condition="$object.ckwork_type eq 1"} selected{/if} value="1">教务处理</option>
+            <option {if condition="$object.ckwork_type eq 2"} selected{/if} value="2">自定义考勤</option>
+          </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>考勤分<font color='red'>*</font>：</th>
+         <td><input type="text" id='xb_count' name='xb_count' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>备注<font color='red'>*</font>：</th>
+         <td><textarea id='remark' name='remark' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

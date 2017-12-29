@@ -1,0 +1,56 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/studentaudition/studentaudition.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid();})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	<!--
+	<div class='date-s'>
+	<div class='f-left tbr-h'>截止日期：</div>
+		<input type="text" id="start" name="start" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+	<div class='f-left tbr-m'>至</div>
+		<input type="text" id="end" name="end" style="margin:0px;vertical-align:baseline;" maxLength="20" class="query"/>
+	{if MBISGrant('SFJL_01')}
+	<button class="btn btn-green f-right" onclick='javascript:toEdit(0)'>新增</button>
+	{/if}
+	</div>
+	-->
+	<div class='cearch'>
+		试听课程：<select id="course_id" style="width:165px;height:26px;" class="query">
+					<option value=''>全部</option>
+					{volist name="courselist" id="vo"}
+	                <option value='{$vo.course_id}'>{$vo.name}</option>
+	                {/volist}
+				</select>
+		试听科目：<select id="subject_id" style="width:165px;height:26px;" class="query">
+					<option value=''>全部</option>
+					{volist name="subjectlist" id="vo"}
+	                <option value='{$vo.subject_id}'>{$vo.name}</option>
+	                {/volist}
+				</select> 
+		审核状态：<select id="status" style="width:165px;height:26px;" class="query">
+					<option value=''>全部</option>
+	                <option value='1'>待审核</option>
+	                <option value='2'>审核通过</option>
+	                <option value='3'>审核不通过</option>
+				</select>
+		<button class="btn btn-blue" onclick='javascript:auditionQuery()'>查询</button>
+		<button class="btn btn-blue" onclick="javascript:refresh()">刷新</button>
+		{if MBISGrant('STLB_01')}
+		<button class="btn btn-green f-right" onclick='javascript:toEdit(0)'>新增</button>
+		{/if}
+	</div>
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

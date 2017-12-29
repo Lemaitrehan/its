@@ -1,0 +1,181 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/logstafflogins/logstafflogins.js?v={$v}" type="text/javascript"></script>
+<script src="__ADMIN__/teachingmaterial/teachingmaterial.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['tm_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#teachingmaterialForm').validator({
+      fields: {
+        name: {
+          tip: "请输入教材名称",
+          rule: '教材名称:required;'
+        },
+        material_no: {
+          tip: "请输入教材编号",
+          rule: '教材编号:required;'
+        },
+        quantity: {
+          tip: "请输入教材数量",
+          rule: '教材数量:required;'
+        },
+        price: {
+          tip: "请输入标准价格",
+          rule: '标准价格:required;'
+        },
+        offers_price: {
+          tip: "请输入可优惠价格",
+          rule: '可优惠价格:required;'
+        },
+      },
+      valid: function(form){
+        var tm_id = $('#tm_id').val();
+        toEdits(tm_id,{$type});
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='teachingmaterialForm' autocomplete="off">
+    <input type='hidden' id='tm_id' name="tm_id" value='{$object["tm_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>教材名称<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>封面图：</th>
+         <td>
+                <div id="preview" >
+                    <img src="{if $object['cover_img']==''}{$defaultimg}{else}__ROOT__/{$object['cover_img']}{/if}"  height="150" />
+                </div>
+                <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+                <input type="hidden" id="cover_img" name="cover_img" class="ipt" />
+                <span id='uploadMsg'></span>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>教材编号<font color='red'>*</font>：</th>
+         <td><input type="text" id='material_no' name='material_no' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>教材数量<font color='red'>*</font>：</th>
+         <td><input type="text" id='quantity' name='quantity' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+        <th width='150'>单位<font color='red'>*</font>：</th>
+         <td>
+         <select id="units" name="units" class="ipt">
+            <option {if condition="$object.units" eq 1} selected value="1">套</option>
+            <option {if condition="$object.units" eq 2} selected value="2">本</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>标准价格<font color='red'>*</font>：</th>
+         <td><input type="text" id='price' name='price' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>可优惠价格<font color='red'>*</font>：</th>
+         <td><input type="text" id='offers_price' name='offers_price' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+        <th width='150'>教材类型<font color='red'>*</font>：</th>
+         <td>
+         <select id="material_type" name="material_type" class="ipt">
+            <option {if condition="$object.material_type" eq 1} selected value="1">书本</option>
+            <option {if condition="$object.material_type" eq 2} selected value="2">画板</option>
+            <option {if condition="$object.material_type" eq 3} selected value="3">其他</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>教材状态<font color='red'>*</font>：</th>
+         <td>
+         <select id="status" name="status" class="ipt">
+            <option {if condition="$object.status" eq 0} selected value="0">在库</option>
+            <option {if condition="$object.status" eq 1} selected value="1">借出</option>
+            <option {if condition="$object.status" eq 2} selected value="2">丢失</option>
+            <option {if condition="$object.status" eq 3} selected value="3">损坏</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+        <th width='150'>是否上架<font color='red'>*</font>：</th>
+         <td>
+         <select id="is_shelves" name="is_shelves" class="ipt">
+            <option {if condition="$object.is_shelves" eq 2} selected value="2">待上架</option>
+            <option {if condition="$object.is_shelves" eq 1} selected value="1">已上架</option>
+            <option {if condition="$object.is_shelves" eq 0} selected value="0">已下架</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>教材简介<font color='red'></font>：</th>
+         <td><textarea id='intro' name='intro' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+      <tr>
+         <th width='150'>教材详情<font color='red'></font>：</th>
+         <td><textarea id='details' name='details' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+<script>
+$(function(){
+  
+  //文件上传
+  MBIS.upload({
+      pick:'#filePicker',
+      formData: {dir:'coverimg'},
+      accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+      callback:function(f){
+        var json = MBIS.toAdminJson(f);
+        if(json.status==1){
+          $('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+          $('#cover_img').val(json.savePath+json.thumb);
+        }
+    }
+    });
+    
+  //编辑器
+    KindEditor.ready(function(K) {
+    editor1 = K.create('textarea[name="details"]', {
+      height:'350px',
+      allowFileManager : false,
+      allowImageUpload : true,
+      items:[
+              'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+              'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+              'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+              'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+              'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+              'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+              'anchor', 'link', 'unlink', '|', 'about'
+      ],
+      afterBlur: function(){ this.sync(); }
+    });
+  });
+});
+</script>
+{/block}

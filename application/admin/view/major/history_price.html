@@ -1,0 +1,68 @@
+{extend name="base" /}
+{block name="js"}
+<script src="__ADMIN__/major/major_new.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){initGrid({$type_id});})
+</script>
+{/block}
+{block name="main"}
+<style>
+.date-s{width:100%;float:left;}
+.l-text-wrapper{width:168px;float:left;}
+.tbr-h{height:30px;line-height:30px;}
+.search-s{width:100%;height:30px;float:left;}
+.search-i{width:100%;height:30px;float:left;}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<div class="wst-toolbar">
+	{if condition="1 eq 1"}
+		<div class='search-s'>
+	    	专业名称:<select id="major_id" style="width:165px;height:26px;" class="query">
+	             	<option value=''>请选择</option>
+	             	{volist name="lists_school" id="vo"}
+	             	<option value="{$vo.major_id}">{$vo.name}</option>
+	             	{/volist}
+	            	</select>
+<!--	        {if MBISGrant('XLZY_01')}
+	        <button class="btn btn-green f-right" onclick='javascript:toEdit({$type_id},0)'>新增</button>
+	        {/if}-->
+                <button class="btn btn-blue" onclick='javascript:majorQuery()'>查询</button>
+                <button class="btn btn-blue" onclick="javascript:add()">新增</button>
+                <button class="btn btn-blue f-right" onclick="javascript:refresh({$type_id})">刷新</button>
+	  	</div>
+	  	<!--<div class='search-i'>-->
+<!--	    	专业名称:<input type='text' placeholder='专业名称' id="name" class="query"/>
+	    	前台显示:<select id="is_show" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	<option value='1'>是</option>
+	              	<option value='0'>否</option>
+	            	</select>-->
+<!--	        <input type='hidden' value="{$type_id}" id="type_id" class="query">
+	    	
+	    	
+	  	</div>-->
+	{else/}
+		所属学校:<select id="school_id" style="width:165px;height:26px;" class="query">
+	             	<option value=''>请选择</option>
+	             	{volist name="lists_school" id="vo"}
+	             	<option value="{$vo.school_id}">{$vo.name}</option>
+	             	{/volist}
+	            	</select>
+	  	前台显示:<select id="is_show" style="width:165px;height:26px;" class="query">
+	              	<option value=''>请选择</option>
+	              	<option value='1'>是</option>
+	              	<option value='0'>否</option>
+	            	</select>
+	    专业名称:<input type='text' placeholder='专业名称' id="name" class="query"/>
+	    <input type='hidden' value="{$type_id}" id="type_id" class="query">
+	  	<button class="btn btn-blue" onclick='javascript:majorQuery({$type_id})'>查询</button>
+	  	<button class="btn btn-blue" onclick="javascript:refresh({$type_id})">刷新</button>
+	  	{if MBISGrant('ZYSJ_01')}
+   		<button class="btn btn-green f-right" onclick='javascript:toEdit({$type_id},0)'>新增</button>
+   		{/if}
+	{/if}
+   
+   <div style='clear:both'></div>
+</div>
+<div id="maingrid"></div>
+{/block}

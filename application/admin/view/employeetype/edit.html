@@ -1,0 +1,62 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/employeetype/employeetype.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['employee_type_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        name: {
+          tip: "请输入岗位名称",
+          rule: '岗位名称:required;'
+        },
+      },
+      valid: function(form){
+        var employee_type_id = $('#employee_type_id').val();
+        toEdits(employee_type_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='employee_type_id' name="employee_type_id" value='{$object["employee_type_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+        <th width='150'>请选择部门<font color='red'>*</font>：</th>
+         <td>
+         <select id="department_id" name="department_id" class="ipt">
+            {volist name="department_list" id="vo"}
+            <option {if condition="$object.department_id eq $vo.department_id"} selected{/if} value="{$vo.department_id}">{$vo.department}</option>
+            {/volist}
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>岗位名称<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+      </tr>
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}

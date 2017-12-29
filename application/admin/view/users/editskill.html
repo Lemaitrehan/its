@@ -1,0 +1,261 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script type='text/javascript' src='__STATIC__/plugins/webuploader/webuploader.js?v={$v}'></script>
+<script src="__ADMIN__/users/skill.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function(){
+    editInit();
+    {if condition="$data['skill_id'] !=0 "}
+      MBIS.setValues({$data|json_encode});
+    {/if}
+});
+</script>
+{/block}
+{block name="main"}
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id="userForm" autocomplete="off" >
+<div class="tab-content" id="tabContent">
+<!--技能类-->
+<table class='wst-form wst-box-top'>
+  <tr>
+    <th></th>
+    <td><h3>学员技能报名信息</h3></td>
+  </tr>
+  <tr>
+      <th>学校：</th>
+      <td>
+          <select class="ipt" id="school_id" name="school_id" {if condition="$data['skill_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_school_skill" id="vo"}
+            <option value="{$vo.school_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>专业：</th>
+      <td>
+          <select class="ipt" id="major_id" name="major_id" {if condition="$data['skill_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_major" id="vo"}
+            <option value="{$vo.major_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>课程：</th>
+      <td>
+          <select class="ipt" id="course_id" name="course_id" {if condition="$data['skill_id'] neq 0"} disabled="disabled" {/if}>
+            <option value=''>请选择</option>
+            {volist name="lists_course" id="vo"}
+            <option value="{$vo.course_id}">{$vo.name}</option>
+            {/volist}
+          </select>
+      </td>
+   </tr>
+   <!--
+   <tr>
+      <th>课程编码：</th>
+      <td>
+          <input type="text" class="ipt" id="course_bn" name="course_bn" />
+      </td>
+   </tr>
+   -->
+   <tr>
+      <th>考籍号/用户名/准考证号：</th>
+      <td>
+          <input type="text" class="ipt" id="exam_no" name="exam_no" />
+      </td>
+   </tr>
+   <tr>
+      <th>登陆网址：</th>
+      <td>
+          <input type="text" class="ipt" id="login_url" name="login_url" />
+      </td>
+   </tr>
+   <tr>
+      <th>登陆密码：</th>
+      <td>
+          <input type="text" class="ipt" id="login_pass" name="login_pass" />
+      </td>
+   </tr>
+   <tr>
+      <th>信息来源：</th>
+      <td>
+          <input type="text" class="ipt" id="info_source" name="info_source" />
+      </td>
+   </tr>
+   <tr>
+      <th>校区代码：</th>
+      <td>
+          <input type="text" class="ipt" id="school_code" name="school_code" />
+      </td>
+   </tr>
+   <tr>
+      <th>应收学费：</th>
+      <td>
+          <input type="text" class="ipt" id="receivable_fee" name="receivable_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>实收费用：</th>
+      <td>
+          <input type="text" class="ipt" id="real_fee" name="real_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>欠费：</th>
+      <td>
+          <input type="text" class="ipt" id="arrearage_fee" name="arrearage_fee" />
+      </td>
+   </tr>
+   <tr>
+      <th>备注：</th>
+      <td>
+          <input type="text" class="ipt" id="remark" name="remark" />
+      </td>
+   </tr>
+   <tr>
+      <th>发票号码：</th>
+      <td>
+          <input type="text" class="ipt" id="invoice_no" name="invoice_no" />
+      </td>
+   </tr>
+   <tr>
+      <th>学费收缴情况：</th>
+      <td>
+          <input type="text" class="ipt" id="fee_content" name="fee_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>学员证是否制作：</th>
+      <td>
+          <select class="ipt" id="student_cert" name="student_cert">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>结业证是否制作：</th>
+      <td>
+          <select class="ipt" id="complete_cert" name="complete_cert">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>就业情况：</th>
+      <td>
+          <input type="text" class="ipt" id="job_content" name="job_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>结课情况：</th>
+      <td>
+          <input type="text" class="ipt" id="class_ending" name="class_ending" />
+      </td>
+   </tr>
+   <tr>
+      <th>交资料情况：</th>
+      <td>
+          <input type="text" class="ipt" id="delivery_info" name="delivery_info" />
+      </td>
+   </tr>
+   <tr>
+      <th>通知上课情况：</th>
+      <td>
+          <input type="text" class="ipt" id="notify_school_info" name="notify_school_info" />
+      </td>
+   </tr>
+   <tr>
+      <th>反馈情况：</th>
+      <td>
+          <input type="text" class="ipt" id="feedback_content" name="feedback_content" />
+      </td>
+   </tr>
+   <tr>
+      <th>是否发送上课通知短信：</th>
+      <td>
+          <select class="ipt" id="is_school_sms" name="is_school_sms">
+            <option value="0">否</option>
+            <option value="1">是</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>跟进方式：</th>
+      <td>
+          <select class="ipt" id="follow_type" name="follow_type">
+            <option value="1">电话跟进</option>
+            <option value="2">网络跟进</option>
+            <option value="3">短信跟进</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>负责咨询师：</th>
+      <td>
+          <input type="text" class="ipt" id="counselor" name="counselor" />
+      </td>
+   </tr>
+   <tr>
+      <th>电询客服：</th>
+      <td>
+          <input type="text" class="ipt" id="call_service" name="call_service" />
+      </td>
+   </tr>
+   <tr>
+      <th>跟进方式：</th>
+      <td>
+          <select class="ipt" id="order_status" name="order_status">
+            <option value="1">首咨</option>
+            <option value="2">跟进</option>
+            <option value="3">已约访</option>
+            <option value="4">到访</option>
+            <option value="5">已报名</option>
+            <option value="6">意向较好</option>
+            <option value="7">陪同来访</option>
+          </select>
+      </td>
+   </tr>
+   <tr>
+      <th>协议编号：</th>
+      <td>
+          <input type="text" class="ipt" id="agree_no" name="agree_no" />
+      </td>
+   </tr>
+   <tr>
+      <th>下次回访时间：</th>
+      <td>
+          <input type="text" class="ipt" id="access_time" name="access_time" style="margin:0px;vertical-align:baseline;" maxLength="20" />
+      </td>
+   </tr>
+   <tr>
+      <th>报名时间：</th>
+      <td>
+          <input type="text" class="ipt" id="entry_time" name="entry_time" style="margin:0px;vertical-align:baseline;" maxLength="20" />
+      </td>
+   </tr>
+</table>
+
+</div>
+
+<table class='wst-form wst-box-top'>
+  <tr>
+     <td colspan='2' align='center'>
+       <input type="hidden" name="userId" id="userId" class="ipt" value="{$userId}" />
+       <input type="hidden" name="skill_id" id="skill_id" class="ipt" value="<?=(int)$data['skill_id']?>" />
+       <input type="submit" value="提交" class='btn btn-blue' />
+       <input type="button" onclick="javascript:history.go(-1)" class='btn' value="返回" />
+     </td>
+  </tr>
+</table>
+</form>
+{/block}
+

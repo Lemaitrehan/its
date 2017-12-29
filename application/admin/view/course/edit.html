@@ -1,0 +1,496 @@
+{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins/kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/course/course.js?v={$v}" type="text/javascript"></script>
+<script>
+var glob_school_id="{(int)$object['school_id']}";
+var glob_major_id="{(int)$object['major_id']}";
+$(function () {
+  initCombo({$id},"{$subject_js_ids}",{$arrKs});
+  {if condition="$object['course_id'] !=0 "}
+     MBIS.setValues({$object});
+       getMajorLists("{$type_id}","{$object['school_id']}","{$object['level_type']}","{$object['major_id']}");
+       {if $type_id eq 1}
+       getGradeLists("{$object['major_id']}","{$object['grade_id']}");
+       {else /}
+       sub_price();
+       {/if}
+    {else /}
+    $('#school_id').change();
+  {/if}
+    //读取科目属性数据
+    //get_subject_prop_data($('#subject_type_id').val(),$('#pkey').val());
+  $('#infoForm').validator({
+      fields: {
+            major_id: {
+              tip: "请选择专业",
+              rule: '专业:required;'
+            },
+        {if condition="$type_id eq 1"}
+            grade_id: {
+              tip: "请选择年级",
+              rule: '年级:required;'
+            },
+        {/if}
+            name: {
+              tip: "请输入课程名称",
+              rule: '课程名称:required;'
+            },
+      },
+      valid: function(form){
+        var id = $('#pkey').val();
+        toEdits(id,{$type_id});
+      }
+  });
+  //set_subject_ipt();
+});
+</script>
+{/block}
+{block name="main"}
+<style>
+.black_overlay{
+display: none;
+position: absolute;
+top: 0%;
+left: 0%;
+width: 100%;
+height: 100%;
+background-color: #b3b3b3;
+z-index:1001;
+-moz-opacity: 0.8;
+opacity:.80;
+filter: alpha(opacity=80);
+}
+.white_content {
+display: none;
+position: absolute;
+top: 2%;
+left: 1%;
+width: 97.5%;
+/*height:80%;*/
+border: 2px solid lightblue;
+background-color: white;
+z-index:1002;
+overflow: auto;
+}
+#btn{
+width:100%;
+text-align: center;
+bottom:5px;
+}
+#content{
+vertical-align: middle; 
+}
+</style>
+<style>
+.black_overlayi{
+display: none;
+position: absolute;
+top: 0%;
+left: 0%;
+width: 100%;
+height: 100%;
+background-color:#b3b3b3;
+z-index:1001;
+-moz-opacity: 0.8;
+opacity:.80;
+filter: alpha(opacity=80);
+}
+.white_contenti{
+display: none;
+position: fixed;
+top: 20%;
+left: 20%;
+right: 20%;
+/*height:80%;*/
+border: 2px solid lightblue;
+background-color: white;
+z-index:1002;
+overflow: auto;
+}
+#btni{
+text-align: center;
+bottom:5px;
+}
+#contenti{
+vertical-align: middle; 
+}
+</style>
+<div class="l-loading" style="display: block" id="wst-loading"></div>
+<form id='infoForm' autocomplete="off">
+<input type='hidden' id='pkey' name="course_id" value='{$object["course_id"]}'/>
+ {if condition="$type_id eq 1"}
+<input type='hidden' id='type_id' name="type_id" value='{$type_id}'/>
+{/if}
+<table class='wst-form wst-box-top'>
+   {if condition="$type_id neq 1"}
+  <tr {if condition="$type_id eq 1"}style="display:none;"{/if}>
+     <th width='150'>类型<font color='red'>*</font>：</th>
+     <td>
+     <select id='type_id' name='type_id' class='ipt'>
+     {volist name="lists_subject_type" id="vo"}
+        {if condition="$vo.type_id neq 1"}
+        <option {if condition="$type_id eq $vo.type_id"} selected{/if} value="{$vo.type_id}">{$vo.name}</option>
+        {/if}
+     {/volist}
+     </select>
+     </td>
+     {/if}
+  </tr>
+  <tr>
+     <th width='150'>学院<font color='red'>*</font>：</th>
+     <td>
+     <select onChange="glob_school_id=$(this).val();getMajorLists({$type_id},$(this).val(),$('#level_type').val(),0)" id='school_id' name='school_id' class='ipt'>
+     {volist name="lists_school" id="vo"}
+        <option value="{$vo.school_id}">{$vo.name}</option>
+     {/volist}
+     </select>
+     {if $type_id eq 1}
+     <select onChange="getMajorLists({$type_id},$('#school_id').val(),$(this).val(),0)" id='level_type' name='level_type' class='ipt'>
+     {volist name="sel_level_type.lists" id="vo"}
+        <option value="{$vo.id}">{$vo.name}</option>
+     {/volist}
+     </select>
+     {/if}
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>专业<font color='red'>*</font>：</th>
+     <td>
+     <span id="school_major"></span>
+     <br>
+     {if $type_id eq 1}<span class="tips-text">自考专业可选科目</span>{/if}
+     </td>
+  </tr>
+  <tr>
+    <th width='150'>是否上架<font color='red'>*</font>：</th>
+    <td>
+       <span>上架：</span><input type="radio"  class='is_shelves' name='is_shelves' value="1" {if($is_sell==1 || !$is_sell)} checked {/if} class='ipt'/>
+       <span>下架：</span><input type="radio"  class='is_shelves' name='is_shelves' value="2" {if($is_sell==2) }checked {/if} class='ipt'/>
+    </td>
+  </tr>
+  {if $type_id eq 1}
+  <tr>
+     <th width='150'>年级<font color='red'>*</font>：</th>
+     <td>
+     <span id="major_grade"></span>
+     </td>
+  </tr>
+  {/if}
+  <tr>
+     <th width='150'>课程名称<font color='red'>*</font>：</th>
+     <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>课程编号<font color='red'>*</font>：</th>
+     <td><input type="text" id='course_bn' name='course_bn' style='width:300px;' class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>封面图<font color='red'>*</font>：</th>
+     <td>
+            <div id="preview" >
+                <img src="{if $object['cover_img']==''}{$defaultimg}{else}__ROOT__/{$object['cover_img']}{/if}"  height="150" />
+            </div>
+            <div tab-index="-1" id='filePicker' style="margin-left:40px;">上传图片</div>
+            <input type="hidden" id="cover_img" name="cover_img" class="ipt" />
+            <span id='uploadMsg'></span>
+     </td>
+  </tr>
+  {if $type_id eq 2}
+  <tr>
+    <!-- teaching_type ==1 -->
+     <th width='150'>选择科目：</th>
+     <td>
+      <!--
+      <a href="{:url('admin/course/searchAlerts',['type_id'=>$type_id])}"  target="_blank">选择科目...</a>
+     -->
+      <a href="javascript:void(0);" onclick="initGrid1();">选择科目...</a>
+      <input type="hidden" name="subject_ids[]" id="subject_ids" class="ipt">
+      <!--<input type="text" id="subject_ids" class="ipt" value="">-->
+      <!--
+     <select style="width:150px;height:100px;" multiple id='subject_ids' name='subject_ids[]' class='ipt'>
+     {volist name="lists_subject" id="vo"}
+        <option value="{$vo.subject_id}">{$vo.name}</option>
+     {/volist}
+     </select>
+     -->
+     </td>
+  </tr>
+   <tr  class="userTr">
+         <th width='150'>已选择对象<font color='red'>*</font>：</th>
+         <td>
+            <div class="checkUserIds">
+              {if condition="!empty($arrUserDiv)"}
+                 {volist name="arrUserDiv" id="vo"}
+                    {if($vo.name)}
+                    <div class="ddd" style="float:left;border:1px solid gray;width:auto;text-align:left;margin-right:2px;"><span class="num">{$key+1}</span>{$vo.name}<a  data-type="{$vo.subject_id}" class="del_phone xxx" style="color:red;">X</a></div>
+                    {/if}
+                 {/volist}
+              {/if} 
+            </div>
+         </td>
+   </tr>
+  <!-- teaching_type ==2 -->
+  <tr>
+     <th width='150'>选择线上课程：</th>
+     <td>
+      <!--<a href="javascript:void(0);" onclick="ShowDiv('MyDiv','fade');subjectSelect()">选择科目...</a>
+      <input type="hidden" name="subject_ids[]" id="subject_ids" class="ipt">-->
+     <select style="width:350px;height:100px;" multiple id='online_subject_ids' name='online_subject_ids[]' class='ipt'>
+     {volist name="lists_subject" id="vo"}
+        {if condition="$vo.teaching_type eq 2"}
+        <option value="{$vo.subject_id}">{$vo.name} - {$vo.sale_price}</option>
+        {/if}
+     {/volist}
+     </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>线上课程销售价</th>
+     <td>
+     <select class="ipt" id='online_course_price_type' name='online_course_price_type'>
+        <option selected value="1" title="输入说明：数字">金额</option>
+        <option selected value="2" title="输入说明：1-100">折扣</option>
+     </select>
+     <input type="text" id='online_course_price' name='online_course_price' style='width:300px;' class='ipt'/></td>
+  </tr>
+  {/if}
+  <!--
+  <tr>
+     <th width='150'>选择科目<font color='red'>*</font>：</th>
+     <td>
+     
+      <a href="{:url('admin/course/searchAlerts',['type_id'=>$type_id])}" target="_blank">选择科目...</a>
+      
+      <a href="javascript:void(0);" onclick="ShowDiv('MyDiv','fade')">选择科目...</a>
+      <input type="hidden" name="subject_ids[]" id="subject_ids" class="ipt">
+     
+     <select onChange="sub_price()" style="width:150px;height:100px;" multiple id='subject_ids' name='subject_ids[]' class='ipt'>
+     {volist name="lists_subject" id="vo"}
+        <option title="成本价：{$vo.cost} 市场价：{$vo.market_price} 标准价：{$vo.sale_price}" data-cost="{$vo.cost}" data-market-price="{$vo.market_price}" data-sale-price="{$vo.sale_price}" value="{$vo.subject_id}">{$vo.name} - {$vo.sale_price}</option>
+     {/volist}
+     </select>
+     
+     </td>
+  </tr>
+  -->
+  {if $type_id eq 2}
+  <tr>
+     <th width='150'>课程总课时<font color='red'>*</font>：</th>
+     <td><input type="text" id='course_hours' name='course_hours' style='width:300px;' readonly class='ipt'/></td>
+  </tr>
+  {else/}
+  <tr>
+     <th width='150'>课程总课时<font color='red'>*</font>：</th>
+     <td><input type="text" id='course_hours' name='course_hours' style='width:300px;' class='ipt'/></td>
+  </tr>
+  {/if}
+  <!--
+  <tr>
+     <th width='150'>选择学杂费：</th>
+     <td>
+     <a href="javascript:void(0);" onclick="ShowDiv('MyDivi','fadei')">选择学杂费...</a>
+     <input type="hidden" name='it_ids[]' id="it_ids" class="ipt">
+     </td>
+  </tr>
+  -->
+  {if $type_id eq 2}
+  <tr>
+     <th width='150'>{$sel_teaching_type.name}<font color='red'>*</font>：</th>
+     <td>
+     <select id='teaching_type' name='teaching_type' class='ipt'>
+        {volist name="sel_teaching_type.lists" id="vo"}
+        <option value="{$vo.id}">{$vo.name}</option>
+        {/volist}
+     </select>
+     </td>
+  </tr>
+  <tr>
+     <th width='150'>成本价：</th>
+     <td><input type="text" id='cost_price' name='cost_price' style='width:300px;' readonly class='ipt'/></td>
+  </tr>
+  <tr>
+     <th width='150'>原价：</th>
+     <td><input type="text" id='market_price' name='market_price' style='width:300px;'  class='ipt'/></td>
+  </tr>
+
+  <tr>
+     <th width='150'>标准价：</th>
+     <td>
+      <input type="text" id='sale_price' name='sale_price' style='width:300px;' class='ipt'/>
+     </td>
+  </tr>
+
+  <tr>
+     <th width='150'>优惠价：</th>
+     <td>
+     <input type="text" id='offers_price' name='offers_price' style='width:300px;' class='ipt'/>
+     </td>
+  </tr>
+    
+  {/if}
+  <tr>
+     <th width='150'>简介：</th>
+     <td><textarea id='des' name='des' style='width:300px;height:80px;' class='ipt'></textarea></td>
+  </tr>
+  <tr>
+       <th width='150'>详情：</th>
+       <td>
+        <textarea id='details' name='details' class="form-control ipt" style='width:80%;height:400px'></textarea>
+       </td>
+  </tr>  
+  
+  <tr>
+     <th width='150'>排序号<font color='red'>*</font>：</th>
+     <td><input type="text" id='sorts' name='sorts' style='width:300px;' value="0" class='ipt'/></td>
+  </tr>
+  
+     <tr>
+       <td colspan='2' align='center'>
+           <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+           <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+       </td>
+     </tr>
+</table>
+</form>
+<div id="fade" class="black_overlay"></div>
+<div id="MyDiv" class="white_content">
+<div style="text-align: right; cursor: default; height: 20px;">
+  <span style="font-size: 16px;" onclick="CloseDiv('MyDiv','fade')">关闭</span>
+</div>
+<div id="content"> 
+  <h3 style="margin:0 0 8px 0;text-align:center;">科目列表</h3>
+  <table style="width:98%;text-align:center;margin:0 auto;font-size:13px;" border="1" sellspacing="1" id="tab_subject">
+    <tr style="font-weight: bold;background-color: #00ffff;">
+      <td width="40px">选择</td>
+      <td>编号ID</td>
+      <td>科目名称</td>
+      <td>科目代码</td>
+      <td>所属学院</td>
+      <td>所属专业</td>
+      <td>原价</td>
+      <td>标准价</td>
+      <td>总课时</td>
+      <td>是否上架</td>
+      <td>授课老师</td>
+    </tr>
+    <!--
+    {volist name="lists_subject" id="vo"}
+    <tr id="ts_{$vo.subject_id}" calss='str'>
+      <td>
+        <input type="checkbox" name="chk" {in name="$vo.subject_id" value="$object['subject_ids']"} checked="checked"  {/in} value='{$vo.subject_id}'>
+      </td>
+      <td>{$vo.subject_id}</td>
+      <td>{$vo.name}</td>
+      <td>{$vo.subject_no}</td>
+      <td>{$vo.school_id}</td>
+      <td>{$vo.major_id}</td>
+      <td>{$vo.cost}</td>
+      <td>{$vo.sale_price}</td>
+      <td>{$vo.market_price}</td>
+      <td>{$vo.offer_price}</td>
+      <td>{$vo.course_hours}</td>
+      <td>{$vo.is_shelves}</td>
+      <td>{$vo.teacher_id}</td>
+    </tr>
+    {/volist}
+    -->
+  </table>
+</div>
+<div id="btn">
+  <div style="width:15%;margin-left: auto;margin-right: auto;margin-top: 15px;margin-bottom: 15px;">
+  <button type="button" class="btn btn-blue" onclick="getChecked('MyDiv','fade')">提&nbsp;交</button>
+  <button type="button" class="btn" onclick="CloseDiv('MyDiv','fade')">取&nbsp;消</button>
+  </div>
+</div>
+</div>
+
+<div id="search_div_zgrid"></div>
+<!--
+<div id="fadei" class="black_overlayi"></div>
+<div id="MyDivi" class="white_contenti">
+<div style="text-align: right; cursor: default; height: 20px;">
+  <span style="font-size: 16px;" onclick="CloseDiv('MyDivi','fadei')">关闭</span>
+</div>
+<div id="contenti"> 
+  <h3 style="margin:0 0 8px 0;text-align:center;">学杂费列表</h3>
+  <table style="width:98%;text-align:center;margin:0 auto;font-size:13px;" border="1" sellspacing="1">
+    <tr style="font-weight: bold;background-color: #00ffff;">
+      <td width="40px">选择</td>
+      <td>编号ID</td>
+      <td>学杂费名称</td>
+      <td>标准价格</td>
+      <td>可优惠价格</td>
+      <td>学杂费类型</td>
+      <td>是否上架</td>
+      <td>是否唯一</td>
+      <td>学杂费简介</td>
+      <td>学杂费详情</td>
+    </tr>
+    {volist name="lists_ad_item" id="vo"}
+    <tr id="ts_{$vo.it_id}" calss='str'>
+      <td>
+        <input type="checkbox" name="chki" {in name="$vo.it_id" value="$object['it_ids']"} checked="checked"  {/in} value='{$vo.it_id}'>
+      </td>
+      <td>{$vo.it_id}</td>
+      <td>{$vo.name}</td>
+      <td>{$vo.price}</td>
+      <td>{$vo.offers_price}</td>
+      <td>{$vo.teaching_type}</td>
+      <td>{$vo.is_shelves}</td>
+      <td>{$vo.is_sole}</td>
+      <td>{$vo.des}</td>
+      <td>{$vo.details}</td>
+    </tr>
+    {/volist}
+  </table>
+</div>
+<div id="btni">
+  <div style="margin-left: auto;margin-right: auto;margin-top: 15px;margin-bottom: 15px;">
+  <button type="button" class="btn btn-blue" onclick="getCheckedi('MyDivi','fadei')">提&nbsp;交</button>
+  <button type="button" class="btn" onclick="CloseDiv('MyDivi','fadei')">取&nbsp;消</button>
+  </div>
+</div>
+</div>
+-->
+<script>
+$(function(){
+  
+  //文件上传
+  MBIS.upload({
+      pick:'#filePicker',
+      formData: {dir:'coverimg'},
+      accept: {extensions: 'gif,jpg,jpeg,bmp,png',mimeTypes: 'image/*'},
+      callback:function(f){
+        var json = MBIS.toAdminJson(f);
+        if(json.status==1){
+          $('#preview').html('<img src="'+MBIS.conf.ROOT+'/'+json.savePath+json.thumb+'" height="152" />');
+          $('#cover_img').val(json.savePath+json.thumb);
+        }
+    }
+    });
+  //编辑器
+    KindEditor.ready(function(K) {
+    editor1 = K.create('textarea[name="details"]', {
+      height:'350px',
+      allowFileManager : false,
+      allowImageUpload : true,
+      items:[
+              'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+              'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+              'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+              'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+              'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+              'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|','image','table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+              'anchor', 'link', 'unlink', '|', 'about'
+      ],
+      afterBlur: function(){ this.sync(); }
+    });
+  });
+});
+</script>
+{/block}

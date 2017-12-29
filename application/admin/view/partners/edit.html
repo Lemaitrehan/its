@@ -1,0 +1,88 @@
+﻿{extend name="base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/plugins/webuploader/webuploader.css?v={$v}" />
+{/block}
+{block name="js"}
+<script src="__STATIC__/plugins/webuploader/webuploader.js?v={$v}" type="text/javascript" ></script>
+<script src="__STATIC__/plugins//kindeditor/kindeditor.js?v={$v}" type="text/javascript" ></script>
+<script src="__ADMIN__/partners/partners.js?v={$v}" type="text/javascript"></script>
+<script>
+$(function () {
+  initCombo();
+  {if condition="$object['p_id'] !=0 "}
+     MBIS.setValues({$object});
+  {/if}
+  $('#departmentForm').validator({
+      fields: {
+        name: {
+          tip: "请输入合作方名称",
+          rule: '合作方名称:required;'
+        },
+        principal: {
+          tip: "请输入负责人",
+          rule: '负责人:required;'
+        },
+        principal_mobile: {
+          tip: "请输入负责人联系方式",
+          rule: '负责人联系方式:required;'
+        },
+        business_info: {
+          tip: "请输人主营业务",
+          rule: '主营业务:required;'
+        },
+      },
+      valid: function(form){
+        var p_id = $('#p_id').val();
+        toEdits(p_id);
+      }
+  })
+});
+</script>
+{/block}
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+{block name="main"}
+  <div class="l-loading" style="display: block" id="wst-loading"></div>
+  <form id='departmentForm' autocomplete="off">
+    <input type='hidden' id='p_id' name="p_id" value='{$object["p_id"]}'/>
+    <table class='wst-form wst-box-top'>
+      <tr>
+         <th width='150'>合作方名称<font color='red'>*</font>：</th>
+         <td><input type="text" id='name' name='name' style='width:300px;' class='ipt'/></td>
+      </tr>
+      
+      <tr>
+         <th width='150'>负责人<font color='red'>*</font>：</th>
+         <td><input type="text" id='principal' name='principal' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>负责人联系方式<font color='red'>*</font>：</th>
+         <td><input type="text" id='principal_mobile' name='principal_mobile' style='width:300px;' class='ipt'/></td>
+      </tr>
+      <tr>
+         <th width='150'>合作类型<font color='red'>*</font>：</th>
+         <td>
+          <select id="business_type" name="business_type" class="ipt">
+            <option {if condition="$object.business_type eq 1"} selected{/if} value="1">供应商</option>
+            <option {if condition="$object.business_type eq 2"} selected{/if} value="2">分销商</option>
+            <option {if condition="$object.business_type eq 3"} selected{/if} value="3">合作老师</option>
+         </select>
+         </td>
+      </tr>
+      <tr>
+         <th width='150'>主营业务<font color='red'>*</font>：</th>
+         <td><textarea id='business_info' name='business_info' style='width:300px;' class='ipt'></textarea></td>
+      </tr>
+     
+         <tr>
+           <td colspan='2' align='center'>
+               <button type="submit" class="btn btn-blue">保&nbsp;存</button>
+               <button type="button" class="btn" onclick="javascript:history.go(-1)">返&nbsp;回</button>
+           </td>
+         </tr>
+    </table>
+  </form>
+{/block}
